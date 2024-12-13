@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>SoCalREN's ERAP GIS Hub</title>
+    <title>SoCalREN's ERAP Dashboard</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@300;400&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.min.js"></script>
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.css" type="text/css">
@@ -248,22 +247,6 @@
         .metric .metric-value {
             font-weight: bold;
             font-size: 16px;
-        }
-        .chart-section {
-            margin-top: 20px;
-        }
-        .chart-section h4 {
-            margin-bottom: 10px;
-        }
-        #populationChartContainer,
-        #facilitiesPieContainer {
-            margin-bottom: 20px;
-        }
-        #populationChartContainer canvas,
-        #facilitiesPieContainer canvas {
-            background: #fff;
-            border-radius: 8px;
-            padding: 10px;
         }
         #loading-spinner {
             position: absolute;
@@ -651,13 +634,14 @@
 <body>
 <header>
     <div class="header-left">
-        <h1>SoCalREN's ERAP GIS Hub</h1>
+        <h1>SoCalREN's ERAP Dashboard</h1>
     </div>
     <div class="header-controls">
         <div class="geocoder-container" id="geocoder"></div>
         <div class="style-selector">
             <label for="style-selector">Map Style</label>
             <select id="style-selector">
+                <option value="mapbox://styles/wengle1/cm4m4sedc001v01sqdtx0cioz" selected>Custom Style</option>
                 <option value="mapbox://styles/mapbox/streets-v12">Streets</option>
                 <option value="mapbox://styles/mapbox/outdoors-v12">Outdoors</option>
                 <option value="mapbox://styles/mapbox/light-v10">Light</option>
@@ -726,7 +710,7 @@
         <div class="dashboard" id="dashboard">
             <button id="back-button">Back</button>
             <h3 id="data-overview-title">Data Overview</h3>
-
+        
             <div id="agency-data" style="display:none; margin-top:20px;">
                 <h4>Agency-Level Data</h4>
                 <div class="metric">
@@ -734,12 +718,20 @@
                     <span class="metric-value" id="agency-dac">N/A</span>
                 </div>
                 <div class="metric">
-                    <span class="metric-label">CalEnviroscreen:</span>
+                    <span class="metric-label">CalEnviroScreen Score:</span>
                     <span class="metric-value" id="agency-cal">N/A</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Pollution Burden Percentile:</span>
+                    <span class="metric-value" id="agency-pollution">N/A</span>
                 </div>
                 <div class="metric">
                     <span class="metric-label">Population:</span>
                     <span class="metric-value" id="agency-pop">N/A</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">% Children and Seniors:</span>
+                    <span class="metric-value" id="agency-children-seniors">N/A</span>
                 </div>
                 <div class="metric">
                     <span class="metric-label">Agency Area (sq. miles):</span>
@@ -750,27 +742,19 @@
                     <span class="metric-value" id="agency-density">N/A</span>
                 </div>
                 <div class="metric">
-                    <span class="metric-label">Number of Extreme Heat Days:</span>
-                    <span class="metric-value" id="agency-heat">N/A</span>
+                    <span class="metric-label">Extreme Heat Days:</span>
+                    <span class="metric-value" id="agency-heat-days">N/A</span>
                 </div>
                 <div class="metric">
-                    <span class="metric-label">% Children and Seniors:</span>
-                    <span class="metric-value" id="agency-children-seniors">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Average Household Income ($):</span>
+                    <span class="metric-label">Average Household Income:</span>
                     <span class="metric-value" id="agency-income">N/A</span>
                 </div>
                 <div class="metric">
-                    <span class="metric-label">Pollution Burden:</span>
-                    <span class="metric-value" id="agency-pollution">N/A</span>
-                </div>
-                <div class="metric">
                     <span class="metric-label">% Low-Income Census Tracts:</span>
-                    <span class="metric-value" id="agency-lowincome">N/A</span>
+                    <span class="metric-value" id="agency-low-income">N/A</span>
                 </div>
                 <div class="metric">
-                    <span class="metric-label">Number of Electric Circuits:</span>
+                    <span class="metric-label"># of Electric Circuits:</span>
                     <span class="metric-value" id="agency-circuits">N/A</span>
                 </div>
                 <div class="metric">
@@ -782,60 +766,51 @@
                     <span class="metric-value" id="agency-therms">N/A</span>
                 </div>
             </div>
-
+        
             <div id="facility-data" style="display:none; margin-top:20px;">
                 <h4>Facility-Level Data</h4>
                 <div class="metric">
-                    <span class="metric-label">Existing Use:</span>
-                    <span class="metric-value" id="facility-use">N/A</span>
+                    <span class="metric-label">Year Built:</span>
+                    <span class="metric-value" id="facility-year">N/A</span>
                 </div>
                 <div class="metric">
-                    <span class="metric-label">Existing EV Chargers (Yes/No):</span>
-                    <span class="metric-value" id="facility-ev">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Number of Planned EV Chargers:</span>
-                    <span class="metric-value" id="facility-planned-ev">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Existing PV or Battery Capabilities (Yes/No):</span>
-                    <span class="metric-value" id="facility-pv">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Planned PV (hours of autonomy):</span>
-                    <span class="metric-value" id="facility-pv-hours">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Planned Battery Storage (hours of autonomy):</span>
-                    <span class="metric-value" id="facility-battery-hours">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Walk Score (RHOA):</span>
-                    <span class="metric-value" id="facility-walkscore">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Sq Ft:</span>
+                    <span class="metric-label">Gross Floor Area (sq ft):</span>
                     <span class="metric-value" id="facility-sqft">N/A</span>
                 </div>
                 <div class="metric">
-                    <span class="metric-label">Yr Built (RHOA):</span>
-                    <span class="metric-value" id="facility-yrbuilt">N/A</span>
+                    <span class="metric-label">Walkability:</span>
+                    <span class="metric-value" id="facility-walkability">N/A</span>
                 </div>
-            </div>
-
-            <div class="chart-section" id="chart-section" style="display:none;">
-                <div id="populationChartContainer">
-                    <h4>Population Comparison in This COG</h4>
-                    <canvas id="populationChart"></canvas>
+                <div class="metric">
+                    <span class="metric-label">Resilience Designation:</span>
+                    <span class="metric-value" id="facility-resilience">N/A</span>
                 </div>
-                <div id="facilitiesPieContainer">
-                    <h4>Facilities with PV/EV</h4>
-                    <canvas id="facilitiesPie"></canvas>
+                <div class="metric">
+                    <span class="metric-label">Existing EV Chargers:</span>
+                    <span class="metric-value" id="facility-ev">N/A</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Planned EV Chargers:</span>
+                    <span class="metric-value" id="facility-planned-ev">N/A</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Existing PV/Battery Storage:</span>
+                    <span class="metric-value" id="facility-pv">N/A</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Planned PV (hours):</span>
+                    <span class="metric-value" id="facility-planned-pv">N/A</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Planned Battery Storage (hours):</span>
+                    <span class="metric-value" id="facility-planned-battery">N/A</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Building Type:</span>
+                    <span class="metric-value" id="facility-type">N/A</span>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
 <div id="welcome-popup">
     <div class="welcome-content">
@@ -861,6 +836,27 @@
 
 <script>
     mapboxgl.accessToken = 'pk.eyJ1Ijoid2VuZ2xlMSIsImEiOiJjbGh0bTJ0OTUzN2dzM21tbTB0NzFmM2QyIn0.-ItjIktoJtcQUsk6l9TbbQ';
+
+    // Add just the processing function
+    function processFacilityData(rawData) {
+        return rawData.map(row => ({
+            'Agency': row[0],
+            'Facility Name': row[1],
+            'Address': row[2],
+            'Latitude': row[3],
+            'Longitude': row[4],
+            'Existing Resilience Designation': row[5],
+            'Existing EV Chargers': row[6],
+            'Number of Planned EV Chargers': row[7],
+            'Existing PV or Battery Storage Capabilities': row[8],
+            'Planned PV (hours of autonomy)': row[9],
+            'Planned Battery Storage (hours of autonomy)': row[10],
+            'Building Type': row[11],
+            'Walkability': row[12],
+            'Gross Floor Area (sq ft)': row[13],
+            'Year Built': row[14]
+        }));
+    }
 
     function closeWelcomePopup() {
         document.getElementById('welcome-popup').classList.add('fade-out');
@@ -1004,7 +1000,7 @@
 
     const map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v12',
+        style: 'mapbox://styles/wengle1/cm4m4sedc001v01sqdtx0cioz', // Set your custom style as default
         center: [-118.2437, 34.0522],
         zoom: 10
     });
@@ -1036,42 +1032,84 @@
     }
     
 
-    function updateAgencyDashboard(a) {
+    function updateAgencyDashboard(agency) {
+        // Show agency data section and hide facility data section
         document.getElementById('agency-data').style.display = 'block';
         document.getElementById('facility-data').style.display = 'none';
+    
+        // Format currency values
+        const formatCurrency = (value) => {
+            if (!value || value === 'N/A') return 'N/A';
+            return `$${parseInt(value).toLocaleString()}`;
+        };
 
-        document.getElementById('agency-dac').textContent = a.DAC;
-        document.getElementById('agency-cal').textContent = a.CalEnviroscreen;
-        document.getElementById('agency-pop').textContent = a.Population !== "N/A" ? a.Population.toLocaleString() : "N/A";
-        document.getElementById('agency-area').textContent = a.AgencyArea !== "N/A" ? a.AgencyArea : "N/A";
-        document.getElementById('agency-density').textContent = a.PopulationDensity !== "N/A" ? a.PopulationDensity.toLocaleString() : "N/A";
-        document.getElementById('agency-heat').textContent = a.ExtremeHeatDays !== "N/A" ? a.ExtremeHeatDays : "N/A";
-        document.getElementById('agency-children-seniors').textContent = a.ChildrenSeniors !== "N/A" ? a.ChildrenSeniors + "%" : "N/A";
-        document.getElementById('agency-income').textContent = a.AvgHouseholdIncome !== "N/A" ? "$" + a.AvgHouseholdIncome.toLocaleString() : "N/A";
-        document.getElementById('agency-pollution').textContent = a.PollutionBurden !== "N/A" ? a.PollutionBurden : "N/A";
-        document.getElementById('agency-lowincome').textContent = a.LowIncomeTracts !== "N/A" ? a.LowIncomeTracts + "%" : "N/A";
-        document.getElementById('agency-circuits').textContent = a.ElectricCircuits !== "N/A" ? a.ElectricCircuits : "N/A";
-        document.getElementById('agency-kwh').textContent = (a.AnnualKWh !== "N/A" && a.AnnualKWh !== undefined && !isNaN(a.AnnualKWh)) ? a.AnnualKWh.toLocaleString() : (a.AnnualKWh === "N/A" ? "N/A" : a.AnnualKWh);
-        document.getElementById('agency-therms').textContent = (a.AnnualTherms !== "N/A" && a.AnnualTherms !== undefined && !isNaN(a.AnnualTherms)) ? a.AnnualTherms.toLocaleString() : (a.AnnualTherms === "N/A" ? "N/A" : a.AnnualTherms);
+        // Format percentage values
+        const formatPercent = (value) => {
+            if (!value || value === 'N/A') return 'N/A';
+            return `${value}%`;
+        };
 
-        updateDataOverviewTitle();
+        // Update all agency metrics
+        document.getElementById('agency-dac').textContent = agency.DAC || 'N/A';
+        document.getElementById('agency-cal').textContent = agency.CalEnviroscreen || 'N/A';
+        document.getElementById('agency-pollution').textContent = agency.PollutionBurden || 'N/A';
+        document.getElementById('agency-pop').textContent = agency.Population ? 
+            agency.Population.toLocaleString() : 'N/A';
+        document.getElementById('agency-children-seniors').textContent = 
+            agency.ChildrenSeniors ? `${agency.ChildrenSeniors}%` : 'N/A';
+        document.getElementById('agency-area').textContent = 
+            agency.AgencyArea ? `${agency.AgencyArea}` : 'N/A';
+        document.getElementById('agency-density').textContent = 
+            agency.PopulationDensity ? agency.PopulationDensity.toLocaleString() : 'N/A';
+        document.getElementById('agency-heat-days').textContent = 
+            agency.ExtremeHeatDays || 'N/A';
+        document.getElementById('agency-income').textContent = 
+            formatCurrency(agency.AvgHouseholdIncome);
+        document.getElementById('agency-low-income').textContent = 
+            formatPercent(agency.LowIncomeTracts);
+        document.getElementById('agency-circuits').textContent = 
+            agency.ElectricCircuits || 'N/A';
+        document.getElementById('agency-kwh').textContent = 
+            agency.AnnualKWh ? agency.AnnualKWh.toLocaleString() : 'N/A';
+        document.getElementById('agency-therms').textContent = 
+            agency.AnnualTherms ? agency.AnnualTherms.toLocaleString() : 'N/A';
     }
 
-    function updateFacilityDashboard(f) {
-        document.getElementById('agency-data').style.display = 'none';
+    function updateFacilityDashboard(facility) {
+        // Show facility data and hide agency data
         document.getElementById('facility-data').style.display = 'block';
-
-        document.getElementById('facility-use').textContent = f.ExistingUse;
-        document.getElementById('facility-ev').textContent = f.ExistingEV;
-        document.getElementById('facility-planned-ev').textContent = f.PlannedEV;
-        document.getElementById('facility-pv').textContent = f.ExistingPV;
-        document.getElementById('facility-pv-hours').textContent = f.PlannedPV;
-        document.getElementById('facility-battery-hours').textContent = f.PlannedBattery;
-        document.getElementById('facility-walkscore').textContent = f.WalkScore;
-        document.getElementById('facility-sqft').textContent = f.SqFt;
-        document.getElementById('facility-yrbuilt').textContent = f.YrBuilt;
-
-        updateDataOverviewTitle();
+        document.getElementById('agency-data').style.display = 'none';
+        
+        // Parse and update all facility metrics
+        document.getElementById('facility-year').textContent = 
+            facility['Year Built'] || 'N/A';
+        
+        document.getElementById('facility-sqft').textContent = 
+            facility['Gross Floor Area (sq ft)'] || 'N/A';
+    
+        document.getElementById('facility-walkability').textContent = 
+            facility['Walkability'] || 'N/A';
+    
+        document.getElementById('facility-resilience').textContent = 
+            facility['Existing Resilience Designation'] || 'N/A';
+    
+        document.getElementById('facility-ev').textContent = 
+            facility['Existing EV Chargers'] || 'N/A';
+    
+        document.getElementById('facility-planned-ev').textContent = 
+            facility['Number of Planned EV Chargers'] || 'N/A';
+    
+        document.getElementById('facility-pv').textContent = 
+            facility['Existing PV or Battery Storage Capabilities'] || 'N/A';
+    
+        document.getElementById('facility-planned-pv').textContent = 
+            facility['Planned PV (hours of autonomy)'] || 'N/A';
+    
+        document.getElementById('facility-planned-battery').textContent = 
+            facility['Planned Battery Storage (hours of autonomy)'] || 'N/A';
+    
+        document.getElementById('facility-type').textContent = 
+            facility['Building Type'] || 'N/A';
     }
 
     function toggleFilters(showAgencyFilters) {
