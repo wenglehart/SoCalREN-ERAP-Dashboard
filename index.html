@@ -774,6 +774,7 @@
         type: 'FeatureCollection',
         features: []
     };
+
     // Mapbox token
     mapboxgl.accessToken = 'pk.eyJ1Ijoid2VuZ2xlMSIsImEiOiJjbGh0bTJ0OTUzN2dzM21tbTB0NzFmM2QyIn0.-ItjIktoJtcQUsk6l9TbbQ';
 
@@ -1009,7 +1010,7 @@
                 }
             });
 
-            // Add unclustered points layer
+            // Add unclustered point layer
             map.addLayer({
                 'id': 'unclustered-point',
                 'type': 'circle',
@@ -1023,339 +1024,252 @@
                 }
             });
 
-            // Add click event for clusters
-            map.on('click', 'clusters', (e) => {
-                const features = map.queryRenderedFeatures(e.point, {
-                    layers: ['clusters']
-                });
-                const clusterId = features[0].properties.cluster_id;
-                map.getSource('facilities').getClusterExpansionZoom(
-                    clusterId,
-                    (err, zoom) => {
-                        if (err) return;
-
-                        map.easeTo({
-                            center: features[0].geometry.coordinates,
-                            zoom: zoom
-                        });
-                    }
-                );
-            });
-
-            // Add click event for unclustered points
-            map.on('click', 'unclustered-point', (e) => {
-                const coordinates = e.features[0].geometry.coordinates.slice();
-                const { Agency, FacilityName, Address, ActualUse, ExistingEV, ExistingPV } = e.features[0].properties;
-
-                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-                }
-
-                new mapboxgl.Popup()
-                    .setLngLat(coordinates)
-                    .setHTML(
-                        `<strong>${FacilityName}</strong><br>${Address}<br>${ActualUse}<br>EV Chargers: ${ExistingEV}<br>PV: ${ExistingPV}`
-                    )
-                    .addTo(map);
-            });
-
-            // Change the cursor to a pointer when the mouse is over the clusters
-            map.on('mouseenter', 'clusters', () => {
-                map.getCanvas().style.cursor = 'pointer';
-            });
-            map.on('mouseleave', 'clusters', () => {
+            // Mouse leave event for facilities
+            map.on('mouseleave', 'unclustered-point', () => {
                 map.getCanvas().style.cursor = '';
             });
-        });
-    }
 
-    function closeWelcome() {
-        const welcomePopup = document.getElementById('welcome-popup');
-        welcomePopup.classList.add('fade-out');
-        setTimeout(() => {
-            welcomePopup.style.display = 'none';
-        }, 400);
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        loadAllData();
-    });
-</script>
-    
-        // Mouse leave event for facilities
-        map.on('mouseleave', 'unclustered-point', () => {
-            map.getCanvas().style.cursor = '';
-        });
-                // Click event for boundaries
-                map.on('click', 'la-fills', (e) => {
-            if (e.features.length > 0) {
-                const cityName = e.features[0].properties.CITY_COMM_NAME;
-                const matchingAgency = agencyData.find(a => 
-                    a.Agency.replace('City of ', '').trim().toUpperCase() === cityName.trim()
-                );
-                
-                if (matchingAgency) {
-                    onAgencyClick(matchingAgency);
-                    document.getElementById('dashboard-panel').scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'start' 
-                    });
+            // Click event for boundaries
+            map.on('click', 'la-fills', (e) => {
+                if (e.features.length > 0) {
+                    const cityName = e.features[0].properties.CITY_COMM_NAME;
+                    const matchingAgency = agencyData.find(a => a.Agency.replace('City of ', '').trim().toUpperCase() === cityName.trim());
+                    if (matchingAgency) {
+                        onAgencyClick(matchingAgency);
+                        document.getElementById('dashboard-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
                 }
-            }
-        });
-
-        // Click event for clusters
-        map.on('click', 'clusters', (e) => {
-            const features = map.queryRenderedFeatures(e.point, {
-                layers: ['clusters']
             });
-            const clusterId = features[0].properties.cluster_id;
-            map.getSource('facilities').getClusterExpansionZoom(
-                clusterId,
-                (err, zoom) => {
+
+            // Click event for clusters
+            map.on('click', 'clusters', (e) => {
+                const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+                const clusterId = features[0].properties.cluster_id;
+                map.getSource('facilities').getClusterExpansionZoom(clusterId, (err, zoom) => {
                     if (err) return;
                     map.easeTo({
                         center: features[0].geometry.coordinates,
                         zoom: zoom
                     });
-                }
-            );
-        });
-
-        // Click event for unclustered points
-        map.on('click', 'unclustered-point', (e) => {
-            const props = e.features[0].properties;
-            const matchingAgency = agencyData.find(a => a.Agency === props.Agency);
-            if (matchingAgency) {
-                onAgencyClick(matchingAgency);
-                const matchingFacility = facilityData.find(f => 
-                    f.Agency === props.Agency && 
-                    f.FacilityName === props.FacilityName
-                );
-                
-                if (matchingFacility) {
-                    updateFacilityDashboard(matchingFacility);
-                    const facilityLinks = document.querySelectorAll('.facility-title');
-                    facilityLinks.forEach(link => {
-                        if (link.textContent === props.FacilityName) {
-                            link.classList.add('active');
-                            link.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        } else {
-                            link.classList.remove('active');
-                        }
-                    });
-                }
-                
-                document.getElementById('dashboard-panel').scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start' 
                 });
+            });
+
+            // Click event for unclustered points
+            map.on('click', 'unclustered-point', (e) => {
+                const props = e.features[0].properties;
+                const matchingAgency = agencyData.find(a => a.Agency === props.Agency);
+                if (matchingAgency) {
+                    onAgencyClick(matchingAgency);
+                    const matchingFacility = facilityData.find(f => f.Agency === props.Agency && f.FacilityName === props.FacilityName);
+                    if (matchingFacility) {
+                        updateFacilityDashboard(matchingFacility);
+                        const facilityLinks = document.querySelectorAll('.facility-title');
+                        facilityLinks.forEach(link => {
+                            if (link.textContent === props.FacilityName) {
+                                link.classList.add('active');
+                                link.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            } else {
+                                link.classList.remove('active');
+                            }
+                        });
+                    }
+                    document.getElementById('dashboard-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+
+            // Initialize filters
+            initializeFilters();
+
+            // Show intro section
+            document.getElementById('intro-section').style.display = 'block';
+        });
+
+        // Add navigation controls
+        map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+        return map;
+    }
+
+    // Initialize filters function
+    function initializeFilters() {
+        // Agency filter input
+        const agencyFilter = document.getElementById('agency-filter');
+        const suggestionsList = document.getElementById('agency-suggestions');
+        agencyFilter.addEventListener('input', (e) => {
+            const searchText = e.target.value.toLowerCase();
+            if (searchText.length < 2) {
+                suggestionsList.style.display = 'none';
+                return;
+            }
+            const suggestions = agencyData
+                .filter(agency => agency.Agency.toLowerCase().includes(searchText))
+                .map(agency => agency.Agency);
+            if (suggestions.length > 0) {
+                suggestionsList.innerHTML = suggestions
+                    .map(agency => `<li>${agency}</li>`)
+                    .join('');
+                suggestionsList.style.display = 'block';
+            } else {
+                suggestionsList.style.display = 'none';
+            }
+        });
+        suggestionsList.addEventListener('click', (e) => {
+            if (e.target.tagName === 'LI') {
+                agencyFilter.value = e.target.textContent;
+                suggestionsList.style.display = 'none';
+                const selectedAgency = agencyData.find(a => a.Agency === e.target.textContent);
+                if (selectedAgency) {
+                    onAgencyClick(selectedAgency);
+                }
             }
         });
 
-        // Initialize filters
-        initializeFilters();
-        
-        // Show intro section
-        document.getElementById('intro-section').style.display = 'block';
-    });
+        // DAC filter
+        document.getElementById('dac-filter').addEventListener('change', updateFilters);
 
-    // Add navigation controls
-    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-    
-    return map;
-}
-// Initialize filters function
-function initializeFilters() {
-    // Agency filter input
-    const agencyFilter = document.getElementById('agency-filter');
-    const suggestionsList = document.getElementById('agency-suggestions');
+        // CES90 filter
+        document.getElementById('ces90-filter').addEventListener('change', updateFilters);
 
-    agencyFilter.addEventListener('input', (e) => {
-        const searchText = e.target.value.toLowerCase();
-        if (searchText.length < 2) {
-            suggestionsList.style.display = 'none';
-            return;
-        }
+        // COG filter
+        document.getElementById('cog-select').addEventListener('change', updateFilters);
 
-        const suggestions = agencyData
-            .filter(agency => agency.Agency.toLowerCase().includes(searchText))
-            .map(agency => agency.Agency);
+        // Population threshold
+        const populationThreshold = document.getElementById('population-threshold');
+        const populationValue = document.getElementById('population-threshold-value');
+        populationThreshold.addEventListener('input', (e) => {
+            const value = e.target.value;
+            populationValue.textContent = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            updateFilters();
+        });
 
-        if (suggestions.length > 0) {
-            suggestionsList.innerHTML = suggestions
-                .map(agency => `<li>${agency}</li>`)
-                .join('');
-            suggestionsList.style.display = 'block';
-        } else {
-            suggestionsList.style.display = 'none';
-        }
-    });
+        // Facility filters
+        document.getElementById('pv-filter').addEventListener('change', updateFilters);
+        document.getElementById('ev-filter').addEventListener('change', updateFilters);
+        document.getElementById('cooling-filter').addEventListener('change', updateFilters);
+    }
 
-    suggestionsList.addEventListener('click', (e) => {
-        if (e.target.tagName === 'LI') {
-            agencyFilter.value = e.target.textContent;
-            suggestionsList.style.display = 'none';
-            const selectedAgency = agencyData.find(a => a.Agency === e.target.textContent);
-            if (selectedAgency) {
-                onAgencyClick(selectedAgency);
-            }
-        }
-    });
+    // Update filters function
+    function updateFilters() {
+        const dacFilter = document.getElementById('dac-filter').checked;
+        const ces90Filter = document.getElementById('ces90-filter').checked;
+        const cogSelect = document.getElementById('cog-select').value;
+        const populationThreshold = parseInt(document.getElementById('population-threshold').value);
+        const pvFilter = document.getElementById('pv-filter').checked;
+        const evFilter = document.getElementById('ev-filter').checked;
+        const coolingFilter = document.getElementById('cooling-filter').checked;
 
-    // DAC filter
-    document.getElementById('dac-filter').addEventListener('change', updateFilters);
-    
-    // CES90 filter
-    document.getElementById('ces90-filter').addEventListener('change', updateFilters);
-    
-    // COG filter
-    document.getElementById('cog-select').addEventListener('change', updateFilters);
-    
-    // Population threshold
-    const populationThreshold = document.getElementById('population-threshold');
-    const populationValue = document.getElementById('population-threshold-value');
-    
-    populationThreshold.addEventListener('input', (e) => {
-        const value = e.target.value;
-        populationValue.textContent = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        updateFilters();
-    });
-
-    // Facility filters
-    document.getElementById('pv-filter').addEventListener('change', updateFilters);
-    document.getElementById('ev-filter').addEventListener('change', updateFilters);
-    document.getElementById('cooling-filter').addEventListener('change', updateFilters);
-}
-
-// Update filters function
-function updateFilters() {
-    const dacFilter = document.getElementById('dac-filter').checked;
-    const ces90Filter = document.getElementById('ces90-filter').checked;
-    const cogSelect = document.getElementById('cog-select').value;
-    const populationThreshold = parseInt(document.getElementById('population-threshold').value);
-    const pvFilter = document.getElementById('pv-filter').checked;
-    const evFilter = document.getElementById('ev-filter').checked;
-    const coolingFilter = document.getElementById('cooling-filter').checked;
-
-    // Filter agencies
-    let filteredAgencies = agencyData.filter(agency => {
-        if (dacFilter && !agency.DAC) return false;
-        if (ces90Filter && agency.CalEnviroScreen <= 90) return false;
-        if (cogSelect && agency.COG !== cogSelect) return false;
-        if (agency.Population < populationThreshold) return false;
-        return true;
-    });
-
-    // Update the listing
-    updateListing(filteredAgencies);
-
-    // Filter facilities if facility filters are active
-    if (pvFilter || evFilter || coolingFilter) {
-        const filteredFacilities = facilityData.filter(facility => {
-            if (pvFilter && !facility.ExistingPV) return false;
-            if (evFilter && !facility.ExistingEV) return false;
-            if (coolingFilter && !facility.CoolingCenter) return false;
+        // Filter agencies
+        let filteredAgencies = agencyData.filter(agency => {
+            if (dacFilter && !agency.DAC) return false;
+            if (ces90Filter && agency.CalEnviroScreen <= 90) return false;
+            if (cogSelect && agency.COG !== cogSelect) return false;
+            if (agency.Population < populationThreshold) return false;
             return true;
         });
 
-        // Update facility GeoJSON
-        const newGeoJSON = {
-            type: 'FeatureCollection',
-            features: filteredFacilities.map(f => ({
-                type: 'Feature',
-                geometry: {
-                    type: 'Point',
-                    coordinates: [f.Longitude, f.Latitude]
-                },
-                properties: {
-                    Agency: f.Agency,
-                    FacilityName: f.FacilityName,
-                    Address: f.Address,
-                    ActualUse: f.ActualUse,
-                    ExistingEV: f.ExistingEV,
-                    ExistingPV: f.ExistingPV
-                }
-            }))
-        };
+        // Update the listing
+        updateListing(filteredAgencies);
 
-        // Update the map source
-        if (map.getSource('facilities')) {
-            map.getSource('facilities').setData(newGeoJSON);
+        // Filter facilities if facility filters are active
+        if (pvFilter || evFilter || coolingFilter) {
+            const filteredFacilities = facilityData.filter(facility => {
+                if (pvFilter && !facility.ExistingPV) return false;
+                if (evFilter && !facility.ExistingEV) return false;
+                if (coolingFilter && !facility.CoolingCenter) return false;
+                return true;
+            });
+
+            // Update facility GeoJSON
+            const newGeoJSON = {
+                type: 'FeatureCollection',
+                features: filteredFacilities.map(f => ({
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [f.Longitude, f.Latitude]
+                    },
+                    properties: {
+                        Agency: f.Agency,
+                        FacilityName: f.FacilityName,
+                        Address: f.Address,
+                        ActualUse: f.ActualUse,
+                        ExistingEV: f.ExistingEV,
+                        ExistingPV: f.ExistingPV
+                    }
+                }))
+            };
+
+            // Update the map source
+            if (map.getSource('facilities')) {
+                map.getSource('facilities').setData(newGeoJSON);
+            }
         }
     }
-}
-// Update listing function
-function updateListing(agencies) {
-    const listing = document.getElementById('listing');
-    if (!listing) return;
 
-    // Clear existing content
-    listing.innerHTML = '';
+    // Update listing function
+    function updateListing(agencies) {
+        const listing = document.getElementById('listing');
+        if (!listing) return;
 
-    // Group agencies by COG
-    const cogGroups = {};
-    agencies.forEach(agency => {
-        const cog = agency.COG || 'Other';
-        if (!cogGroups[cog]) {
-            cogGroups[cog] = [];
-        }
-        cogGroups[cog].push(agency);
-    });
+        // Clear existing content
+        listing.innerHTML = '';
 
-    // Create sections for each COG
-    Object.keys(cogGroups).sort().forEach(cog => {
-        if (cog === 'null' || cog === 'undefined') return;
-
-        const cogSection = document.createElement('div');
-        cogSection.className = 'cog-section';
-
-        const cogHeader = document.createElement('div');
-        cogHeader.className = 'cog-header';
-        cogHeader.textContent = cog;
-        cogHeader.addEventListener('click', () => {
-            cogHeader.classList.toggle('expanded');
-            agencyList.style.display = agencyList.style.display === 'none' ? 'block' : 'none';
+        // Group agencies by COG
+        const cogGroups = {};
+        agencies.forEach(agency => {
+            const cog = agency.COG || 'Other';
+            if (!cogGroups[cog]) {
+                cogGroups[cog] = [];
+            }
+            cogGroups[cog].push(agency);
         });
 
-        const agencyList = document.createElement('div');
-        agencyList.className = 'agency-list';
-        agencyList.style.display = 'none';
+        // Create sections for each COG
+        Object.keys(cogGroups).sort().forEach(cog => {
+            if (cog === 'null' || cog === 'undefined') return;
+            const cogSection = document.createElement('div');
+            cogSection.className = 'cog-section';
+            const cogHeader = document.createElement('div');
+            cogHeader.className = 'cog-header';
+            cogHeader.textContent = cog;
+            cogHeader.addEventListener('click', () => {
+                cogHeader.classList.toggle('expanded');
+                agencyList.style.display = agencyList.style.display === 'none' ? 'block' : 'none';
+            });
+            const agencyList = document.createElement('div');
+            agencyList.className = 'agency-list';
+            agencyList.style.display = 'none';
 
-        // Sort agencies alphabetically
-        cogGroups[cog].sort((a, b) => a.Agency.localeCompare(b.Agency));
+            // Sort agencies alphabetically
+            cogGroups[cog].sort((a, b) => a.Agency.localeCompare(b.Agency));
+            cogGroups[cog].forEach(agency => {
+                const agencyDiv = document.createElement('div');
+                agencyDiv.className = 'agency-title';
+                agencyDiv.textContent = agency.Agency;
+                agencyDiv.addEventListener('click', () => onAgencyClick(agency));
+                agencyList.appendChild(agencyDiv);
+            });
 
-        cogGroups[cog].forEach(agency => {
-            const agencyDiv = document.createElement('div');
-            agencyDiv.className = 'agency-title';
-            agencyDiv.textContent = agency.Agency;
-            agencyDiv.addEventListener('click', () => onAgencyClick(agency));
-            agencyList.appendChild(agencyDiv);
+            cogSection.appendChild(cogHeader);
+            cogSection.appendChild(agencyList);
+            listing.appendChild(cogSection);
         });
 
-        cogSection.appendChild(cogHeader);
-        cogSection.appendChild(agencyList);
-        listing.appendChild(cogSection);
-    });
+        // Update the data overview
+        updateDataOverview(agencies);
+    }
 
-    // Update the data overview
-    updateDataOverview(agencies);
-}
+    // Agency click handler
+    function onAgencyClick(agency) {
+        // Update agency data display
+        document.getElementById('agency-dac').textContent = agency.DAC ? 'Yes' : 'No';
+        document.getElementById('agency-cal').textContent = agency.CalEnviroScreen || 'N/A';
+        document.getElementById('agency-pop').textContent = agency.Population ? agency.Population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 'N/A';
 
-// Agency click handler
-function onAgencyClick(agency) {
-    // Update agency data display
-    document.getElementById('agency-dac').textContent = agency.DAC ? 'Yes' : 'No';
-    document.getElementById('agency-cal').textContent = agency.CalEnviroScreen || 'N/A';
-    document.getElementById('agency-pop').textContent = agency.Population ? 
-        agency.Population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 
-        'N/A';
+        // Show agency data section
+        document.getElementById('agency-data').style.display = 'block';
 
-    // Show agency data section
-    document.getElementById('agency-data').style.display = 'block';
-    
-    // Update title
-    document.getElementById('data-overview-title').textContent = agency.Agency;
+        // Update title
+        document.getElementBy
 
     // Show back button
     const backButton = document.getElementById('back-button');
