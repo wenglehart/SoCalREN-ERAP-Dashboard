@@ -176,16 +176,16 @@
             z-index: 2;
             margin-top: 10px;
             display: block;
-            max-height: calc(100vh - 400px);
-            overflow-y: auto;
+            max-height: none;
+            overflow-y: visible;
         }
 
         #listing {
             position: relative;
             height: auto;
             min-height: 200px;
-            max-height: calc(100vh - 300px);
-            overflow-y: auto;
+            max-height: none;
+            overflow-y: visible;
             padding: 10px;
             margin-top: 10px;
         }
@@ -220,61 +220,68 @@
             background-color: #ffffff;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
+            padding: 30px;
             font-size: 14px;
-            margin-top: 10px;
+            margin-top: 20px;
+            height: auto;
+            overflow-y: visible;
         }
+
+        .dashboard::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .dashboard::-webkit-scrollbar-track {
+            background: #f5f6fa;
+            border-radius: 4px;
+        }
+
+        .dashboard::-webkit-scrollbar-thumb {
+            background: #bdc3c7;
+            border-radius: 4px;
+        }
+
         .dashboard h3 {
             font-family: 'Montserrat', sans-serif;
-            font-size: 18px;
+            font-size: 20px;
             margin-top: 0;
-            padding-bottom: 10px;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
             border-bottom: 2px solid #ecf0f1;
             font-weight: bold;
             color: #2c3e50;
         }
+
         .dashboard h4 {
-            margin-bottom: 10px;
-            font-size: 15px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: #34495e;
         }
+
         .metric {
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             background-color: #f8f9fa;
-            padding: 10px;
+            padding: 15px;
             border-radius: 8px;
             box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .metric .metric-value {
-            font-weight: bold;
-            font-size: 16px;
+
+        #agency-data, #facility-data {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ecf0f1;
         }
-        #loading-spinner {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 24px;
-            color: #00796b;
-            display: none;
-            z-index: 999;
-        }
+
         #back-button {
-            background: #34495e;
-            color: #ecf0f1;
-            border: none;
-            padding: 5px 10px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            border-radius: 4px;
+            margin-bottom: 25px;
+            padding: 8px 16px;
             font-size: 14px;
-            display: none;
         }
-        #back-button:hover {
-            background: #3b5771;
-        }
+
         .cog-section {
             margin-bottom: 10px;
         }
@@ -309,6 +316,8 @@
             margin-top: 5px;
             margin-bottom: 15px;
             padding-left: 10px;
+            height: auto;
+            overflow-y: visible;
         }
         .agency-title {
             font-size: 14px;
@@ -632,6 +641,31 @@
             height: 100%;
         }
 
+        #back-button {
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            transition: background-color 0.2s ease;
+        }
+
+        #back-button:hover {
+            background-color: #34495e;
+        }
+
+        #back-button::before {
+            content: "←";
+            font-size: 16px;
+        }
+
     </style>
 </head>
 <body>
@@ -725,7 +759,7 @@
             </p>
         </div>
 
-        <div class="dashboard" id="dashboard">
+        <div class="dashboard" id="dashboard" style="display: none;">
             <button id="back-button">Back</button>
             <h3 id="data-overview-title">Data Overview</h3>
         
@@ -833,8 +867,7 @@
 <div id="welcome-popup">
     <div class="welcome-content">
         <h1>
-            <span class="title-line">Welcome to the</span>
-            <span class="title-line">Southern California Regional Energy Network (SoCalREN)'s</span>
+            <span class="title-line">Welcome to Southern California Regional Energy Network (SoCalREN)'s</span>
             <span class="title-line">Energy Resilience Action Plan (ERAP) Dashboard</span>
         </h1>
         <h2>Explore energy resilience planning efforts across Southern California</h2>
@@ -861,7 +894,8 @@
         container: 'map',
         style: 'mapbox://styles/wengle1/cm4m4sedc001v01sqdtx0cioz',
         center: [-118.2437, 34.0522],
-        zoom: 9,
+        zoom: 1,
+        pitch: 30,
         maxBounds: [[-119.5, 33.2], [-117.0, 34.8]]  // LA County bounds
     });
 
@@ -977,6 +1011,195 @@
         "features": facilityFeatures
     };
 
+    // Add the renderListing function before it's called
+    function renderListing() {
+        const listingElement = document.getElementById('listing');
+        const introSection = document.getElementById('intro-section');
+        const agencyFilters = document.getElementById('agency-filters');
+        const facilityFilters = document.getElementById('facility-filters');
+        if (!listingElement) return;
+
+        // Clear existing content
+        listingElement.innerHTML = '';
+        
+        // Show the intro section and agency filters, hide facility filters
+        introSection.style.display = 'block';
+        agencyFilters.style.display = 'block';
+        facilityFilters.style.display = 'none';
+        
+        // Group agencies by Council
+        const councilGroups = {
+            'Gateway Cities': [],
+            'San Gabriel Valley COG': [],
+            'South Bay Cities': []
+        };
+
+        // Sort agencies into their respective councils
+        agencyData.forEach(agency => {
+            if (councilGroups.hasOwnProperty(agency.Council)) {
+                councilGroups[agency.Council].push(agency);
+            }
+        });
+
+        // Create sections for each Council of Government
+        Object.entries(councilGroups).forEach(([council, agencies]) => {
+            if (agencies.length > 0) {
+                // Create council section
+                const cogSection = document.createElement('div');
+                cogSection.className = 'cog-section';
+
+                // Add council header
+                const cogHeader = document.createElement('div');
+                cogHeader.className = 'cog-header';
+                cogHeader.textContent = council;
+                cogHeader.addEventListener('click', () => {
+                    cogHeader.classList.toggle('expanded');
+                    agencyList.style.display = agencyList.style.display === 'none' ? 'block' : 'none';
+                });
+
+                // Create agency list container
+                const agencyList = document.createElement('div');
+                agencyList.className = 'agency-list';
+
+                // Sort agencies alphabetically
+                agencies.sort((a, b) => a.Agency.localeCompare(b.Agency));
+
+                // Add agencies to the list
+                agencies.forEach(agency => {
+                    const agencyDiv = document.createElement('div');
+                    agencyDiv.className = 'agency-title';
+                    agencyDiv.textContent = agency.Agency;
+                    
+                    // Add click event to show facilities
+                    agencyDiv.addEventListener('click', () => {
+                        const facilities = facilityData.filter(f => f.Agency === agency.Agency);
+                        showFacilities(agency, facilities);
+                    });
+
+                    agencyList.appendChild(agencyDiv);
+                });
+
+                cogSection.appendChild(cogHeader);
+                cogSection.appendChild(agencyList);
+                listingElement.appendChild(cogSection);
+            }
+        });
+
+        // Hide loading spinner
+        document.getElementById('loading-spinner').style.display = 'none';
+    }
+
+    function showFacilities(agency, facilities) {
+        const listingElement = document.getElementById('listing');
+        const dashboardElement = document.getElementById('dashboard');
+        const agencyDataElement = document.getElementById('agency-data');
+        const facilityDataElement = document.getElementById('facility-data');
+        const introSection = document.getElementById('intro-section');
+        const agencyFilters = document.getElementById('agency-filters');
+        const facilityFilters = document.getElementById('facility-filters');
+        
+        // Create and insert back button before the filters
+        listingElement.innerHTML = `
+            <button id="back-button">Back to Agencies</button>
+            <h4>Facilities in ${agency.Agency}</h4>
+            ${facilities.length > 0 
+                ? facilities.map(facility => `
+                    <div class="facility-title" onclick="showFacilityDetails('${facility.Agency}', '${facility.FacilityName}')">
+                        ${facility.FacilityName}
+                    </div>
+                `).join('')
+                : '<div id="no-facilities-msg">No facilities found for this agency.</div>'
+            }
+        `;
+
+        // Add back button functionality
+        document.getElementById('back-button').onclick = () => {
+            dashboardElement.style.display = 'none';
+            renderListing();
+        };
+        
+        // Hide the intro section and agency filters, show facility filters
+        introSection.style.display = 'none';
+        agencyFilters.style.display = 'none';
+        facilityFilters.style.display = 'block';
+        
+        // Show the dashboard and agency data, hide facility data initially
+        dashboardElement.style.display = 'block';
+        agencyDataElement.style.display = 'block';
+        facilityDataElement.style.display = 'none';
+        
+        // Update agency data in the dashboard
+        document.getElementById('agency-dac').textContent = agency.DAC || 'N/A';
+        document.getElementById('agency-cal').textContent = agency.CalEnviroscreen || 'N/A';
+        document.getElementById('agency-pollution').textContent = agency.PollutionBurden || 'N/A';
+        document.getElementById('agency-pop').textContent = agency.Population?.toLocaleString() || 'N/A';
+        document.getElementById('agency-children-seniors').textContent = agency.ChildrenSeniors || 'N/A';
+        document.getElementById('agency-area').textContent = agency.AgencyArea || 'N/A';
+        document.getElementById('agency-density').textContent = agency.PopulationDensity?.toLocaleString() || 'N/A';
+        document.getElementById('agency-heat-days').textContent = agency.ExtremeHeatDays || 'N/A';
+        document.getElementById('agency-income').textContent = `$${agency.AvgHouseholdIncome?.toLocaleString()}` || 'N/A';
+        document.getElementById('agency-low-income').textContent = `${agency.LowIncomeTracts}%` || 'N/A';
+        document.getElementById('agency-circuits').textContent = agency.ElectricCircuits || 'N/A';
+        document.getElementById('agency-kwh').textContent = agency.AnnualKWh?.toLocaleString() || 'N/A';
+        document.getElementById('agency-therms').textContent = agency.AnnualTherms?.toLocaleString() || 'N/A';
+
+        // Clear and update the listing with facilities
+        listingElement.innerHTML = `
+            <h4>Facilities in ${agency.Agency}</h4>
+            ${facilities.length > 0 
+                ? facilities.map(facility => `
+                    <div class="facility-title" onclick="showFacilityDetails('${facility.Agency}', '${facility.FacilityName}')">
+                        ${facility.FacilityName}
+                    </div>
+                `).join('')
+                : '<div id="no-facilities-msg">No facilities found for this agency.</div>'
+            }
+        `;
+
+        // Add back button
+        const backButton = document.getElementById('back-button');
+        backButton.style.display = 'block';
+        backButton.onclick = () => {
+            dashboardElement.style.display = 'none';
+            renderListing(); // Return to main agency listing
+        };
+    }
+
+    function showFacilityDetails(agencyName, facilityName) {
+        const facility = facilityData.find(f => 
+            f.Agency === agencyName && f.FacilityName === facilityName
+        );
+        
+        if (!facility) return;
+
+        // Show facility data section and update values
+        document.getElementById('facility-data').style.display = 'block';
+        document.getElementById('facility-year').textContent = facility.YearBuilt || 'N/A';
+        document.getElementById('facility-sqft').textContent = facility.GrossFloorArea || 'N/A';
+        document.getElementById('facility-walkability').textContent = facility.Walkability || 'N/A';
+        document.getElementById('facility-resilience').textContent = facility.ExistingResilienceDesignation || 'N/A';
+        document.getElementById('facility-ev').textContent = facility.ExistingEVChargers || 'N/A';
+        document.getElementById('facility-planned-ev').textContent = facility.PlannedEVChargers || 'N/A';
+        document.getElementById('facility-pv').textContent = facility.ExistingPV || 'N/A';
+        document.getElementById('facility-planned-pv').textContent = facility.PlannedPV || 'N/A';
+        document.getElementById('facility-planned-battery').textContent = facility.PlannedBattery || 'N/A';
+        document.getElementById('facility-type').textContent = facility.BuildingType || 'N/A';
+
+        // Highlight selected facility in the listing
+        const facilityElements = document.querySelectorAll('.facility-title');
+        facilityElements.forEach(el => {
+            el.classList.toggle('active', el.textContent.trim() === facilityName);
+        });
+
+        // Center map on facility
+        if (facility.Latitude && facility.Longitude) {
+            map.flyTo({
+                center: [facility.Longitude, facility.Latitude],
+                zoom: 15
+            });
+        }
+    }
+
     // Map 'load' event handler
     map.on('load', () => {
         console.log('Map loaded');
@@ -984,7 +1207,7 @@
         // Add boundaries source
         map.addSource('la-boundaries', {
             'type': 'geojson',
-            'data': 'https://raw.githubusercontent.com/wbeng69527/erap/main/la_boundaries.geojson'
+            'data': 'https://raw.githubusercontent.com/wbeng69527/erap/main/path_to_la_boundaries.geojson'
         });
 
         // Add boundaries layer
@@ -1191,11 +1414,12 @@
             }
         });
 
+        // Call renderListing after data sources and layers are added
         renderListing();
-        
+
         // Hide loading spinner
         document.getElementById('loading-spinner').style.display = 'none';
-    });  // Make sure this closing brace matches the 'map.on('load', ...)' function
+    });
 
     // Function to geocode a single address
     async function geocodeAddress(address) {
