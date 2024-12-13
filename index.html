@@ -654,6 +654,7 @@
         <div class="style-selector">
             <label for="style-selector">Map Style</label>
             <select id="style-selector">
+                <option value="mapbox://styles/wengle1/cm4m4sedc001v01sqdtx0cioz">Custom Style</option>
                 <option value="mapbox://styles/mapbox/streets-v12">Streets</option>
                 <option value="mapbox://styles/mapbox/outdoors-v12">Outdoors</option>
                 <option value="mapbox://styles/mapbox/light-v10">Light</option>
@@ -779,7 +780,7 @@ let facilityGeoJSON = {
     features: []
 };
 // Mapbox token
-mapboxgl.accessToken = 'pk.eyJ1Ijoid2VuZ2xlMSIsImEiOiJjbHBtaWx0N2IwMGljMmxwNjBsMnU4a2E4In0.Dzf3G-WBKzDfgnXsGHiMXw';
+mapboxgl.accessToken = 'pk.eyJ1Ijoid2VuZ2xlMSIsImEiOiJjbGh0bTJ0OTUzN2dzM21tbTB0NzFmM2QyIn0.-ItjIktoJtcQUsk6l9TbbQ';
 
 // Function to load CSV data using Papa Parse
 async function loadCSVData(url) {
@@ -861,7 +862,7 @@ async function loadAllData() {
 function initializeMap(boundariesData) {
     const map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v12',
+        style: 'mapbox://styles/wengle1/cm4m4sedc001v01sqdtx0cioz', // Updated style URL
         center: [-118.2437, 34.0522],
         zoom: 10
     });
