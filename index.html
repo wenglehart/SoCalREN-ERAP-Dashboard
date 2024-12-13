@@ -832,556 +832,567 @@
 
     // Load data and initialize dropdowns
     async function loadAllData() {
-        try {
-            // Show loading spinner or message if you have one
-            if (document.getElementById('loading-spinner')) {
-                document.getElementById('loading-spinner').style.display = 'block';
+    try {
+        // Complete hardcoded agency data
+        agencyData = [
+            {
+                Agency: "City of Bell",
+                COG: "Gateway Cities",
+                DAC: true,
+                CalEnviroScreen: 96,
+                Population: 31864,
+                ChildrenPercent: 36,
+                ExtremeHeat: 2.5,
+                AverageHVI: 13400,
+                LowIncome: 91,
+                ElectricityBurden: 47800,
+                PopulationDAC: 100,
+                NumberEVChargers: 14,
+                AnnualConsumption: 2200000,
+                AnnualCost: 91100
+            },
+            {
+                Agency: "City of Bell Gardens",
+                COG: "Gateway Cities",
+                DAC: true,
+                CalEnviroScreen: 90,
+                Population: 27127,
+                ChildrenPercent: 38,
+                ExtremeHeat: 1.18,
+                AverageHVI: 23257,
+                LowIncome: 77,
+                ElectricityBurden: 50996,
+                PopulationDAC: 100,
+                NumberEVChargers: 6,
+                AnnualConsumption: 939153,
+                AnnualCost: 1232
+            },
+            {
+                Agency: "City of Bell Gardens",
+                COG: "Gateway Cities",
+                DAC: true,
+                CalEnviroScreen: 92,
+                Population: 37467,
+                ChildrenPercent: 30,
+                ExtremeHeat: 2.5,
+                AverageHVI: 17100,
+                LowIncome: 90,
+                ElectricityBurden: 45300,
+                PopulationDAC: 100,
+                NumberEVChargers: 9,
+                AnnualConsumption: 1597960,
+                AnnualCost: 25833
+            },
+            {
+                Agency: "City of Pomona",
+                COG: "San Gabriel Valley",
+                DAC: true,
+                CalEnviroScreen: 97,
+                Population: 151100,
+                ChildrenPercent: 37,
+                ExtremeHeat: 22.99,
+                AverageHVI: 6572,
+                LowIncome: 118,
+                ElectricityBurden: 62400,
+                PopulationDAC: 82,
+                NumberEVChargers: 56,
+                AnnualConsumption: 20971427,
+                AnnualCost: 23848
+            },
+            {
+                Agency: "City of Irwindale",
+                COG: "San Gabriel Valley",
+                DAC: true,
+                CalEnviroScreen: 83,
+                Population: 1400,
+                ChildrenPercent: null,
+                ExtremeHeat: 9.5,
+                AverageHVI: 142,
+                LowIncome: 146,
+                ElectricityBurden: 86250,
+                PopulationDAC: 100,
+                NumberEVChargers: 30,
+                AnnualConsumption: 2452708,
+                AnnualCost: 11686
+            },
+            {
+                Agency: "El Monte",
+                COG: "San Gabriel Valley",
+                DAC: true,
+                CalEnviroScreen: 80,
+                Population: 163151,
+                ChildrenPercent: null,
+                ExtremeHeat: 22.38,
+                AverageHVI: 7290,
+                LowIncome: 129,
+                ElectricityBurden: 62000,
+                PopulationDAC: null,
+                NumberEVChargers: 79,
+                AnnualConsumption: null,
+                AnnualCost: null
+            },
+            {
+                Agency: "City of Cudahy",
+                COG: "Gateway Cities",
+                DAC: true,
+                CalEnviroScreen: 95,
+                Population: 21700,
+                ChildrenPercent: 36,
+                ExtremeHeat: 1.23,
+                AverageHVI: 17642,
+                LowIncome: 85,
+                ElectricityBurden: 49600,
+                PopulationDAC: 100,
+                NumberEVChargers: 20,
+                AnnualConsumption: null,
+                AnnualCost: null
+            },
+            {
+                Agency: "City of South El Monte",
+                COG: "San Gabriel Valley",
+                DAC: true,
+                CalEnviroScreen: 97,
+                Population: 19000,
+                ChildrenPercent: 37,
+                ExtremeHeat: 2.84,
+                AverageHVI: 6690,
+                LowIncome: 124,
+                ElectricityBurden: 67700,
+                PopulationDAC: 80,
+                NumberEVChargers: 12,
+                AnnualConsumption: 593500,
+                AnnualCost: 39700
+            },
+            {
+                Agency: "City of Lynwood",
+                COG: "Gateway Cities",
+                DAC: true,
+                CalEnviroScreen: 91,
+                Population: 63200,
+                ChildrenPercent: 35,
+                ExtremeHeat: 4.84,
+                AverageHVI: 13058,
+                LowIncome: 33,
+                ElectricityBurden: 67400,
+                PopulationDAC: 66,
+                NumberEVChargers: 22,
+                AnnualConsumption: 1340300,
+                AnnualCost: 30100
+            },
+            {
+                Agency: "City of Duarte",
+                COG: "San Gabriel Valley",
+                DAC: true,
+                CalEnviroScreen: 78,
+                Population: 23100,
+                ChildrenPercent: 38,
+                ExtremeHeat: 6.71,
+                AverageHVI: 3443,
+                LowIncome: 132,
+                ElectricityBurden: 39300,
+                PopulationDAC: 20,
+                NumberEVChargers: 10,
+                AnnualConsumption: 417700,
+                AnnualCost: null
+            },
+            {
+                Agency: "City of Rancho Palos Verdes",
+                COG: "South Bay Cities",
+                DAC: false,
+                CalEnviroScreen: 11,
+                Population: 41600,
+                ChildrenPercent: null,
+                ExtremeHeat: 13.5,
+                AverageHVI: 3081,
+                LowIncome: 11,
+                ElectricityBurden: 146200,
+                PopulationDAC: 0,
+                NumberEVChargers: 25,
+                AnnualConsumption: 359100,
+                AnnualCost: 900
+            },
+            {
+                Agency: "City of El Segundo",
+                COG: "South Bay Cities",
+                DAC: false,
+                CalEnviroScreen: 26,
+                Population: 16500,
+                ChildrenPercent: null,
+                ExtremeHeat: 5.5,
+                AverageHVI: 3000,
+                LowIncome: 7,
+                ElectricityBurden: 115900,
+                PopulationDAC: 0,
+                NumberEVChargers: 20,
+                AnnualConsumption: 94470,
+                AnnualCost: 40800
             }
+        ];
 
-            // Load agencies and facilities data
-            const [agencies, facilities] = await Promise.all([
-                loadCSVData('./data/agencies_df.csv'),
-                loadCSVData('./data/facilities_df.csv')
-            ]);
-
-            // Load GeoJSON data
-            const boundariesResponse = await fetch('./data/la_boundaries.geojson');
-            const boundariesData = await boundariesResponse.json();
-
-            // Store the data globally
-            agencyData = agencies;
-            facilityData = facilities;
-
-            // Convert facilities data to GeoJSON
-            facilityGeoJSON = {
-                type: 'FeatureCollection',
-                features: facilities.map(facility => ({
-                    type: 'Feature',
-                    geometry: {
-                        type: 'Point',
-                        coordinates: [facility.Longitude, facility.Latitude]
-                    },
-                    properties: {
-                        Agency: facility.Agency,
-                        FacilityName: facility.FacilityName,
-                        Address: facility.Address,
-                        ActualUse: facility.ActualUse,
-                        ExistingEV: facility.ExistingEV,
-                        ExistingPV: facility.ExistingPV
-                    }
-                }))
-            };
-
-            // Initialize the map with the loaded data
-            initializeMap(boundariesData);
-
-            // Create COG dropdowns
-            createCOGDropdowns(agencies);
-
-            // Hide loading spinner
-            if (document.getElementById('loading-spinner')) {
-                document.getElementById('loading-spinner').style.display = 'none';
+        // Complete hardcoded facility data
+        facilityData = [
+            {
+                Agency: "City of Bell",
+                FacilityName: "Bell Library",
+                Address: "4411 Gage Ave",
+                Latitude: 33.9765,
+                Longitude: -118.1856,
+                YearBuilt: 1965,
+                GrossFloorArea: 5622,
+                Walkability: "High",
+                CoolingCenter: null,
+                ExistingEV: false,
+                ExistingPV: false,
+                PlannedPV: 3912,
+                PlannedBattery: 25,
+                BuildingType: "Library"
+            },
+            {
+                Agency: "City of Bell",
+                FacilityName: "Community Center",
+                Address: "6250 Pine Ave",
+                Latitude: 33.9760,
+                Longitude: -118.1820,
+                YearBuilt: 1980,
+                GrossFloorArea: 16011,
+                Walkability: "High",
+                CoolingCenter: "No",
+                ExistingEV: false,
+                ExistingPV: true,
+                PlannedPV: 1899,
+                PlannedBattery: 1748,
+                BuildingType: "Community Center"
+            },
+            {
+                Agency: "City of Bell",
+                FacilityName: "Camp Little Bear",
+                Address: "6704 Orchard",
+                Latitude: 33.9770,
+                Longitude: -118.1890,
+                YearBuilt: 1962,
+                GrossFloorArea: 5783,
+                Walkability: "Medium",
+                CoolingCenter: null,
+                ExistingEV: false,
+                ExistingPV: false,
+                PlannedPV: 664,
+                PlannedBattery: 81,
+                BuildingType: "Park"
+            },
+            {
+                Agency: "City of Bell",
+                FacilityName: "Veterans Memorial Park",
+                Address: "6500 Wilcox Ave",
+                Latitude: 33.9765,
+                Longitude: -118.1875,
+                YearBuilt: 1955,
+                GrossFloorArea: 7500,
+                Walkability: "Medium",
+                CoolingCenter: "No",
+                ExistingEV: false,
+                ExistingPV: false,
+                PlannedPV: 3397,
+                PlannedBattery: 381,
+                BuildingType: "Park"
+            },
+            {
+                Agency: "City of Maywood",
+                FacilityName: "City Hall",
+                Address: "4319 Slauson Ave",
+                Latitude: 33.9880,
+                Longitude: -118.1850,
+                YearBuilt: 1938,
+                GrossFloorArea: 9534,
+                Walkability: "High",
+                CoolingCenter: "No",
+                ExistingEV: true,
+                ExistingPV: false,
+                PlannedPV: 2646,
+                PlannedBattery: 0,
+                BuildingType: "Office"
+            },
+            {
+                Agency: "City of Maywood",
+                FacilityName: "Teen Center",
+                Address: "4801 E. 58th St",
+                Latitude: 33.9885,
+                Longitude: -118.1700,
+                YearBuilt: null,
+                GrossFloorArea: null,
+                Walkability: "Medium",
+                CoolingCenter: "No",
+                ExistingEV: false,
+                ExistingPV: false,
+                PlannedPV: null,
+                PlannedBattery: null,
+                BuildingType: "Community Center"
+            },
+            {
+                Agency: "City of Maywood",
+                FacilityName: "Maywood Activity Center",
+                Address: "4801 E. 58th St",
+                Latitude: 33.9890,
+                Longitude: -118.1705,
+                YearBuilt: 1999,
+                GrossFloorArea: 30819,
+                Walkability: null,
+                CoolingCenter: null,
+                ExistingEV: false,
+                ExistingPV: false,
+                PlannedPV: 1140,
+                PlannedBattery: 5,
+                BuildingType: "Community Center"
+            },
+            {
+                Agency: "City of Maywood",
+                FacilityName: "Cesar Chavez Park",
+                Address: "4323 Slauson Ave",
+                Latitude: 33.9880,
+                Longitude: -118.1845,
+                YearBuilt: 1938,
+                GrossFloorArea: 3382,
+                Walkability: "High",
+                CoolingCenter: null,
+                ExistingEV: false,
+                ExistingPV: false,
+                PlannedPV: 2311,
+                PlannedBattery: 5,
+                BuildingType: "Library"
+            },
+            {
+                Agency: "City of Bell",
+                FacilityName: "Ford Park",
+                Address: "8000 Park Ave",
+                Latitude: 33.9550,
+                Longitude: -118.1510,
+                YearBuilt: 1976,
+                GrossFloorArea: 9083,
+                Walkability: "High",
+                CoolingCenter: null,
+                ExistingEV: true,
+                ExistingPV: false,
+                PlannedPV: 3563,
+                PlannedBattery: 13,
+                BuildingType: "Community Center"
+            },
+            {
+                Agency: "City of Bell",
+                FacilityName: "Community Center",
+                Address: "5662 Loveland St",
+                Latitude: 33.9660,
+                Longitude: -118.1530,
+                YearBuilt: 1976,
+                GrossFloorArea: 20000,
+                Walkability: "Low",
+                CoolingCenter: null,
+                ExistingEV: false,
+                ExistingPV: false,
+                PlannedPV: 3330,
+                PlannedBattery: 71,
+                BuildingType: "Community Center"
+            },
+            {
+                Agency: "City of Bell",
+                FacilityName: "Youth Center",
+                Address: "5856 Ludell St",
+                Latitude: 33.9680,
+                Longitude: -118.1500,
+                YearBuilt: 1948,
+                GrossFloorArea: 11446,
+                Walkability: "Medium",
+                CoolingCenter: null,
+                ExistingEV: false,
+                ExistingPV: false,
+                PlannedPV: 3406,
+                PlannedBattery: 11,
+                BuildingType: "Community Center"
+            },
+            {
+                Agency: "City of Bell",
+                FacilityName: "Civic Center",
+                Address: "7100 Garfield Ave",
+                Latitude: 33.9655,
+                Longitude: -118.1515,
+                YearBuilt: 1967,
+                GrossFloorArea: 18500,
+                Walkability: "Medium",
+                CoolingCenter: null,
+                ExistingEV: false,
+                ExistingPV: false,
+                PlannedPV: 5,
+                PlannedBattery: 0,
+                BuildingType: "City Hall"
+            },
+            {
+                Agency: "City of Bell",
+                FacilityName: "City Library",
+                Address: "625 S Garfield Ave",
+                Latitude: 34.0230,
+                Longitude: -117.7500,
+                YearBuilt: 1956,
+                GrossFloorArea: 25977,
+                Walkability: "High",
+                CoolingCenter: "Yes",
+                ExistingEV: false,
+                ExistingPV: false,
+                PlannedPV: 2057,
+                PlannedBattery: 0,
+                BuildingType: "Library"
+            },
+            {
+                Agency: "City of Pomona",
+                FacilityName: "City Hall",
+                Address: "505 S Garey Ave",
+                Latitude: 34.0525,
+                Longitude: -117.7505,
+                YearBuilt: 1969,
+                GrossFloorArea: 44996,
+                Walkability: "High",
+                CoolingCenter: null,
+                ExistingEV: false,
+                ExistingPV: false,
+                PlannedPV: 2482,
+                PlannedBattery: 14,
+                BuildingType: "Office"
+            },
+            {
+                Agency: "City of Pomona",
+                FacilityName: "Palomares Park",
+                Address: "499 E Arrow Hwy",
+                Latitude: 34.1000,
+                Longitude: -117.7400,
+                YearBuilt: 1983,
+                GrossFloorArea: 15704,
+                Walkability: "Low",
+                CoolingCenter: "Yes",
+                ExistingEV: true,
+                ExistingPV: false,
+                PlannedPV: 6470,
+                PlannedBattery: 48,
+                BuildingType: "Community Center"
+            },
+            {
+                Agency: "City of Pomona",
+                FacilityName: "Washington Park",
+                Address: "865 E Grand Ave",
+                Latitude: 34.0600,
+                Longitude: -117.7400,
+                YearBuilt: 1935,
+                GrossFloorArea: 2539,
+                Walkability: "Low",
+                CoolingCenter: "No",
+                ExistingEV: true,
+                ExistingPV: false,
+                PlannedPV: 4070,
+                PlannedBattery: 883,
+                BuildingType: "Senior Center"
+            },
+            {
+                Agency: "City of Irwindale",
+                FacilityName: "Dan Diaz Library",
+                Address: "16053 Calle del Norte",
+                Latitude: 34.1100,
+                Longitude: -117.9700,
+                YearBuilt: 1970,
+                GrossFloorArea: 22855,
+                Walkability: "Low",
+                CoolingCenter: null,
+                ExistingEV: false,
+                ExistingPV: false,
+                PlannedPV: 1068,
+                PlannedBattery: 1,
+                BuildingType: "Library"
+            },
+            {
+                Agency: "City of Irwindale",
+                FacilityName: "City Hall",
+                Address: "5050 N Irwindale Ave",
+                Latitude: 34.1105,
+                Longitude: -117.9350,
+                YearBuilt: 1957,
+                GrossFloorArea: 20600,
+                Walkability: "Low",
+                CoolingCenter: "Emergency",
+                ExistingEV: true,
+                ExistingPV: false,
+                PlannedPV: 4,
+                PlannedBattery: 0,
+                BuildingType: "Office"
+            },
+            {
+                Agency: "City of Irwindale",
+                FacilityName: "Senior Center",
+                Address: "16116 Arrow Hwy",
+                Latitude: 34.1100,
+                Longitude: -117.9705,
+                YearBuilt: 1985,
+                GrossFloorArea: 20678,
+                Walkability: "Low",
+                CoolingCenter: "No",
+                ExistingEV: true,
+                ExistingPV: false,
+                PlannedPV: 24,
+                PlannedBattery: 0,
+                BuildingType: "Multi-purpose"
+            },
+            {
+                Agency: "City of Irwindale",
+                FacilityName: "New Library",
+                Address: null,
+                Latitude: null,
+                Longitude: null,
+                YearBuilt: null,
+                GrossFloorArea: null,
+                Walkability: null,
+                CoolingCenter: null,
+                ExistingEV: null,
+                ExistingPV: null,
+                PlannedPV: null,
+                PlannedBattery: null,
+                BuildingType: "Library"
             }
+        ];
 
-        } catch (error) {
-            console.error('Error loading data:', error);
-            // Show error message to user
-            if (document.getElementById('loading-spinner')) {
-                document.getElementById('loading-spinner').innerHTML = 'Error loading data. Please refresh the page.';
-            }
-        }
-    }
-
-    // Initialize map function
-    function initializeMap(boundariesData) {
-        const map = new mapboxgl.Map({
-            container: 'map',
-            style: 'mapbox://styles/wengle1/cm4m4sedc001v01sqdtx0cioz', // Updated style URL
-            center: [-118.2437, 34.0522],
-            zoom: 10
-        });
-            // Add geocoder control
-            const geocoder = new MapboxGeocoder({
-            accessToken: mapboxgl.accessToken,
-            mapboxgl: mapboxgl,
-            marker: false,
-            placeholder: 'Search for a location',
-            bbox: [-118.9517, 33.7037, -117.6462, 34.8233], // Bounds for LA County
-            proximity: {
-                longitude: -118.2437,
-                latitude: 34.0522
-            }
-        });
-        document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
-
-        map.on('load', () => {
-            // Add boundaries source
-            map.addSource('la-boundaries', {
-                'type': 'geojson',
-                'data': boundariesData
-            });
-
-            // Add facilities source
-            map.addSource('facilities', {
-                'type': 'geojson',
-                'data': facilityGeoJSON,
-                'cluster': true,
-                'clusterMaxZoom': 14,
-                'clusterRadius': 50
-            });
-
-            // Add boundary layers
-            map.addLayer({
-                'id': 'la-fills',
-                'type': 'fill',
-                'source': 'la-boundaries',
-                'layout': {},
-                'paint': {
-                    'fill-color': '#3498db',
-                    'fill-opacity': 0.4
-                }
-            });
-
-            map.addLayer({
-                'id': 'la-borders',
-                'type': 'line',
-                'source': 'la-boundaries',
-                'layout': {},
-                'paint': {
-                    'line-color': '#2980b9',
-                    'line-width': 1
-                }
-            });
-
-            // Add hover layer for boundaries
-            map.addLayer({
-                'id': 'la-fills-hover',
-                'type': 'fill',
-                'source': 'la-boundaries',
-                'paint': {
-                    'fill-color': '#2ecc71',
-                    'fill-opacity': 0.7
+        // Convert facilities to GeoJSON
+        facilityGeoJSON = {
+            type: 'FeatureCollection',
+            features: facilityData.map(f => ({
+                type: 'Feature',
+                geometry: {
+                    type: 'Point',
+                    coordinates: [f.Longitude, f.Latitude]
                 },
-                'filter': ['==', ['get', 'CITY_COMM_NAME'], '']
-            });
-
-            // Add clusters layer
-            map.addLayer({
-                'id': 'clusters',
-                'type': 'circle',
-                'source': 'facilities',
-                'filter': ['has', 'point_count'],
-                'paint': {
-                    'circle-radius': [
-                        'step',
-                        ['get', 'point_count'],
-                        25,
-                        10,
-                        30,
-                        25,
-                        35
-                    ],
-                    'circle-color': [
-                        'step',
-                        ['get', 'point_count'],
-                        '#ff9800',
-                        10,
-                        '#f57c00',
-                        25,
-                        '#e65100'
-                    ],
-                    'circle-opacity': 0.9,
-                    'circle-stroke-width': 2,
-                    'circle-stroke-color': '#ffffff',
-                    'circle-stroke-opacity': 0.8
+                properties: {
+                    Agency: f.Agency,
+                    FacilityName: f.FacilityName,
+                    Address: f.Address,
+                    ActualUse: f.BuildingType,
+                    ExistingEV: f.ExistingEV,
+                    ExistingPV: f.ExistingPV,
+                    CoolingCenter: f.CoolingCenter
                 }
-            });
+            })).filter(f => f.geometry.coordinates[0] !== null && f.geometry.coordinates[1] !== null)
+        };
 
-            // Add cluster count layer
-            map.addLayer({
-                'id': 'cluster-count',
-                'type': 'symbol',
-                'source': 'facilities',
-                'filter': ['has', 'point_count'],
-                'layout': {
-                    'text-field': '{point_count_abbreviated}',
-                    'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-                    'text-size': 12
-                }
-            });
+        // Load boundaries data (keeping this the same as in your original code)
+        const boundariesResponse = await fetch('./data/la_boundaries.geojson');
+        const boundariesData = await boundariesResponse.json();
 
-            // Add unclustered point layer
-            map.addLayer({
-                'id': 'unclustered-point',
-                'type': 'circle',
-                'source': 'facilities',
-                'filter': ['!', ['has', 'point_count']],
-                'paint': {
-                    'circle-color': '#11b4da',
-                    'circle-radius': 8,
-                    'circle-stroke-width': 1,
-                    'circle-stroke-color': '#fff'
-                }
-            });
+        // Initialize map and other components
+        initializeMap(boundariesData);
+        createCOGDropdowns(agencyData);
+        updateListing(agencyData);
 
-            // Mouse leave event for facilities
-            map.on('mouseleave', 'unclustered-point', () => {
-                map.getCanvas().style.cursor = '';
-            });
+        if (document.getElementById('loading-spinner')) {
+            document.getElementById('loading-spinner').style.display = 'none';
+        }
 
-            // Click event for boundaries
-            map.on('click', 'la-fills', (e) => {
-                if (e.features.length > 0) {
-                    const cityName = e.features[0].properties.CITY_COMM_NAME;
-                    const matchingAgency = agencyData.find(a => a.Agency.replace('City of ', '').trim().toUpperCase() === cityName.trim());
-                    if (matchingAgency) {
-                        onAgencyClick(matchingAgency);
-                        document.getElementById('dashboard-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                }
-            });
-
-            // Click event for clusters
-            map.on('click', 'clusters', (e) => {
-                const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
-                const clusterId = features[0].properties.cluster_id;
-                map.getSource('facilities').getClusterExpansionZoom(clusterId, (err, zoom) => {
-                    if (err) return;
-                    map.easeTo({
-                        center: features[0].geometry.coordinates,
-                        zoom: zoom
-                    });
-                });
-            });
-
-            // Click event for unclustered points
-            map.on('click', 'unclustered-point', (e) => {
-                const props = e.features[0].properties;
-                const matchingAgency = agencyData.find(a => a.Agency === props.Agency);
-                if (matchingAgency) {
-                    onAgencyClick(matchingAgency);
-                    const matchingFacility = facilityData.find(f => f.Agency === props.Agency && f.FacilityName === props.FacilityName);
-                    if (matchingFacility) {
-                        updateFacilityDashboard(matchingFacility);
-                        const facilityLinks = document.querySelectorAll('.facility-title');
-                        facilityLinks.forEach(link => {
-                            if (link.textContent === props.FacilityName) {
-                                link.classList.add('active');
-                                link.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            } else {
-                                link.classList.remove('active');
-                            }
-                        });
-                    }
-                    document.getElementById('dashboard-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-
-            // Initialize filters
-            initializeFilters();
-
-            // Show intro section
-            document.getElementById('intro-section').style.display = 'block';
-        });
-
-        // Add navigation controls
-        map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-        return map;
-    }
-
-    // Initialize filters function
-    function initializeFilters() {
-        // Agency filter input
-        const agencyFilter = document.getElementById('agency-filter');
-        const suggestionsList = document.getElementById('agency-suggestions');
-        agencyFilter.addEventListener('input', (e) => {
-            const searchText = e.target.value.toLowerCase();
-            if (searchText.length < 2) {
-                suggestionsList.style.display = 'none';
-                return;
-            }
-            const suggestions = agencyData
-                .filter(agency => agency.Agency.toLowerCase().includes(searchText))
-                .map(agency => agency.Agency);
-            if (suggestions.length > 0) {
-                suggestionsList.innerHTML = suggestions
-                    .map(agency => `<li>${agency}</li>`)
-                    .join('');
-                suggestionsList.style.display = 'block';
-            } else {
-                suggestionsList.style.display = 'none';
-            }
-        });
-        suggestionsList.addEventListener('click', (e) => {
-            if (e.target.tagName === 'LI') {
-                agencyFilter.value = e.target.textContent;
-                suggestionsList.style.display = 'none';
-                const selectedAgency = agencyData.find(a => a.Agency === e.target.textContent);
-                if (selectedAgency) {
-                    onAgencyClick(selectedAgency);
-                }
-            }
-        });
-
-        // DAC filter
-        document.getElementById('dac-filter').addEventListener('change', updateFilters);
-
-        // CES90 filter
-        document.getElementById('ces90-filter').addEventListener('change', updateFilters);
-
-        // COG filter
-        document.getElementById('cog-select').addEventListener('change', updateFilters);
-
-        // Population threshold
-        const populationThreshold = document.getElementById('population-threshold');
-        const populationValue = document.getElementById('population-threshold-value');
-        populationThreshold.addEventListener('input', (e) => {
-            const value = e.target.value;
-            populationValue.textContent = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            updateFilters();
-        });
-
-        // Facility filters
-        document.getElementById('pv-filter').addEventListener('change', updateFilters);
-        document.getElementById('ev-filter').addEventListener('change', updateFilters);
-        document.getElementById('cooling-filter').addEventListener('change', updateFilters);
-    }
-
-    // Update filters function
-    function updateFilters() {
-        const dacFilter = document.getElementById('dac-filter').checked;
-        const ces90Filter = document.getElementById('ces90-filter').checked;
-        const cogSelect = document.getElementById('cog-select').value;
-        const populationThreshold = parseInt(document.getElementById('population-threshold').value);
-        const pvFilter = document.getElementById('pv-filter').checked;
-        const evFilter = document.getElementById('ev-filter').checked;
-        const coolingFilter = document.getElementById('cooling-filter').checked;
-
-        // Filter agencies
-        let filteredAgencies = agencyData.filter(agency => {
-            if (dacFilter && !agency.DAC) return false;
-            if (ces90Filter && agency.CalEnviroScreen <= 90) return false;
-            if (cogSelect && agency.COG !== cogSelect) return false;
-            if (agency.Population < populationThreshold) return false;
-            return true;
-        });
-
-        // Update the listing
-        updateListing(filteredAgencies);
-
-        // Filter facilities if facility filters are active
-        if (pvFilter || evFilter || coolingFilter) {
-            const filteredFacilities = facilityData.filter(facility => {
-                if (pvFilter && !facility.ExistingPV) return false;
-                if (evFilter && !facility.ExistingEV) return false;
-                if (coolingFilter && !facility.CoolingCenter) return false;
-                return true;
-            });
-
-            // Update facility GeoJSON
-            const newGeoJSON = {
-                type: 'FeatureCollection',
-                features: filteredFacilities.map(f => ({
-                    type: 'Feature',
-                    geometry: {
-                        type: 'Point',
-                        coordinates: [f.Longitude, f.Latitude]
-                    },
-                    properties: {
-                        Agency: f.Agency,
-                        FacilityName: f.FacilityName,
-                        Address: f.Address,
-                        ActualUse: f.ActualUse,
-                        ExistingEV: f.ExistingEV,
-                        ExistingPV: f.ExistingPV
-                    }
-                }))
-            };
-
-            // Update the map source
-            if (map.getSource('facilities')) {
-                map.getSource('facilities').setData(newGeoJSON);
-            }
+    } catch (error) {
+        console.error('Error loading data:', error);
+        if (document.getElementById('loading-spinner')) {
+            document.getElementById('loading-spinner').innerHTML = 'Error loading data. Please refresh the page.';
         }
     }
-
-    // Update listing function
-    function updateListing(agencies) {
-        const listing = document.getElementById('listing');
-        if (!listing) return;
-
-        // Clear existing content
-        listing.innerHTML = '';
-
-        // Group agencies by COG
-        const cogGroups = {};
-        agencies.forEach(agency => {
-            const cog = agency.COG || 'Other';
-            if (!cogGroups[cog]) {
-                cogGroups[cog] = [];
-            }
-            cogGroups[cog].push(agency);
-        });
-
-        // Create sections for each COG
-        Object.keys(cogGroups).sort().forEach(cog => {
-            if (cog === 'null' || cog === 'undefined') return;
-            const cogSection = document.createElement('div');
-            cogSection.className = 'cog-section';
-            const cogHeader = document.createElement('div');
-            cogHeader.className = 'cog-header';
-            cogHeader.textContent = cog;
-            cogHeader.addEventListener('click', () => {
-                cogHeader.classList.toggle('expanded');
-                agencyList.style.display = agencyList.style.display === 'none' ? 'block' : 'none';
-            });
-            const agencyList = document.createElement('div');
-            agencyList.className = 'agency-list';
-            agencyList.style.display = 'none';
-
-            // Sort agencies alphabetically
-            cogGroups[cog].sort((a, b) => a.Agency.localeCompare(b.Agency));
-            cogGroups[cog].forEach(agency => {
-                const agencyDiv = document.createElement('div');
-                agencyDiv.className = 'agency-title';
-                agencyDiv.textContent = agency.Agency;
-                agencyDiv.addEventListener('click', () => onAgencyClick(agency));
-                agencyList.appendChild(agencyDiv);
-            });
-
-            cogSection.appendChild(cogHeader);
-            cogSection.appendChild(agencyList);
-            listing.appendChild(cogSection);
-        });
-
-        // Update the data overview
-        updateDataOverview(agencies);
-    }
-
-    // Agency click handler
-    function onAgencyClick(agency) {
-        // Update agency data display
-        document.getElementById('agency-dac').textContent = agency.DAC ? 'Yes' : 'No';
-        document.getElementById('agency-cal').textContent = agency.CalEnviroScreen || 'N/A';
-        document.getElementById('agency-pop').textContent = agency.Population ? agency.Population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 'N/A';
-
-        // Show agency data section
-        document.getElementById('agency-data').style.display = 'block';
-
-        // Update title
-        document.getElementBy
-
-    // Show back button
-    const backButton = document.getElementById('back-button');
-    backButton.style.display = 'block';
-    backButton.onclick = () => {
-        document.getElementById('agency-data').style.display = 'none';
-        document.getElementById('data-overview-title').textContent = 'Data Overview';
-        backButton.style.display = 'none';
-        document.getElementById('facility-filters').style.display = 'none';
-        updateListing(agencyData);
-    };
-
-    // Filter and display facilities for this agency
-    const agencyFacilities = facilityData.filter(f => f.Agency === agency.Agency);
-    displayFacilities(agencyFacilities);
-
-    // Show facility filters
-    document.getElementById('facility-filters').style.display = 'block';
-
-    // Update charts
-    updateCharts(agency, agencyFacilities);
-
-    // Fly to agency on map
-    const agencyBoundary = map.querySourceFeatures('la-boundaries', {
-        filter: ['==', ['get', 'CITY_COMM_NAME'], 
-                agency.Agency.replace('City of ', '').trim().toUpperCase()]
-    })[0];
-
-    if (agencyBoundary) {
-        const bounds = new mapboxgl.LngLatBounds();
-        agencyBoundary.geometry.coordinates[0].forEach(coord => {
-            bounds.extend(coord);
-        });
-        map.fitBounds(bounds, {
-            padding: 50,
-            duration: 1000
-        });
-    }
-}
-// Display facilities function
-function displayFacilities(facilities) {
-    const listing = document.getElementById('listing');
-    listing.innerHTML = '';
-
-    if (facilities.length === 0) {
-        listing.innerHTML = '<div id="no-facilities-msg">No facilities found matching the current filters.</div>';
-        return;
-    }
-
-    const facilitiesTitle = document.createElement('h4');
-    facilitiesTitle.textContent = 'Facilities';
-    listing.appendChild(facilitiesTitle);
-
-    const facilitiesContainer = document.createElement('div');
-    facilitiesContainer.className = 'facilities-container';
-
-    facilities.forEach(facility => {
-        const facilityLink = document.createElement('a');
-        facilityLink.className = 'facility-title';
-        facilityLink.textContent = facility.FacilityName;
-        facilityLink.href = '#';
-        facilityLink.onclick = (e) => {
-            e.preventDefault();
-            updateFacilityDashboard(facility);
-            
-            // Remove active class from all facilities
-            document.querySelectorAll('.facility-title').forEach(link => {
-                link.classList.remove('active');
-            });
-            
-            // Add active class to clicked facility
-            facilityLink.classList.add('active');
-
-            // Fly to facility location
-            map.flyTo({
-                center: [facility.Longitude, facility.Latitude],
-                zoom: 16,
-                duration: 1000
-            });
-        };
-        facilitiesContainer.appendChild(facilityLink);
-    });
-
-    listing.appendChild(facilitiesContainer);
-}
-
-// Update facility dashboard
-function updateFacilityDashboard(facility) {
-    const dashboardTitle = document.getElementById('data-overview-title');
-    dashboardTitle.textContent = facility.FacilityName;
-
-    // Update metrics
-    const metrics = {
-        'Actual Use': facility.ActualUse || 'Not specified',
-        'Address': facility.Address,
-        'EV Charging': facility.ExistingEV ? 'Available' : 'Not available',
-        'Solar PV': facility.ExistingPV ? 'Installed' : 'Not installed',
-        'Cooling Center': facility.CoolingCenter ? 'Yes' : 'No'
-    };
-
-    const agencyData = document.getElementById('agency-data');
-    agencyData.innerHTML = '<h4>Facility Details</h4>';
-
-    Object.entries(metrics).forEach(([label, value]) => {
-        const metricDiv = document.createElement('div');
-        metricDiv.className = 'metric';
-        metricDiv.innerHTML = `
-            <span class="metric-label">${label}:</span>
-            <span class="metric-value">${value}</span>
-        `;
-        agencyData.appendChild(metricDiv);
-    });
 }
 
 // Update charts function
