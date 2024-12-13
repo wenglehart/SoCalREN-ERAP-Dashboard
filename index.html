@@ -7,6 +7,7 @@
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@300;400&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.min.js"></script>
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.css" type="text/css">
@@ -365,7 +366,6 @@
             margin-top: 10px;
         }
 
-        /* Add this to ensure facility titles are visible */
         #listing h4 {
             margin: 10px 0;
             color: #2c3e50;
@@ -378,7 +378,6 @@
             font-weight: bold;
         }
 
-        /* Style for when no facilities are found */
         #no-facilities-msg {
             padding: 10px;
             color: #666;
@@ -434,12 +433,11 @@
             border-radius: 16px;
             max-width: 800px;
             width: 90%;
-            text-align: center;  /* Center all content */
+            text-align: center;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
             position: relative;
             animation: slideIn 0.5s ease-out;
         }
-
         @keyframes slideIn {
             from {
                 transform: translateY(20px);
@@ -455,7 +453,7 @@
             font-family: 'Nunito', sans-serif;
             font-size: 28px;
             margin-bottom: 30px;
-            color: #2c3e50;  /* dark navy */
+            color: #2c3e50;
             line-height: 1.4;
             font-weight: 700;
             border-bottom: 2px solid #ecf0f1;
@@ -469,12 +467,12 @@
 
         #welcome-popup h2 {
             font-family: 'Nunito', sans-serif;
-            font-size: 22px;  /* Increased from 22px */
-            color: #ff9800;  /* orange */
+            font-size: 22px;
+            color: #ff9800;
             margin: 30px 0 25px;
             font-weight: 600;
             line-height: 1.4;
-            text-align: center;  /* Center the subtitle */
+            text-align: center;
         }
 
         #welcome-popup p {
@@ -485,8 +483,8 @@
             line-height: 1.8;
             font-weight: 400;
             text-align: center;
-            max-width: 650px;  /* Limit line length for better readability */
-            margin-left: auto;  /* Center the paragraph block */
+            max-width: 650px;
+            margin-left: auto;
             margin-right: auto;
         }
 
@@ -540,8 +538,8 @@
                 font-size: 16px;
             }
         }
-        /* Responsive styling */
-        @media (max-width: 768px) {
+                /* Responsive styling */
+                @media (max-width: 768px) {
             #container {
                 flex-direction: column;
             }
@@ -555,13 +553,12 @@
             }
         }
 
-        /* Intro section (revised to "Welcome to SoCalREN's ERAP Dashboard") */
         #intro-section {
             margin-top: 20px;
             background: #f0f0f0;
             padding: 15px;
             border-radius: 8px;
-            display: none; /* Start hidden and show only when agencies are listed */
+            display: none;
         }
         #intro-section h4 {
             margin: 0 0 10px 0;
@@ -645,7 +642,6 @@
             width: 100%;
             height: 100%;
         }
-
     </style>
 </head>
 <body>
@@ -668,7 +664,7 @@
         <div class="fullscreen-container" id="fullscreen-control"></div>
     </div>
 </header>
-<div id="container">
+<div id="container"></div>
     <div id="map"></div>
     <div class="map-overlay" id="dashboard-panel">
         <fieldset>
@@ -722,7 +718,6 @@
                 SoCalREN's Energy Resilience Action Plan (ERAP) program aims to address the growing impacts of climate change. Developed in collaboration with regional partners, the ERAP program enhances the energy resilience of critical infrastructure and future resilience hub locations for public agencies. By incorporating data-driven analysis and stakeholder input into the planning and development process, ERAP supports agencies in developing an actionable roadmap for near-term to long-term energy resilience strategies that will best serve the community.
             </p>
         </div>
-
         <div class="dashboard" id="dashboard">
             <button id="back-button">Back</button>
             <h3 id="data-overview-title">Data Overview</h3>
@@ -741,96 +736,14 @@
                     <span class="metric-label">Population:</span>
                     <span class="metric-value" id="agency-pop">N/A</span>
                 </div>
-                <div class="metric">
-                    <span class="metric-label">Agency Area (sq. miles):</span>
-                    <span class="metric-value" id="agency-area">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Population Density (per sq. mile):</span>
-                    <span class="metric-value" id="agency-density">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Number of Extreme Heat Days:</span>
-                    <span class="metric-value" id="agency-heat">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">% Children and Seniors:</span>
-                    <span class="metric-value" id="agency-children-seniors">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Average Household Income ($):</span>
-                    <span class="metric-value" id="agency-income">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Pollution Burden:</span>
-                    <span class="metric-value" id="agency-pollution">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">% Low-Income Census Tracts:</span>
-                    <span class="metric-value" id="agency-lowincome">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Number of Electric Circuits:</span>
-                    <span class="metric-value" id="agency-circuits">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Annual Consumption (kWh):</span>
-                    <span class="metric-value" id="agency-kwh">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Annual Consumption (Therms):</span>
-                    <span class="metric-value" id="agency-therms">N/A</span>
-                </div>
             </div>
 
-            <div id="facility-data" style="display:none; margin-top:20px;">
-                <h4>Facility-Level Data</h4>
-                <div class="metric">
-                    <span class="metric-label">Existing Use:</span>
-                    <span class="metric-value" id="facility-use">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Existing EV Chargers (Yes/No):</span>
-                    <span class="metric-value" id="facility-ev">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Number of Planned EV Chargers:</span>
-                    <span class="metric-value" id="facility-planned-ev">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Existing PV or Battery Capabilities (Yes/No):</span>
-                    <span class="metric-value" id="facility-pv">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Planned PV (hours of autonomy):</span>
-                    <span class="metric-value" id="facility-pv-hours">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Planned Battery Storage (hours of autonomy):</span>
-                    <span class="metric-value" id="facility-battery-hours">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Walk Score (RHOA):</span>
-                    <span class="metric-value" id="facility-walkscore">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Sq Ft:</span>
-                    <span class="metric-value" id="facility-sqft">N/A</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Yr Built (RHOA):</span>
-                    <span class="metric-value" id="facility-yrbuilt">N/A</span>
-                </div>
-            </div>
-
-            <div class="chart-section" id="chart-section" style="display:none;">
+            <div class="chart-section">
                 <div id="populationChartContainer">
-                    <h4>Population Comparison in This COG</h4>
                     <canvas id="populationChart"></canvas>
                 </div>
                 <div id="facilitiesPieContainer">
-                    <h4>Facilities with PV/EV</h4>
-                    <canvas id="facilitiesPie"></canvas>
+                    <canvas id="facilitiesPieChart"></canvas>
                 </div>
             </div>
         </div>
@@ -840,634 +753,149 @@
 <div id="welcome-popup">
     <div class="welcome-content">
         <h1>
-            <span class="title-line">Welcome to the</span>
-            <span class="title-line">Southern California Regional Energy Network (SoCalREN)'s</span>
-            <span class="title-line">Energy Resilience Action Plan (ERAP) Dashboard</span>
+            <span class="title-line">Welcome to SoCalREN's</span>
+            <span class="title-line">Energy Resilience Action Plan (ERAP) GIS Hub</span>
         </h1>
-        <h2>Explore energy resilience planning efforts across Southern California</h2>
-        <p>This interactive dashboard provides comprehensive information about facilities and agencies participating in SoCalREN's ERAP program. Use the map to explore geographical data, or search for specific agencies to view detailed information about their facilities and energy resilience initiatives.</p>
+        <h2>Explore Energy Resilience Planning Across Southern California</h2>
+        <p>
+            This interactive dashboard provides comprehensive insights into public agencies' energy resilience planning efforts. 
+            Discover facilities with existing and planned energy resilience features, understand community needs, and explore 
+            opportunities for enhanced resilience across the region.
+        </p>
+        <p>
+            Navigate through participating agencies, filter by various criteria, and access detailed information about facilities 
+            and their energy resilience capabilities.
+        </p>
         <button onclick="closeWelcome()">Enter Dashboard</button>
     </div>
 </div>
 
-<div id="loading-spinner">
-    <i class="fas fa-spinner fa-spin"></i> Loading...
-</div>
-
-<script src="https://unpkg.com/@mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
-<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.min.js"></script>
-<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.css" type="text/css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
-
 <script>
-    mapboxgl.accessToken = 'pk.eyJ1Ijoid2VuZ2xlMSIsImEiOiJjbGh0bTJ0OTUzN2dzM21tbTB0NzFmM2QyIn0.-ItjIktoJtcQUsk6l9TbbQ';
+// Initialize global variables for data
+let agencyData = [];
+let facilityData = [];
+let facilityGeoJSON = {
+    type: 'FeatureCollection',
+    features: []
+};
+// Mapbox token
+mapboxgl.accessToken = 'pk.eyJ1IjoiZXJpY2tndWl6YXIiLCJhIjoiY2xwOTRnZzFwMDRoODJqbXMwZXZiM2wzNyJ9.VWzxBEMq4Ghh-QFvGkVlfw';
 
-    function closeWelcomePopup() {
-        document.getElementById('welcome-popup').classList.add('fade-out');
-    }
-
-    document.getElementById('loading-spinner').style.display = 'none';
-
-    let currentAgency = null;
-    let currentCOG = null;
-    let populationChartInstance = null;
-    let facilitiesPieInstance = null;
-
-    // Agency data:
-    const agencyData = [
-        {"Agency":"City of Bell","Council":"Gateway Cities","DAC":"Yes","CalEnviroscreen":96,"Population":31864,"AgencyArea":2.5,"PopulationDensity":13400,"ExtremeHeatDays":91,"ChildrenSeniors":36,"AvgHouseholdIncome":47800,"PollutionBurden":88,"LowIncomeTracts":100,"ElectricCircuits":14,"AnnualKWh":2200000,"AnnualTherms":91100},
-        {"Agency":"City of Maywood","Council":"Gateway Cities","DAC":"Yes","CalEnviroscreen":90,"Population":27127,"AgencyArea":1.18,"PopulationDensity":23257,"ExtremeHeatDays":77,"ChildrenSeniors":38,"AvgHouseholdIncome":50996,"PollutionBurden":92,"LowIncomeTracts":100,"ElectricCircuits":6,"AnnualKWh":939153,"AnnualTherms":1232},
-        {"Agency":"City of Bell Gardens","Council":"Gateway Cities","DAC":"Yes","CalEnviroscreen":92,"Population":37467,"AgencyArea":2.5,"PopulationDensity":17100,"ExtremeHeatDays":90,"ChildrenSeniors":30,"AvgHouseholdIncome":45300,"PollutionBurden":97,"LowIncomeTracts":100,"ElectricCircuits":9,"AnnualKWh":1597960,"AnnualTherms":25833},
-        {"Agency":"City of Pomona","Council":"San Gabriel Valley COG","DAC":"Yes","CalEnviroscreen":97,"Population":151100,"AgencyArea":22.99,"PopulationDensity":6572,"ExtremeHeatDays":118,"ChildrenSeniors":37,"AvgHouseholdIncome":62400,"PollutionBurden":81,"LowIncomeTracts":82,"ElectricCircuits":56,"AnnualKWh":20971427,"AnnualTherms":23848},
-        {"Agency":"City of Irwindale","Council":"San Gabriel Valley COG","DAC":"Yes","CalEnviroscreen":83,"Population":1400,"AgencyArea":9.5,"PopulationDensity":142,"ExtremeHeatDays":146,"ChildrenSeniors":"N/A","AvgHouseholdIncome":86250,"PollutionBurden":100,"LowIncomeTracts":100,"ElectricCircuits":30,"AnnualKWh":2452708,"AnnualTherms":11686},
-        {"Agency":"El Monte Union High School District (EMUSHD)","Council":"San Gabriel Valley COG","DAC":"Yes","CalEnviroscreen":80,"Population":163151,"AgencyArea":22.38,"PopulationDensity":7290,"ExtremeHeatDays":129,"ChildrenSeniors":"N/A","AvgHouseholdIncome":62000,"PollutionBurden":92,"LowIncomeTracts":"N/A","ElectricCircuits":79,"AnnualKWh":"N/A","AnnualTherms":"N/A"},
-        {"Agency":"City of Cudahy","Council":"Gateway Cities","DAC":"Yes","CalEnviroscreen":95,"Population":21700,"AgencyArea":1.23,"PopulationDensity":17642,"ExtremeHeatDays":85,"ChildrenSeniors":36,"AvgHouseholdIncome":49600,"PollutionBurden":94,"LowIncomeTracts":100,"ElectricCircuits":20,"AnnualKWh":"N/A","AnnualTherms":"N/A"},
-        {"Agency":"City of South El Monte","Council":"San Gabriel Valley COG","DAC":"Yes","CalEnviroscreen":97,"Population":19000,"AgencyArea":2.84,"PopulationDensity":6690,"ExtremeHeatDays":124,"ChildrenSeniors":37,"AvgHouseholdIncome":67700,"PollutionBurden":98,"LowIncomeTracts":80,"ElectricCircuits":12,"AnnualKWh":593500,"AnnualTherms":39700},
-        {"Agency":"City of Lynwood","Council":"Gateway Cities","DAC":"Yes","CalEnviroscreen":91,"Population":63200,"AgencyArea":4.84,"PopulationDensity":13058,"ExtremeHeatDays":33,"ChildrenSeniors":35,"AvgHouseholdIncome":67400,"PollutionBurden":92,"LowIncomeTracts":66,"ElectricCircuits":22,"AnnualKWh":1340300,"AnnualTherms":30100},
-        {"Agency":"City of Duarte","Council":"San Gabriel Valley COG","DAC":"Yes","CalEnviroscreen":78,"Population":23100,"AgencyArea":6.71,"PopulationDensity":3443,"ExtremeHeatDays":132,"ChildrenSeniors":38,"AvgHouseholdIncome":93900,"PollutionBurden":58,"LowIncomeTracts":20,"ElectricCircuits":10,"AnnualKWh":417700,"AnnualTherms":"N/A"},
-        {"Agency":"City of Rancho Palos Verdes","Council":"South Bay Cities","DAC":"Yes","CalEnviroscreen":11,"Population":41600,"AgencyArea":13.5,"PopulationDensity":3081,"ExtremeHeatDays":11,"ChildrenSeniors":"N/A","AvgHouseholdIncome":146200,"PollutionBurden":29,"LowIncomeTracts":0,"ElectricCircuits":25,"AnnualKWh":359100,"AnnualTherms":900},
-        {"Agency":"City of El Segundo","Council":"South Bay Cities","DAC":"Yes","CalEnviroscreen":26,"Population":16500,"AgencyArea":5.5,"PopulationDensity":3000,"ExtremeHeatDays":7,"ChildrenSeniors":"N/A","AvgHouseholdIncome":115900,"PollutionBurden":87,"LowIncomeTracts":0,"ElectricCircuits":20,"AnnualKWh":94470,"AnnualTherms":40800}
-    ];
-
-    function parseCoordinate(coordStr) {
-        if (!coordStr || coordStr.trim().toUpperCase() === 'N/A') return null;
-        let parts = coordStr.split('°');
-        if (parts.length < 2) return null;
-        let value = parseFloat(parts[0].trim());
-        let direction = parts[1].trim().toUpperCase();
-        if (direction.startsWith('S') || direction.startsWith('W')) {
-            value = -value;
-        }
-        return value;
-    }
-
-    const rawFacilityData = [
-        ["City of Bell","Bell Library","4411 Gage Ave, Bell, CA","33.9765° N","118.1856° W","N/A","No","2","N/A","3,912","25","Library","High","5,622","1965"],
-        ["City of Bell","Community Center","6250 Pine Ave, Bell, CA","33.9760° N","118.1820° W","Cooling Center","No","2","Solar went live in August 2020","1,899","1,748","Community center","High","16,011","1980"],
-        ["City of Bell","Camp Little Bear Park","6704 Orchard Ave, Bell, CA","33.9770° N","118.1890° W","N/A","No","0","N/A","664","81","Park","Medium","5,783","1962"],
-        ["City of Bell","Veterans Memorial Park","6500 Wilcox Ave, Bell, CA","33.9765° N","118.1875° W","Cooling Center","No Capacity","0","N/A","3,397","381","Park","Medium","7,500","1955"],
-        ["City of Maywood","City Hall & Sheriff's Office","4319 Slauson Ave, Maywood, CA","33.9880° N","118.1850° W","Cooling Center","No","4","No","2,646","0","Office","High","9,534","1938"],
-        ["City of Maywood","Teen Center","4801 E. Slauson Ave, Maywood, CA","33.9885° N","118.1700° W","N/A","No","0","No","Whole Year","Whole year","Community center","Medium","N/A","N/A"],
-        ["City of Maywood","Maywood Park (YMCA)","4801 E. 58th St, Maywood, CA","33.9890° N","118.1705° W","N/A","No","4","No","1,140","5","Community center","Medium","30,819","1999"],
-        ["City of Maywood","Cesar Chavez Library","4323 Slauson Ave, Maywood, CA","33.9880° N","118.1845° W","N/A","No","0","No","2,311","5","Library","High","3,382","1938"],
-        ["City of Bell Gardens","Ford Park and Recreation Center","8000 Park Lane, Bell Gardens, CA","33.9650° N","118.1510° W","N/A","No","10","N/A","3,563","13","Community center","High","9,083","1976"],
-        ["City of Bell Gardens","Community Family Services Center & Veterans Park","6662 Loveland St, Bell Gardens, CA","33.9660° N","118.1530° W","N/A","No","0","N/A","3,330","71","Community center","Low","20,000","1976"],
-        ["City of Bell Gardens","Youth Center","5856 Ludell St, Bell Gardens, CA","33.9680° N","118.1500° W","N/A","No","0","N/A","3,406","11","Community center","Medium","11,446","1948"],
-        ["City of Bell Gardens","Civic Center","7100 Garfield St, Bell Gardens, CA","33.9655° N","118.1515° W","N/A","No","0","N/A","5","0","City Hall","Medium","18,500","1967"],
-        ["City of Pomona","Library","625 S Garey Ave, Pomona, CA","34.0530° N","117.7500° W","Cooling Center","Yes","0","N/A","2,057","0","Library","High","25,977","1956"],
-        ["City of Pomona","City Hall","505 S Garey Ave, Pomona, CA","34.0525° N","117.7505° W","N/A","No","0","N/A","2,482","14","Office","High","44,996","1969"],
-        ["City of Pomona","Palomares Park","499 E Arrow Hwy, Pomona, CA","34.1000° N","117.7400° W","Cooling Center","Yes","19","N/A","6,470","48","Community center","Low","15,704","1983"],
-        ["City of Pomona","Washington Senior Center","865 E Granf Ave, Pomona, CA","34.0600° N","117.7400° W","Cooling Center","No","6","N/A","4,070","883","Senior Center","Low","2,539","1935"],
-        ["City of Irwindale","Dan Diaz Recreation Center and Library","16053 Calle De Paseo, Irwindale, CA","34.1100° N","117.9700° W","N/A","No","0","N/A","1,068","1","Library and recreation center","Low","22,855","1970"],
-        ["City of Irwindale","City Hall and Police Department","5050 N Irwindale Ave, Irwindale, CA","34.1105° N","117.9350° W","Emergency Operations Center","No","4","N/A","4","0","Office","Low","20,600","1957"],
-        ["City of Irwindale","Senior Center and Annex","16116 Arrow Hwy, Irwindale, CA","34.1100° N","117.9705° W","Cooling Center","No","4","N/A","24","0","Multi-purpose/ office","Low","20,678","1985"],
-        ["City of Irwindale","New Library (Planned for 2026)","N/A","N/A","N/A","N/A","N/A","N/A","N/A","N/A","N/A","Library","N/A","N/A","N/A"]
-    ];
-
-    const facilityData = rawFacilityData.map(row => {
-        const [
-            Agency, FacilityName, Address, LatStr, LonStr,
-            ExistingUse, ExistingEV, PlannedEV, ExistingPV,
-            PlannedPV, PlannedBattery, ActualUse, WalkScore,
-            SqFt, YrBuilt
-        ] = row;
-        const lat = parseCoordinate(LatStr);
-        const lon = parseCoordinate(LonStr);
-        return {
-            Agency, FacilityName, Address,
-            Latitude: lat,
-            Longitude: lon,
-            ExistingUse,
-            ExistingEV,
-            PlannedEV: isNaN(parseInt(PlannedEV)) ? PlannedEV : parseInt(PlannedEV),
-            ExistingPV,
-            PlannedPV: isNaN(parseInt((PlannedPV || "").replace(/,/g,''))) && typeof PlannedPV === "string" ? PlannedPV : parseInt((PlannedPV||"").replace(/,/g,'')) || PlannedPV,
-            PlannedBattery: isNaN(parseInt(PlannedBattery)) ? PlannedBattery : parseInt(PlannedBattery),
-            ActualUse,
-            WalkScore,
-            SqFt: (SqFt && SqFt.toUpperCase() !== "N/A") ? SqFt : "N/A",
-            YrBuilt: (YrBuilt && YrBuilt.toUpperCase() !== "N/A") ? YrBuilt : "N/A"
-        };
-    });
-
-    const councilNameMapping = {
-        "Gateway Cities": "Gateway Cities Council of Governments (GCCOG)",
-        "San Gabriel Valley COG": "San Gabriel Valley Council of Governments (SGVCOG)",
-        "South Bay Cities": "South Bay Cities Council of Governments (SBCOG)"
-    };
-
-    function groupAgenciesByCouncil(data) {
-        const map = {};
-        data.forEach(a => {
-            if (!map[a.Council]) {
-                map[a.Council] = [];
+// Function to load CSV data using Papa Parse
+async function loadCSVData(url) {
+    return new Promise((resolve, reject) => {
+        Papa.parse(url, {
+            download: true,
+            header: true,
+            dynamicTyping: true,
+            complete: function(results) {
+                resolve(results.data);
+            },
+            error: function(error) {
+                reject(error);
             }
-            map[a.Council].push(a);
         });
-        return map;
-    }
+    });
+}
 
-    const agenciesByCouncil = groupAgenciesByCouncil(agencyData);
-
-    function facilityToFeature(f) {
-        if (f.Latitude !== null && f.Longitude !== null) {
-            return {
-                'type': 'Feature',
-                'properties': {
-                    Agency: f.Agency,
-                    FacilityName: f.FacilityName,
-                    ExistingUse: f.ExistingUse,
-                    ExistingEV: f.ExistingEV,
-                    PlannedEV: f.PlannedEV,
-                    ExistingPV: f.ExistingPV,
-                    PlannedPV: f.PlannedPV,
-                    PlannedBattery: f.PlannedBattery,
-                    ActualUse: f.ActualUse,
-                    WalkScore: f.WalkScore,
-                    SqFt: f.SqFt,
-                    YrBuilt: f.YrBuilt
-                },
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [f.Longitude, f.Latitude]
-                }
-            };
+// Function to load all data
+async function loadAllData() {
+    try {
+        // Show loading spinner or message if you have one
+        if (document.getElementById('loading-spinner')) {
+            document.getElementById('loading-spinner').style.display = 'block';
         }
-        return null;
+
+        // Load agencies and facilities data
+        const [agencies, facilities] = await Promise.all([
+            loadCSVData('./data/agencies_df.csv'),
+            loadCSVData('./data/facilities_df.csv')
+        ]);
+
+        // Load GeoJSON data
+        const boundariesResponse = await fetch('./data/la_boundaries.geojson');
+        const boundariesData = await boundariesResponse.json();
+
+        // Store the data globally
+        agencyData = agencies;
+        facilityData = facilities;
+
+        // Convert facilities data to GeoJSON
+        facilityGeoJSON = {
+            type: 'FeatureCollection',
+            features: facilities.map(facility => ({
+                type: 'Feature',
+                geometry: {
+                    type: 'Point',
+                    coordinates: [facility.Longitude, facility.Latitude]
+                },
+                properties: {
+                    Agency: facility.Agency,
+                    FacilityName: facility.FacilityName,
+                    Address: facility.Address,
+                    ActualUse: facility.ActualUse,
+                    ExistingEV: facility.ExistingEV,
+                    ExistingPV: facility.ExistingPV
+                }
+            }))
+        };
+
+        // Initialize the map with the loaded data
+        initializeMap(boundariesData);
+
+        // Hide loading spinner
+        if (document.getElementById('loading-spinner')) {
+            document.getElementById('loading-spinner').style.display = 'none';
+        }
+
+    } catch (error) {
+        console.error('Error loading data:', error);
+        // Show error message to user
+        if (document.getElementById('loading-spinner')) {
+            document.getElementById('loading-spinner').innerHTML = 'Error loading data. Please refresh the page.';
+        }
     }
+}
 
-    const facilityFeatures = facilityData.map(f => facilityToFeature(f)).filter(x => x !== null);
-    const facilityGeoJSON = {
-        "type": "FeatureCollection",
-        "features": facilityFeatures
-    };
-
+// Initialize map function
+function initializeMap(boundariesData) {
     const map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/streets-v12',
         center: [-118.2437, 34.0522],
         zoom: 10
     });
-
-    // Add the geocoder control
-    const geocoder = new MapboxGeocoder({
+        // Add geocoder control
+        const geocoder = new MapboxGeocoder({
         accessToken: mapboxgl.accessToken,
         mapboxgl: mapboxgl,
-        placeholder: 'Search for an address',
-        bbox: [-118.9517, 33.7037, -117.6462, 34.3373], // Bounds for LA County
+        marker: false,
+        placeholder: 'Search for a location',
+        bbox: [-118.9517, 33.7037, -117.6462, 34.8233], // Bounds for LA County
         proximity: {
             longitude: -118.2437,
             latitude: 34.0522
         }
     });
-
-    // Add the geocoder to the container instead of the map
     document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
 
-    function updateDataOverviewTitle() {
-        const agencyVisible = document.getElementById('agency-data').style.display !== 'none';
-        const facilityVisible = document.getElementById('facility-data').style.display !== 'none';
-        const titleEl = document.getElementById('data-overview-title');
-        if (agencyVisible || facilityVisible) {
-            titleEl.style.display = 'block';
-        } else {
-            titleEl.style.display = 'none';
-        }
-    }
-    
-
-    function updateAgencyDashboard(a) {
-        document.getElementById('agency-data').style.display = 'block';
-        document.getElementById('facility-data').style.display = 'none';
-
-        document.getElementById('agency-dac').textContent = a.DAC;
-        document.getElementById('agency-cal').textContent = a.CalEnviroscreen;
-        document.getElementById('agency-pop').textContent = a.Population !== "N/A" ? a.Population.toLocaleString() : "N/A";
-        document.getElementById('agency-area').textContent = a.AgencyArea !== "N/A" ? a.AgencyArea : "N/A";
-        document.getElementById('agency-density').textContent = a.PopulationDensity !== "N/A" ? a.PopulationDensity.toLocaleString() : "N/A";
-        document.getElementById('agency-heat').textContent = a.ExtremeHeatDays !== "N/A" ? a.ExtremeHeatDays : "N/A";
-        document.getElementById('agency-children-seniors').textContent = a.ChildrenSeniors !== "N/A" ? a.ChildrenSeniors + "%" : "N/A";
-        document.getElementById('agency-income').textContent = a.AvgHouseholdIncome !== "N/A" ? "$" + a.AvgHouseholdIncome.toLocaleString() : "N/A";
-        document.getElementById('agency-pollution').textContent = a.PollutionBurden !== "N/A" ? a.PollutionBurden : "N/A";
-        document.getElementById('agency-lowincome').textContent = a.LowIncomeTracts !== "N/A" ? a.LowIncomeTracts + "%" : "N/A";
-        document.getElementById('agency-circuits').textContent = a.ElectricCircuits !== "N/A" ? a.ElectricCircuits : "N/A";
-        document.getElementById('agency-kwh').textContent = (a.AnnualKWh !== "N/A" && a.AnnualKWh !== undefined && !isNaN(a.AnnualKWh)) ? a.AnnualKWh.toLocaleString() : (a.AnnualKWh === "N/A" ? "N/A" : a.AnnualKWh);
-        document.getElementById('agency-therms').textContent = (a.AnnualTherms !== "N/A" && a.AnnualTherms !== undefined && !isNaN(a.AnnualTherms)) ? a.AnnualTherms.toLocaleString() : (a.AnnualTherms === "N/A" ? "N/A" : a.AnnualTherms);
-
-        updateDataOverviewTitle();
-    }
-
-    function updateFacilityDashboard(f) {
-        document.getElementById('agency-data').style.display = 'none';
-        document.getElementById('facility-data').style.display = 'block';
-
-        document.getElementById('facility-use').textContent = f.ExistingUse;
-        document.getElementById('facility-ev').textContent = f.ExistingEV;
-        document.getElementById('facility-planned-ev').textContent = f.PlannedEV;
-        document.getElementById('facility-pv').textContent = f.ExistingPV;
-        document.getElementById('facility-pv-hours').textContent = f.PlannedPV;
-        document.getElementById('facility-battery-hours').textContent = f.PlannedBattery;
-        document.getElementById('facility-walkscore').textContent = f.WalkScore;
-        document.getElementById('facility-sqft').textContent = f.SqFt;
-        document.getElementById('facility-yrbuilt').textContent = f.YrBuilt;
-
-        updateDataOverviewTitle();
-    }
-
-    function toggleFilters(showAgencyFilters) {
-        const agencyFilters = document.getElementById('agency-filters');
-        const facilityFilters = document.getElementById('facility-filters');
-        const introSection = document.getElementById('intro-section');
-
-        if (showAgencyFilters) {
-            agencyFilters.style.display = 'block';
-            facilityFilters.style.display = 'none';
-            introSection.style.display = 'block'; // Show intro when listing agencies
-        } else {
-            agencyFilters.style.display = 'none';
-            facilityFilters.style.display = 'block';
-            introSection.style.display = 'none'; // Hide intro when an agency is selected
-        }
-    }
-
-    function renderListing() {
-        toggleFilters(true);
-        currentCOG = null;
-        const listingEl = document.getElementById('listing');
-        listingEl.innerHTML = '';
-        const searchTerm = document.getElementById('agency-filter').value.trim().toLowerCase();
-        const dacOnly = document.getElementById('dac-filter').checked;
-        const ces90 = document.getElementById('ces90-filter').checked;
-        const cogValue = document.getElementById('cog-select').value;
-        const popThreshold = parseInt(document.getElementById('population-threshold').value, 10);
-
-        Object.keys(agenciesByCouncil).forEach(council => {
-            const displayCouncilName = councilNameMapping[council] || council;
-            let originalCouncilName = council; 
-            if (cogValue && originalCouncilName !== cogValue) return;
-
-            const section = document.createElement('div');
-            section.classList.add('cog-section');
-
-            const header = document.createElement('div');
-            header.classList.add('cog-header');
-            header.textContent = displayCouncilName;
-            header.addEventListener('click', () => {
-                const isExpanded = agencyList.style.display !== 'none';
-                agencyList.style.display = isExpanded ? 'none' : 'block';
-                header.classList.toggle('expanded', !isExpanded);
-            });
-            section.appendChild(header);
-
-            const agencyList = document.createElement('div');
-            agencyList.classList.add('agency-list');
-
-            const filteredAgencies = agenciesByCouncil[council].filter(a => {
-                let match = true;
-                if (searchTerm && !a.Agency.toLowerCase().includes(searchTerm)) {
-                    match = false;
-                }
-                if (dacOnly && a.DAC.toLowerCase() !== 'yes') {
-                    match = false;
-                }
-                if (ces90 && (isNaN(a.CalEnviroscreen) || a.CalEnviroscreen <= 90)) {
-                    match = false;
-                }
-                if (!isNaN(popThreshold) && a.Population && a.Population <= popThreshold) {
-                    match = false;
-                }
-                return match;
-            });
-
-            if (filteredAgencies.length === 0) {
-                const noAgencies = document.createElement('div');
-                noAgencies.style.fontSize = '12px';
-                noAgencies.style.color = '#555';
-                noAgencies.textContent = 'No matching agencies.';
-                agencyList.appendChild(noAgencies);
-            } else {
-                filteredAgencies.forEach(a => {
-                    const agencyDiv = document.createElement('div');
-                    agencyDiv.classList.add('agency-title');
-                    agencyDiv.textContent = a.Agency;
-                    agencyDiv.addEventListener('click', () => {
-                        onAgencyClick(a);
-                        currentCOG = originalCouncilName;
-                    });
-                    agencyList.appendChild(agencyDiv);
-                });
-            }
-
-            section.appendChild(agencyList);
-
-            header.addEventListener('click', () => {
-                agencyList.style.display = agencyList.style.display === 'none' ? 'block' : 'none';
-            });
-
-            listingEl.appendChild(section);
-        });
-
-        document.getElementById('agency-data').style.display = 'none';
-        document.getElementById('facility-data').style.display = 'none';
-        document.getElementById('chart-section').style.display = 'none';
-        document.getElementById('back-button').style.display = 'none';
-        updateDataOverviewTitle();
-    }
-
-    function onAgencyClick(aObj) {
-        currentAgency = aObj;
-        toggleFilters(false);
-        document.getElementById('back-button').style.display = 'block';
-        
-        // Clear and rebuild the listing element
-        const listingEl = document.getElementById('listing');
-        listingEl.innerHTML = '';
-
-        // 1. Add the facility title
-        const facilityTitle = document.createElement('h4');
-        facilityTitle.textContent = "Facilities for " + aObj.Agency;
-        listingEl.appendChild(facilityTitle);
-
-        // 2. Apply facility filters and show facilities
-        applyFacilityFilters(aObj);
-
-        // 3. Create a new container for the dashboard content
-        const dashboardContent = document.createElement('div');
-        dashboardContent.classList.add('dashboard-content');
-        listingEl.appendChild(dashboardContent);
-
-        // 4. Update agency dashboard and charts
-        const a = agencyData.find(d => d.Agency === aObj.Agency);
-        if (a) {
-            updateAgencyDashboard(a);
-        }
-        loadCharts(aObj);
-        updateDataOverviewTitle();
-    }
-
-    function applyFacilityFilters(aObj) {
-        const listingEl = document.getElementById('listing');
-        const pvFilter = document.getElementById('pv-filter').checked;
-        const evFilter = document.getElementById('ev-filter').checked;
-        const coolingFilter = document.getElementById('cooling-filter').checked;
-
-        // First, get all facilities for this agency
-        const agencyFacilities = facilityData.filter(f => f.Agency === aObj.Agency);
-        
-        // Then apply the additional filters
-        const filteredFacilities = agencyFacilities.filter(f => {
-            if (pvFilter && (f.ExistingPV || "").toLowerCase() === 'no') return false;
-            if (evFilter && (f.ExistingEV || "").toLowerCase() === 'no') return false;
-            if (coolingFilter && !(f.ExistingUse || "").toLowerCase().includes('cooling center')) return false;
-            return true;
-        });
-
-        // Clear and rebuild the listing
-        listingEl.innerHTML = '';
-        
-        // Add the agency title
-        const titleEl = document.createElement('h4');
-        titleEl.textContent = `Facilities for ${aObj.Agency}`;
-        listingEl.appendChild(titleEl);
-
-        // Display facilities or "no results" message
-        if (filteredFacilities.length === 0) {
-            const noFacEl = document.createElement('div');
-            noFacEl.id = 'no-facilities-msg';
-            noFacEl.textContent = agencyFacilities.length === 0 ? 
-                "No facilities found for this agency." : 
-                "No facilities match the current filters.";
-            listingEl.appendChild(noFacEl);
-        } else {
-            const facilitiesContainer = document.createElement('div');
-            facilitiesContainer.className = 'facilities-container';
-            
-            filteredFacilities.forEach(f => {
-                const fLink = document.createElement('a');
-                fLink.href = '#';
-                fLink.className = 'facility-title';
-                fLink.textContent = f.FacilityName;
-                fLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    onFacilityClick(f);
-                    document.querySelectorAll('.facility-title').forEach(el => {
-                        el.classList.remove('active');
-                    });
-                    fLink.classList.add('active');
-                });
-                facilitiesContainer.appendChild(fLink);
-            });
-        
-            listingEl.appendChild(facilitiesContainer);
-        }
-    }
-
-    function onFacilityClick(f) {
-        updateFacilityDashboard(f);
-        if (f.Longitude !== null && f.Latitude !== null) {
-            map.flyTo({
-                center: [f.Longitude, f.Latitude],
-                zoom: 15,
-                essential: true
-            });
-        }
-    }
-
-    // Load charts with a clean, professional color palette
-    function loadCharts(aObj) {
-        document.getElementById('chart-section').style.display = 'block';
-
-        // Get all agencies in the current COG and their populations
-        const cogAgencies = agencyData.filter(d => d.Council === currentCOG);
-        
-        // Sort agencies by population for better visualization
-        cogAgencies.sort((a, b) => (b.Population || 0) - (a.Population || 0));
-
-        // Prepare data for the chart
-        const labels = cogAgencies.map(a => a.Agency.replace('City of ', ''));
-        const populations = cogAgencies.map(a => a.Population || 0);
-        
-        // Highlight the current agency
-        const backgroundColor = labels.map(label => 
-            label === aObj.Agency.replace('City of ', '') ? '#2ecc71' : '#3498db'
-        );
-
-        if (populationChartInstance) {
-            populationChartInstance.destroy();
-        }
-
-        const ctxPop = document.getElementById('populationChart').getContext('2d');
-        populationChartInstance = new Chart(ctxPop, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Population',
-                    data: populations,
-                    backgroundColor: backgroundColor,
-                    borderColor: backgroundColor.map(color => color === '#2ecc71' ? '#27ae60' : '#2980b9'),
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    title: {
-                        display: true,
-                        text: 'Population Comparison in ' + (currentCOG || 'Current COG'),
-                        font: { size: 14, weight: 'bold' }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return 'Population: ' + context.raw.toLocaleString();
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        title: { 
-                            display: true, 
-                            text: 'Agencies',
-                            font: { size: 12 }
-                        },
-                        ticks: {
-                            maxRotation: 45,
-                            minRotation: 45
-                        }
-                    },
-                    y: {
-                        title: { 
-                            display: true, 
-                            text: 'Population',
-                            font: { size: 12 }
-                        },
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return value.toLocaleString();
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
-        const agencyFacilities = facilityData.filter(f => f.Agency === aObj.Agency);
-        const totalFacilities = agencyFacilities.length;
-        const evCount = agencyFacilities.filter(f => (f.ExistingEV || "").toLowerCase() === 'yes').length;
-        const pvCount = agencyFacilities.filter(f => {
-            const pvVal = (f.ExistingPV || "").toLowerCase();
-            return pvVal === 'yes' || (pvVal !== 'no' && pvVal !== 'n/a' && pvVal !== '');
-        }).length;
-
-        if (facilitiesPieInstance) {
-            facilitiesPieInstance.destroy();
-        }
-        const ctxPie = document.getElementById('facilitiesPie').getContext('2d');
-        facilitiesPieInstance = new Chart(ctxPie, {
-            type: 'pie',
-            data: {
-                labels: ['EV', 'PV', 'None'],
-                datasets: [{
-                    data: [evCount, pvCount, totalFacilities - (evCount + pvCount)],
-                    backgroundColor: ['#e67e22', '#2980b9', '#95a5a6']
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { position: 'bottom' },
-                    title: {
-                        display: true,
-                        text: 'Facility Feature Distribution',
-                        font: { size: 16 }
-                    }
-                }
-            }
-        });
-    }
-
-    document.getElementById('back-button').addEventListener('click', () => {
-        currentAgency = null;
-        renderListing();
-    });
-
-    // Agency filter listeners
-    document.getElementById('agency-filter').addEventListener('input', () => {
-        const val = document.getElementById('agency-filter').value.toLowerCase();
-        const allAgencies = agencyData.map(a => a.Agency);
-        const suggestions = allAgencies.filter(a => a.toLowerCase().includes(val));
-        const suggestionsList = document.getElementById('agency-suggestions');
-        suggestionsList.innerHTML = '';
-        if (val && suggestions.length > 0) {
-            suggestionsList.style.display = 'block';
-            suggestions.forEach(s => {
-                const li = document.createElement('li');
-                li.textContent = s;
-                li.addEventListener('click', () => {
-                    document.getElementById('agency-filter').value = s;
-                    suggestionsList.style.display = 'none';
-                    if (!currentAgency) renderListing();
-                });
-                suggestionsList.appendChild(li);
-            });
-        } else {
-            suggestionsList.style.display = 'none';
-        }
-        if (!currentAgency) renderListing();
-    });
-
-    document.getElementById('dac-filter').addEventListener('change', () => {
-        if (currentAgency) return;
-        renderListing();
-    });
-
-    document.getElementById('ces90-filter').addEventListener('change', () => {
-        if (currentAgency) return;
-        renderListing();
-    });
-
-    document.getElementById('cog-select').addEventListener('change', () => {
-        if (currentAgency) return;
-        renderListing();
-    });
-
-    document.getElementById('population-threshold').addEventListener('input', () => {
-        document.getElementById('population-threshold-value').textContent = document.getElementById('population-threshold').value;
-        if (currentAgency) return;
-        renderListing();
-    });
-
-    // Facility filter listeners
-    document.getElementById('pv-filter').addEventListener('change', () => {
-        if (currentAgency) {
-            applyFacilityFilters(currentAgency);
-        }
-    });
-
-    document.getElementById('ev-filter').addEventListener('change', () => {
-        if (currentAgency) {
-            applyFacilityFilters(currentAgency);
-        }
-    });
-
-    document.getElementById('cooling-filter').addEventListener('change', () => {
-        if (currentAgency) {
-            applyFacilityFilters(currentAgency);
-        }
-    });
-
     map.on('load', () => {
-        // First add the boundaries source and layers
+        // Add boundaries source
         map.addSource('la-boundaries', {
             'type': 'geojson',
-            'data': 'https://raw.githubusercontent.com/wbeng69527/erap/main/la_boundaries.geojson'
+            'data': boundariesData
         });
 
+        // Add facilities source
+        map.addSource('facilities', {
+            'type': 'geojson',
+            'data': facilityGeoJSON,
+            'cluster': true,
+            'clusterMaxZoom': 14,
+            'clusterRadius': 50
+        });
+
+        // Add boundary layers
         map.addLayer({
             'id': 'la-fills',
             'type': 'fill',
@@ -1475,7 +903,7 @@
             'layout': {},
             'paint': {
                 'fill-color': '#3498db',
-                'fill-opacity': 0.4  // Increased from 0.2 for better visibility
+                'fill-opacity': 0.4
             }
         });
 
@@ -1490,7 +918,7 @@
             }
         });
 
-        // After your existing boundary layers (la-fills, la-borders)
+        // Add hover layer for boundaries
         map.addLayer({
             'id': 'la-fills-hover',
             'type': 'fill',
@@ -1502,69 +930,7 @@
             'filter': ['==', ['get', 'CITY_COMM_NAME'], '']
         });
 
-        // Add these event listeners
-        map.on('mouseenter', 'la-fills', (e) => {
-            map.getCanvas().style.cursor = 'pointer';
-            if (e.features.length > 0) {
-                map.setFilter('la-fills-hover', ['==', ['get', 'CITY_COMM_NAME'], e.features[0].properties.CITY_COMM_NAME]);
-            }
-        });
-
-        map.on('mouseleave', 'la-fills', () => {
-            map.getCanvas().style.cursor = '';
-            map.setFilter('la-fills-hover', ['==', ['get', 'CITY_COMM_NAME'], '']);
-        });
-
-        // Filter boundaries to show only participating agencies
-        const dashboardCities = agencyData.map(a => {
-            return a.Agency.replace('City of ', '').trim().toUpperCase();
-        });
-
-        map.setFilter('la-fills', ['in', ['get', 'CITY_COMM_NAME'], ['literal', dashboardCities]]);
-        map.setFilter('la-borders', ['in', ['get', 'CITY_COMM_NAME'], ['literal', dashboardCities]]);
-
-        // Add this after your boundary layers (la-fills, la-borders, la-fills-hover)
-        // but before the facilities layers
-        map.addLayer({
-            'id': 'boundary-labels',
-            'type': 'symbol',
-            'source': 'la-boundaries',
-            'filter': ['in', ['get', 'CITY_COMM_NAME'], ['literal', dashboardCities]],
-            'layout': {
-                'text-field': ['format',
-                    ['get', 'CITY_COMM_NAME'], { 'font-scale': 0.8 }
-                ],
-                'text-variable-anchor': ['center'],
-                'text-radial-offset': 0,
-                'text-justify': 'center',
-                'text-size': 20,
-                'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-                'text-padding': 3,
-                'text-allow-overlap': false,
-                'text-optional': true
-            },
-            'paint': {
-                'text-color': '#2c3e50',
-                'text-halo-color': '#ffffff',
-                'text-halo-width': 1.5
-            }
-        });
-
-        // First, add the facilities source
-        map.addSource('facilities', {
-            'type': 'geojson',
-            'data': facilityGeoJSON,
-            'cluster': true,
-            'clusterMaxZoom': 14,
-            'clusterRadius': 50
-        });
-
-        // Remove existing layers if they exist
-        if (map.getLayer('clusters')) map.removeLayer('clusters');
-        if (map.getLayer('cluster-count')) map.removeLayer('cluster-count');
-        if (map.getLayer('unclustered-point')) map.removeLayer('unclustered-point');
-
-        // Add new cluster layer
+        // Add clusters layer
         map.addLayer({
             'id': 'clusters',
             'type': 'circle',
@@ -1574,20 +940,20 @@
                 'circle-radius': [
                     'step',
                     ['get', 'point_count'],
-                    25,    // radius for clusters with count < 10
-                    10,    
-                    30,    // radius for clusters with count < 25
-                    25,    
-                    35     // radius for clusters with count >= 25
+                    25,
+                    10,
+                    30,
+                    25,
+                    35
                 ],
                 'circle-color': [
                     'step',
                     ['get', 'point_count'],
-                    '#ff9800',  // small clusters
+                    '#ff9800',
                     10,
-                    '#f57c00',  // medium clusters
+                    '#f57c00',
                     25,
-                    '#e65100'   // large clusters
+                    '#e65100'
                 ],
                 'circle-opacity': 0.9,
                 'circle-stroke-width': 2,
@@ -1596,7 +962,7 @@
             }
         });
 
-        // Add new cluster count layer
+        // Add cluster count layer
         map.addLayer({
             'id': 'cluster-count',
             'type': 'symbol',
@@ -1605,17 +971,726 @@
             'layout': {
                 'text-field': '{point_count_abbreviated}',
                 'text-font': ['DIN Offc Pro Bold', 'Arial Unicode MS Bold'],
-                'text-size': 16,
-                'text-allow-overlap': true
+                'text-size': 16
             },
             'paint': {
-                'text-color': '#ffffff',
-                'text-halo-color': 'rgba(0, 0, 0, 0.2)',
-                'text-halo-width': 1
+                'text-color': '#ffffff'
+            }
+        });
+                // Add unclustered point layer
+                map.addLayer({
+            'id': 'unclustered-point',
+            'type': 'circle',
+            'source': 'facilities',
+            'filter': ['!', ['has', 'point_count']],
+            'paint': {
+                'circle-color': '#ff9800',
+                'circle-radius': 8,
+                'circle-stroke-width': 2,
+                'circle-stroke-color': '#ffffff',
+                'circle-opacity': 0.9,
+                'circle-stroke-opacity': 0.8
             }
         });
 
-        // Add new unclustered point layer
+        // Add labels layer
+        map.addLayer({
+            'id': 'boundary-labels',
+            'type': 'symbol',
+            'source': 'la-boundaries',
+            'layout': {
+                'text-field': ['get', 'CITY_COMM_NAME'],
+                'text-variable-anchor': ['center'],
+                'text-radial-offset': 0,
+                'text-justify': 'center',
+                'text-size': 14,
+                'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                'text-padding': 3
+            },
+            'paint': {
+                'text-color': '#2c3e50',
+                'text-halo-color': '#ffffff',
+                'text-halo-width': 2
+            }
+        });
+
+        // Mouse enter event for boundaries
+        map.on('mouseenter', 'la-fills', (e) => {
+            map.getCanvas().style.cursor = 'pointer';
+            if (e.features.length > 0) {
+                map.setFilter('la-fills-hover', ['==', ['get', 'CITY_COMM_NAME'], e.features[0].properties.CITY_COMM_NAME]);
+            }
+        });
+
+        // Mouse leave event for boundaries
+        map.on('mouseleave', 'la-fills', () => {
+            map.getCanvas().style.cursor = '';
+            map.setFilter('la-fills-hover', ['==', ['get', 'CITY_COMM_NAME'], '']);
+        });
+
+        // Mouse enter event for facilities
+        map.on('mouseenter', 'unclustered-point', (e) => {
+            map.getCanvas().style.cursor = 'pointer';
+            const coordinates = e.features[0].geometry.coordinates.slice();
+            const properties = e.features[0].properties;
+
+            // Create popup content
+            const popupContent = `
+                <strong>${properties.FacilityName}</strong><br>
+                ${properties.Agency}<br>
+                ${properties.Address}<br>
+                ${properties.ActualUse || 'Use not specified'}<br>
+                ${properties.ExistingEV ? '✓ EV Charging Available' : '✗ No EV Charging'}<br>
+                ${properties.ExistingPV ? '✓ Solar PV Installed' : '✗ No Solar PV'}
+            `;
+
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            new mapboxgl.Popup()
+                .setLngLat(coordinates)
+                .setHTML(popupContent)
+                .addTo(map);
+        });
+
+        // Mouse leave event for facilities
+        map.on('mouseleave', 'unclustered-point', () => {
+            map.getCanvas().style.cursor = '';
+        });
+                // Click event for boundaries
+                map.on('click', 'la-fills', (e) => {
+            if (e.features.length > 0) {
+                const cityName = e.features[0].properties.CITY_COMM_NAME;
+                const matchingAgency = agencyData.find(a => 
+                    a.Agency.replace('City of ', '').trim().toUpperCase() === cityName.trim()
+                );
+                
+                if (matchingAgency) {
+                    onAgencyClick(matchingAgency);
+                    document.getElementById('dashboard-panel').scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }
+            }
+        });
+
+        // Click event for clusters
+        map.on('click', 'clusters', (e) => {
+            const features = map.queryRenderedFeatures(e.point, {
+                layers: ['clusters']
+            });
+            const clusterId = features[0].properties.cluster_id;
+            map.getSource('facilities').getClusterExpansionZoom(
+                clusterId,
+                (err, zoom) => {
+                    if (err) return;
+                    map.easeTo({
+                        center: features[0].geometry.coordinates,
+                        zoom: zoom
+                    });
+                }
+            );
+        });
+
+        // Click event for unclustered points
+        map.on('click', 'unclustered-point', (e) => {
+            const props = e.features[0].properties;
+            const matchingAgency = agencyData.find(a => a.Agency === props.Agency);
+            if (matchingAgency) {
+                onAgencyClick(matchingAgency);
+                const matchingFacility = facilityData.find(f => 
+                    f.Agency === props.Agency && 
+                    f.FacilityName === props.FacilityName
+                );
+                
+                if (matchingFacility) {
+                    updateFacilityDashboard(matchingFacility);
+                    const facilityLinks = document.querySelectorAll('.facility-title');
+                    facilityLinks.forEach(link => {
+                        if (link.textContent === props.FacilityName) {
+                            link.classList.add('active');
+                            link.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        } else {
+                            link.classList.remove('active');
+                        }
+                    });
+                }
+                
+                document.getElementById('dashboard-panel').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }
+        });
+
+        // Initialize filters
+        initializeFilters();
+        
+        // Show intro section
+        document.getElementById('intro-section').style.display = 'block';
+    });
+
+    // Add navigation controls
+    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    
+    return map;
+}
+// Initialize filters function
+function initializeFilters() {
+    // Agency filter input
+    const agencyFilter = document.getElementById('agency-filter');
+    const suggestionsList = document.getElementById('agency-suggestions');
+
+    agencyFilter.addEventListener('input', (e) => {
+        const searchText = e.target.value.toLowerCase();
+        if (searchText.length < 2) {
+            suggestionsList.style.display = 'none';
+            return;
+        }
+
+        const suggestions = agencyData
+            .filter(agency => agency.Agency.toLowerCase().includes(searchText))
+            .map(agency => agency.Agency);
+
+        if (suggestions.length > 0) {
+            suggestionsList.innerHTML = suggestions
+                .map(agency => `<li>${agency}</li>`)
+                .join('');
+            suggestionsList.style.display = 'block';
+        } else {
+            suggestionsList.style.display = 'none';
+        }
+    });
+
+    suggestionsList.addEventListener('click', (e) => {
+        if (e.target.tagName === 'LI') {
+            agencyFilter.value = e.target.textContent;
+            suggestionsList.style.display = 'none';
+            const selectedAgency = agencyData.find(a => a.Agency === e.target.textContent);
+            if (selectedAgency) {
+                onAgencyClick(selectedAgency);
+            }
+        }
+    });
+
+    // DAC filter
+    document.getElementById('dac-filter').addEventListener('change', updateFilters);
+    
+    // CES90 filter
+    document.getElementById('ces90-filter').addEventListener('change', updateFilters);
+    
+    // COG filter
+    document.getElementById('cog-select').addEventListener('change', updateFilters);
+    
+    // Population threshold
+    const populationThreshold = document.getElementById('population-threshold');
+    const populationValue = document.getElementById('population-threshold-value');
+    
+    populationThreshold.addEventListener('input', (e) => {
+        const value = e.target.value;
+        populationValue.textContent = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        updateFilters();
+    });
+
+    // Facility filters
+    document.getElementById('pv-filter').addEventListener('change', updateFilters);
+    document.getElementById('ev-filter').addEventListener('change', updateFilters);
+    document.getElementById('cooling-filter').addEventListener('change', updateFilters);
+}
+
+// Update filters function
+function updateFilters() {
+    const dacFilter = document.getElementById('dac-filter').checked;
+    const ces90Filter = document.getElementById('ces90-filter').checked;
+    const cogSelect = document.getElementById('cog-select').value;
+    const populationThreshold = parseInt(document.getElementById('population-threshold').value);
+    const pvFilter = document.getElementById('pv-filter').checked;
+    const evFilter = document.getElementById('ev-filter').checked;
+    const coolingFilter = document.getElementById('cooling-filter').checked;
+
+    // Filter agencies
+    let filteredAgencies = agencyData.filter(agency => {
+        if (dacFilter && !agency.DAC) return false;
+        if (ces90Filter && agency.CalEnviroScreen <= 90) return false;
+        if (cogSelect && agency.COG !== cogSelect) return false;
+        if (agency.Population < populationThreshold) return false;
+        return true;
+    });
+
+    // Update the listing
+    updateListing(filteredAgencies);
+
+    // Filter facilities if facility filters are active
+    if (pvFilter || evFilter || coolingFilter) {
+        const filteredFacilities = facilityData.filter(facility => {
+            if (pvFilter && !facility.ExistingPV) return false;
+            if (evFilter && !facility.ExistingEV) return false;
+            if (coolingFilter && !facility.CoolingCenter) return false;
+            return true;
+        });
+
+        // Update facility GeoJSON
+        const newGeoJSON = {
+            type: 'FeatureCollection',
+            features: filteredFacilities.map(f => ({
+                type: 'Feature',
+                geometry: {
+                    type: 'Point',
+                    coordinates: [f.Longitude, f.Latitude]
+                },
+                properties: {
+                    Agency: f.Agency,
+                    FacilityName: f.FacilityName,
+                    Address: f.Address,
+                    ActualUse: f.ActualUse,
+                    ExistingEV: f.ExistingEV,
+                    ExistingPV: f.ExistingPV
+                }
+            }))
+        };
+
+        // Update the map source
+        if (map.getSource('facilities')) {
+            map.getSource('facilities').setData(newGeoJSON);
+        }
+    }
+}
+// Update listing function
+function updateListing(agencies) {
+    const listing = document.getElementById('listing');
+    if (!listing) return;
+
+    // Clear existing content
+    listing.innerHTML = '';
+
+    // Group agencies by COG
+    const cogGroups = {};
+    agencies.forEach(agency => {
+        const cog = agency.COG || 'Other';
+        if (!cogGroups[cog]) {
+            cogGroups[cog] = [];
+        }
+        cogGroups[cog].push(agency);
+    });
+
+    // Create sections for each COG
+    Object.keys(cogGroups).sort().forEach(cog => {
+        if (cog === 'null' || cog === 'undefined') return;
+
+        const cogSection = document.createElement('div');
+        cogSection.className = 'cog-section';
+
+        const cogHeader = document.createElement('div');
+        cogHeader.className = 'cog-header';
+        cogHeader.textContent = cog;
+        cogHeader.addEventListener('click', () => {
+            cogHeader.classList.toggle('expanded');
+            agencyList.style.display = agencyList.style.display === 'none' ? 'block' : 'none';
+        });
+
+        const agencyList = document.createElement('div');
+        agencyList.className = 'agency-list';
+        agencyList.style.display = 'none';
+
+        // Sort agencies alphabetically
+        cogGroups[cog].sort((a, b) => a.Agency.localeCompare(b.Agency));
+
+        cogGroups[cog].forEach(agency => {
+            const agencyDiv = document.createElement('div');
+            agencyDiv.className = 'agency-title';
+            agencyDiv.textContent = agency.Agency;
+            agencyDiv.addEventListener('click', () => onAgencyClick(agency));
+            agencyList.appendChild(agencyDiv);
+        });
+
+        cogSection.appendChild(cogHeader);
+        cogSection.appendChild(agencyList);
+        listing.appendChild(cogSection);
+    });
+
+    // Update the data overview
+    updateDataOverview(agencies);
+}
+
+// Agency click handler
+function onAgencyClick(agency) {
+    // Update agency data display
+    document.getElementById('agency-dac').textContent = agency.DAC ? 'Yes' : 'No';
+    document.getElementById('agency-cal').textContent = agency.CalEnviroScreen || 'N/A';
+    document.getElementById('agency-pop').textContent = agency.Population ? 
+        agency.Population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 
+        'N/A';
+
+    // Show agency data section
+    document.getElementById('agency-data').style.display = 'block';
+    
+    // Update title
+    document.getElementById('data-overview-title').textContent = agency.Agency;
+
+    // Show back button
+    const backButton = document.getElementById('back-button');
+    backButton.style.display = 'block';
+    backButton.onclick = () => {
+        document.getElementById('agency-data').style.display = 'none';
+        document.getElementById('data-overview-title').textContent = 'Data Overview';
+        backButton.style.display = 'none';
+        document.getElementById('facility-filters').style.display = 'none';
+        updateListing(agencyData);
+    };
+
+    // Filter and display facilities for this agency
+    const agencyFacilities = facilityData.filter(f => f.Agency === agency.Agency);
+    displayFacilities(agencyFacilities);
+
+    // Show facility filters
+    document.getElementById('facility-filters').style.display = 'block';
+
+    // Update charts
+    updateCharts(agency, agencyFacilities);
+
+    // Fly to agency on map
+    const agencyBoundary = map.querySourceFeatures('la-boundaries', {
+        filter: ['==', ['get', 'CITY_COMM_NAME'], 
+                agency.Agency.replace('City of ', '').trim().toUpperCase()]
+    })[0];
+
+    if (agencyBoundary) {
+        const bounds = new mapboxgl.LngLatBounds();
+        agencyBoundary.geometry.coordinates[0].forEach(coord => {
+            bounds.extend(coord);
+        });
+        map.fitBounds(bounds, {
+            padding: 50,
+            duration: 1000
+        });
+    }
+}
+// Display facilities function
+function displayFacilities(facilities) {
+    const listing = document.getElementById('listing');
+    listing.innerHTML = '';
+
+    if (facilities.length === 0) {
+        listing.innerHTML = '<div id="no-facilities-msg">No facilities found matching the current filters.</div>';
+        return;
+    }
+
+    const facilitiesTitle = document.createElement('h4');
+    facilitiesTitle.textContent = 'Facilities';
+    listing.appendChild(facilitiesTitle);
+
+    const facilitiesContainer = document.createElement('div');
+    facilitiesContainer.className = 'facilities-container';
+
+    facilities.forEach(facility => {
+        const facilityLink = document.createElement('a');
+        facilityLink.className = 'facility-title';
+        facilityLink.textContent = facility.FacilityName;
+        facilityLink.href = '#';
+        facilityLink.onclick = (e) => {
+            e.preventDefault();
+            updateFacilityDashboard(facility);
+            
+            // Remove active class from all facilities
+            document.querySelectorAll('.facility-title').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Add active class to clicked facility
+            facilityLink.classList.add('active');
+
+            // Fly to facility location
+            map.flyTo({
+                center: [facility.Longitude, facility.Latitude],
+                zoom: 16,
+                duration: 1000
+            });
+        };
+        facilitiesContainer.appendChild(facilityLink);
+    });
+
+    listing.appendChild(facilitiesContainer);
+}
+
+// Update facility dashboard
+function updateFacilityDashboard(facility) {
+    const dashboardTitle = document.getElementById('data-overview-title');
+    dashboardTitle.textContent = facility.FacilityName;
+
+    // Update metrics
+    const metrics = {
+        'Actual Use': facility.ActualUse || 'Not specified',
+        'Address': facility.Address,
+        'EV Charging': facility.ExistingEV ? 'Available' : 'Not available',
+        'Solar PV': facility.ExistingPV ? 'Installed' : 'Not installed',
+        'Cooling Center': facility.CoolingCenter ? 'Yes' : 'No'
+    };
+
+    const agencyData = document.getElementById('agency-data');
+    agencyData.innerHTML = '<h4>Facility Details</h4>';
+
+    Object.entries(metrics).forEach(([label, value]) => {
+        const metricDiv = document.createElement('div');
+        metricDiv.className = 'metric';
+        metricDiv.innerHTML = `
+            <span class="metric-label">${label}:</span>
+            <span class="metric-value">${value}</span>
+        `;
+        agencyData.appendChild(metricDiv);
+    });
+}
+
+// Update charts function
+function updateCharts(agency, facilities) {
+    // Update or create population chart
+    const popCtx = document.getElementById('populationChart');
+    if (window.populationChart) {
+        window.populationChart.destroy();
+    }
+
+    const popData = {
+        labels: ['Population'],
+        datasets: [{
+            label: agency.Agency,
+            data: [agency.Population],
+            backgroundColor: 'rgba(52, 152, 219, 0.5)',
+            borderColor: 'rgba(52, 152, 219, 1)',
+            borderWidth: 1
+        }]
+    };
+
+    window.populationChart = new Chart(popCtx, {
+        type: 'bar',
+        data: popData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Population'
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Agency Population'
+                }
+            }
+        }
+    });
+        // Update or create facilities pie chart
+        const pieCtx = document.getElementById('facilitiesPieChart');
+    if (window.facilitiesPieChart) {
+        window.facilitiesPieChart.destroy();
+    }
+
+    // Count facilities by type
+    const facilityTypes = facilities.reduce((acc, facility) => {
+        const type = facility.ActualUse || 'Unspecified';
+        acc[type] = (acc[type] || 0) + 1;
+        return acc;
+    }, {});
+
+    const pieData = {
+        labels: Object.keys(facilityTypes),
+        datasets: [{
+            data: Object.values(facilityTypes),
+            backgroundColor: [
+                'rgba(52, 152, 219, 0.8)',
+                'rgba(46, 204, 113, 0.8)',
+                'rgba(155, 89, 182, 0.8)',
+                'rgba(241, 196, 15, 0.8)',
+                'rgba(231, 76, 60, 0.8)'
+            ]
+        }]
+    };
+
+    window.facilitiesPieChart = new Chart(pieCtx, {
+        type: 'pie',
+        data: pieData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Facilities by Type'
+                },
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+}
+
+// Welcome popup functions
+function showWelcome() {
+    const popup = document.getElementById('welcome-popup');
+    popup.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeWelcome() {
+    const popup = document.getElementById('welcome-popup');
+    popup.classList.add('fade-out');
+    document.body.style.overflow = '';
+    setTimeout(() => {
+        popup.style.display = 'none';
+        popup.classList.remove('fade-out');
+    }, 400);
+}
+
+// Update data overview function
+function updateDataOverview(agencies) {
+    const totalAgencies = agencies.length;
+    const totalPopulation = agencies.reduce((sum, agency) => sum + (agency.Population || 0), 0);
+    const dacAgencies = agencies.filter(a => a.DAC).length;
+    
+    const metrics = {
+        'Total Agencies': totalAgencies,
+        'Total Population Served': totalPopulation.toLocaleString(),
+        'DAC Agencies': dacAgencies,
+        'Non-DAC Agencies': totalAgencies - dacAgencies
+    };
+
+    const agencyData = document.getElementById('agency-data');
+    agencyData.innerHTML = '<h4>Overview Metrics</h4>';
+
+    Object.entries(metrics).forEach(([label, value]) => {
+        const metricDiv = document.createElement('div');
+        metricDiv.className = 'metric';
+        metricDiv.innerHTML = `
+            <span class="metric-label">${label}:</span>
+            <span class="metric-value">${value}</span>
+        `;
+        agencyData.appendChild(metricDiv);
+    });
+}
+
+// Initialize the application
+document.addEventListener('DOMContentLoaded', () => {
+    // Show welcome popup
+    showWelcome();
+    
+    // Load data and initialize map
+    loadAllData();
+});
+
+// Style selector event listener
+document.getElementById('style-selector').addEventListener('change', (event) => {
+    const selectedStyle = event.target.value;
+    const currentZoom = map.getZoom();
+    const currentCenter = map.getCenter();
+    
+    map.setStyle(selectedStyle);
+    
+    map.on('style.load', () => {
+        // Re-add sources and layers after style change
+        const dashboardCities = agencyData.map(a => {
+            return a.Agency.replace('City of ', '').trim().toUpperCase();
+        });
+                // Re-add boundaries source and layers
+                map.addSource('la-boundaries', {
+            'type': 'geojson',
+            'data': './data/la_boundaries.geojson'
+        });
+
+        // Re-add facilities source
+        map.addSource('facilities', {
+            'type': 'geojson',
+            'data': facilityGeoJSON,
+            'cluster': true,
+            'clusterMaxZoom': 14,
+            'clusterRadius': 50
+        });
+
+        // Re-add all layers
+        map.addLayer({
+            'id': 'la-fills',
+            'type': 'fill',
+            'source': 'la-boundaries',
+            'layout': {},
+            'paint': {
+                'fill-color': '#3498db',
+                'fill-opacity': 0.4
+            }
+        });
+
+        map.addLayer({
+            'id': 'la-borders',
+            'type': 'line',
+            'source': 'la-boundaries',
+            'layout': {},
+            'paint': {
+                'line-color': '#2980b9',
+                'line-width': 1
+            }
+        });
+
+        map.addLayer({
+            'id': 'la-fills-hover',
+            'type': 'fill',
+            'source': 'la-boundaries',
+            'paint': {
+                'fill-color': '#2ecc71',
+                'fill-opacity': 0.7
+            },
+            'filter': ['==', ['get', 'CITY_COMM_NAME'], '']
+        });
+
+        map.addLayer({
+            'id': 'clusters',
+            'type': 'circle',
+            'source': 'facilities',
+            'filter': ['has', 'point_count'],
+            'paint': {
+                'circle-radius': [
+                    'step',
+                    ['get', 'point_count'],
+                    25,
+                    10,
+                    30,
+                    25,
+                    35
+                ],
+                'circle-color': [
+                    'step',
+                    ['get', 'point_count'],
+                    '#ff9800',
+                    10,
+                    '#f57c00',
+                    25,
+                    '#e65100'
+                ],
+                'circle-opacity': 0.9,
+                'circle-stroke-width': 2,
+                'circle-stroke-color': '#ffffff',
+                'circle-stroke-opacity': 0.8
+            }
+        });
+
+        map.addLayer({
+            'id': 'cluster-count',
+            'type': 'symbol',
+            'source': 'facilities',
+            'filter': ['has', 'point_count'],
+            'layout': {
+                'text-field': '{point_count_abbreviated}',
+                'text-font': ['DIN Offc Pro Bold', 'Arial Unicode MS Bold'],
+                'text-size': 16
+            },
+            'paint': {
+                'text-color': '#ffffff'
+            }
+        });
+
         map.addLayer({
             'id': 'unclustered-point',
             'type': 'circle',
@@ -1631,692 +1706,19 @@
             }
         });
 
-        // Update popup styling
-        const popup = new mapboxgl.Popup({
-            closeButton: false,
-            closeOnClick: false,
-            anchor: 'bottom',
-            offset: [0, -10],
-            className: 'facility-popup'
-        });
+        // Apply filters to boundary layers
+        map.setFilter('la-fills', ['in', ['get', 'CITY_COMM_NAME'], ['literal', dashboardCities]]);
+        map.setFilter('la-borders', ['in', ['get', 'CITY_COMM_NAME'], ['literal', dashboardCities]]);
 
-        // Add mouse events for popups
-        map.on('mouseenter', 'unclustered-point', (e) => {
-            map.getCanvas().style.cursor = 'pointer';
-            const props = e.features[0].properties;
-            const desc = `
-                <strong>${props.FacilityName}</strong><br>
-                Use: ${props.ActualUse}<br>
-                EV: ${props.ExistingEV}<br>
-                PV: ${props.ExistingPV}
-            `;
-            popup.setLngLat(e.features[0].geometry.coordinates)
-                 .setHTML(desc)
-                 .addTo(map);
-        });
+        // Restore the zoom and center position
+        map.setZoom(currentZoom);
+        map.setCenter(currentCenter);
 
-        map.on('mouseleave', 'unclustered-point', () => {
-            map.getCanvas().style.cursor = '';
-            popup.remove();
-        });
-
-        // Add click event for clusters
-        map.on('click', 'clusters', (e) => {
-            const features = map.queryRenderedFeatures(e.point, {
-                layers: ['clusters']
-            });
-            const clusterId = features[0].properties.cluster_id;
-            map.getSource('facilities').getClusterExpansionZoom(
-                clusterId,
-                (err, zoom) => {
-                    if (err) return;
-                    map.easeTo({
-                        center: features[0].geometry.coordinates,
-                        zoom: zoom
-                    });
-                }
-            );
-        });
-
-        // Change cursor when hovering over clusters
-        map.on('mouseenter', 'clusters', () => {
-            map.getCanvas().style.cursor = 'pointer';
-        });
-        
-        map.on('mouseleave', 'clusters', () => {
-            map.getCanvas().style.cursor = '';
-        });
-
-        // Add this click handler for boundary areas after your other map event listeners
-        map.on('click', 'la-fills', (e) => {
-            if (e.features.length > 0) {
-                const cityName = e.features[0].properties.CITY_COMM_NAME;
-                // Find matching agency (accounting for "City of" prefix)
-                const matchingAgency = agencyData.find(a => 
-                    a.Agency.replace('City of ', '').trim().toUpperCase() === cityName.trim()
-                );
-                
-                if (matchingAgency) {
-                    // Call existing onAgencyClick function
-                    onAgencyClick(matchingAgency);
-                    
-                    // Scroll dashboard into view if needed
-                    document.getElementById('dashboard-panel').scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'start' 
-                    });
-                }
-            }
-        });
-
-        // Update the click handler for individual facility points
-        map.on('click', 'unclustered-point', (e) => {
-            const props = e.features[0].properties;
-            
-            // Find the matching agency first
-            const matchingAgency = agencyData.find(a => a.Agency === props.Agency);
-            if (matchingAgency) {
-                // First show the agency's information
-                onAgencyClick(matchingAgency);
-                
-                // Then find and show the facility's information
-                const matchingFacility = facilityData.find(f => 
-                    f.Agency === props.Agency && 
-                    f.FacilityName === props.FacilityName
-                );
-                
-                if (matchingFacility) {
-                    // Update facility dashboard
-                    updateFacilityDashboard(matchingFacility);
-                    
-                    // Find and highlight the facility in the listing
-                    const facilityLinks = document.querySelectorAll('.facility-title');
-                    facilityLinks.forEach(link => {
-                        if (link.textContent === props.FacilityName) {
-                            link.classList.add('active');
-                            link.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        } else {
-                            link.classList.remove('active');
-                        }
-                    });
-                }
-                
-                // Scroll dashboard into view
-                document.getElementById('dashboard-panel').scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start' 
-                });
-            }
-        });
-
-        renderListing();
+        // Re-add event listeners
+        addMapEventListeners();
     });
+});
 
-    updateDataOverviewTitle();
-
-    // Add this after your map initialization
-    const fullscreenControl = new mapboxgl.FullscreenControl();
-    map.addControl(fullscreenControl, 'top-right');
-
-    // Add this function to your JavaScript section
-    function closeWelcome() {
-        const popup = document.getElementById('welcome-popup');
-        popup.classList.add('fade-out');
-        setTimeout(() => {
-            popup.style.display = 'none';
-        }, 400);
-    }
-
-    // Make sure your welcome popup HTML has the onclick handler
-    // <button onclick="closeWelcome()">Enter Dashboard</button>
-
-    // Add this event listener after your map initialization
-    document.getElementById('style-selector').addEventListener('change', (event) => {
-        const selectedStyle = event.target.value;
-        const currentZoom = map.getZoom();
-        const currentCenter = map.getCenter();
-        
-        // Get the current list of dashboard cities before style change
-        const dashboardCities = agencyData.map(a => 
-            a.Agency.replace('City of ', '').trim().toUpperCase()
-        );
-        
-        map.setStyle(selectedStyle);
-
-        // Re-add the data layers after the style change
-        map.on('style.load', () => {
-            // Re-add boundaries source
-            map.addSource('la-boundaries', {
-                'type': 'geojson',
-                'data': 'https://raw.githubusercontent.com/wbeng69527/erap/main/la_boundaries.geojson'
-            });
-
-            // Re-add the fill layer with filter
-            map.addLayer({
-                'id': 'la-fills',
-                'type': 'fill',
-                'source': 'la-boundaries',
-                'layout': {},
-                'paint': {
-                    'fill-color': '#3498db',
-                    'fill-opacity': 0.4
-                },
-                'filter': ['in', ['get', 'CITY_COMM_NAME'], ['literal', dashboardCities]]
-            });
-
-            // Re-add the border layer with filter
-            map.addLayer({
-                'id': 'la-borders',
-                'type': 'line',
-                'source': 'la-boundaries',
-                'layout': {},
-                'paint': {
-                    'line-color': '#2980b9',
-                    'line-width': 1
-                }
-            });
-
-            // Add hover layer
-            map.addLayer({
-                'id': 'la-fills-hover',
-                'type': 'fill',
-                'source': 'la-boundaries',
-                'paint': {
-                    'fill-color': '#2ecc71',
-                    'fill-opacity': 0.7
-                },
-                'filter': ['in', ['get', 'CITY_COMM_NAME'], ['literal', dashboardCities]]
-            });
-
-            // Re-add other layers (facilities, etc.)
-            // ... rest of your layer additions ...
-
-            // Restore the zoom and center position
-            map.setZoom(currentZoom);
-            map.setCenter(currentCenter);
-
-            // Re-add event listeners
-            addMapEventListeners();
-        });
-    });
-
-    // Now define the function (remove the extra } that was here)
-    function addMapEventListeners() {
-        // Mouse events for boundaries
-        map.on('mouseenter', 'la-fills', (e) => {
-            map.getCanvas().style.cursor = 'pointer';
-            if (e.features.length > 0) {
-                map.setFilter('la-fills-hover', ['==', ['get', 'CITY_COMM_NAME'], e.features[0].properties.CITY_COMM_NAME]);
-            }
-        });
-
-        map.on('mouseleave', 'la-fills', () => {
-            map.getCanvas().style.cursor = '';
-            map.setFilter('la-fills-hover', ['==', ['get', 'CITY_COMM_NAME'], '']);
-        });
-
-        // Mouse events for facilities
-        map.on('mouseenter', 'unclustered-point', (e) => {
-            map.getCanvas().style.cursor = 'pointer';
-            // Your existing popup code here
-        });
-
-        map.on('mouseleave', 'unclustered-point', () => {
-            map.getCanvas().style.cursor = '';
-            // Your existing popup removal code here
-        });
-
-        // Add click handlers
-        map.on('click', 'la-fills', (e) => {
-            if (e.features.length > 0) {
-                const cityName = e.features[0].properties.CITY_COMM_NAME;
-                const matchingAgency = agencyData.find(a => 
-                    a.Agency.replace('City of ', '').trim().toUpperCase() === cityName.trim()
-                );
-                
-                if (matchingAgency) {
-                    onAgencyClick(matchingAgency);
-                    document.getElementById('dashboard-panel').scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'start' 
-                    });
-                }
-            }
-        });
-
-        map.on('click', 'clusters', (e) => {
-            const features = map.queryRenderedFeatures(e.point, {
-                layers: ['clusters']
-            });
-            const clusterId = features[0].properties.cluster_id;
-            map.getSource('facilities').getClusterExpansionZoom(
-                clusterId,
-                (err, zoom) => {
-                    if (err) return;
-                    map.easeTo({
-                        center: features[0].geometry.coordinates,
-                        zoom: zoom
-                    });
-                }
-            );
-        });
-
-        map.on('click', 'unclustered-point', (e) => {
-            const props = e.features[0].properties;
-            const matchingAgency = agencyData.find(a => a.Agency === props.Agency);
-            if (matchingAgency) {
-                onAgencyClick(matchingAgency);
-                const matchingFacility = facilityData.find(f => 
-                    f.Agency === props.Agency && 
-                    f.FacilityName === props.FacilityName
-                );
-                
-                if (matchingFacility) {
-                    updateFacilityDashboard(matchingFacility);
-                    const facilityLinks = document.querySelectorAll('.facility-title');
-                    facilityLinks.forEach(link => {
-                        if (link.textContent === props.FacilityName) {
-                            link.classList.add('active');
-                            link.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        } else {
-                            link.classList.remove('active');
-                        }
-                    });
-                }
-                
-                document.getElementById('dashboard-panel').scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start' 
-                });
-            }
-        });
-    } // Close addMapEventListeners function
-
-    // Add this event listener after your map initialization
-    document.getElementById('style-selector').addEventListener('change', (event) => {
-        const selectedStyle = event.target.value;
-        const currentZoom = map.getZoom();
-        const currentCenter = map.getCenter();
-        
-        map.setStyle(selectedStyle);
-
-        // Re-add the data layers after the style change
-        map.on('style.load', () => {
-            // Store the dashboard cities for filtering
-            const dashboardCities = agencyData.map(a => {
-                return a.Agency.replace('City of ', '').trim().toUpperCase();
-            });
-
-            // Re-add boundaries source and layers
-            map.addSource('la-boundaries', {
-                'type': 'geojson',
-                'data': 'https://raw.githubusercontent.com/wbeng69527/erap/main/la_boundaries.geojson'
-            });
-
-            // Add fills layer
-            map.addLayer({
-                'id': 'la-fills',
-                'type': 'fill',
-                'source': 'la-boundaries',
-                'layout': {},
-                'paint': {
-                    'fill-color': '#3498db',
-                    'fill-opacity': 0.4
-                }
-            });
-
-            // Add borders layer
-            map.addLayer({
-                'id': 'la-borders',
-                'type': 'line',
-                'source': 'la-boundaries',
-                'layout': {},
-                'paint': {
-                    'line-color': '#2980b9',
-                    'line-width': 1
-                }
-            });
-
-            // Add hover layer
-            map.addLayer({
-                'id': 'la-fills-hover',
-                'type': 'fill',
-                'source': 'la-boundaries',
-                'paint': {
-                    'fill-color': '#2ecc71',
-                    'fill-opacity': 0.7
-                },
-                'filter': ['==', ['get', 'CITY_COMM_NAME'], '']
-            });
-
-            // Add labels layer
-            map.addLayer({
-                'id': 'boundary-labels',
-                'type': 'symbol',
-                'source': 'la-boundaries',
-                'filter': ['in', ['get', 'CITY_COMM_NAME'], ['literal', dashboardCities]],
-                'layout': {
-                    'text-field': ['get', 'CITY_COMM_NAME'],
-                    'text-variable-anchor': ['center'],
-                    'text-radial-offset': 0,
-                    'text-justify': 'center',
-                    'text-size': 14,
-                    'text-font': ['Nunito Bold', 'Arial Unicode MS Bold'],
-                    'text-padding': 3
-                },
-                'paint': {
-                    'text-color': '#2c3e50',
-                    'text-halo-color': '#ffffff',
-                    'text-halo-width': 2
-                }
-            });
-
-            // Re-add facilities source and layers
-            map.addSource('facilities', {
-                'type': 'geojson',
-                'data': facilityGeoJSON,
-                'cluster': true,
-                'clusterMaxZoom': 14,
-                'clusterRadius': 50
-            });
-
-            // Add clusters layer
-            map.addLayer({
-                'id': 'clusters',
-                'type': 'circle',
-                'source': 'facilities',
-                'filter': ['has', 'point_count'],
-                'paint': {
-                    'circle-radius': [
-                        'step',
-                        ['get', 'point_count'],
-                        25,
-                        10,
-                        30,
-                        25,
-                        35
-                    ],
-                    'circle-color': [
-                        'step',
-                        ['get', 'point_count'],
-                        '#ff9800',
-                        10,
-                        '#f57c00',
-                        25,
-                        '#e65100'
-                    ],
-                    'circle-opacity': 0.9,
-                    'circle-stroke-width': 2,
-                    'circle-stroke-color': '#ffffff',
-                    'circle-stroke-opacity': 0.8
-                }
-            });
-
-            // Add cluster count layer
-            map.addLayer({
-                'id': 'cluster-count',
-                'type': 'symbol',
-                'source': 'facilities',
-                'filter': ['has', 'point_count'],
-                'layout': {
-                    'text-field': '{point_count_abbreviated}',
-                    'text-font': ['DIN Offc Pro Bold', 'Arial Unicode MS Bold'],
-                    'text-size': 16
-                },
-                'paint': {
-                    'text-color': '#ffffff'
-                }
-            });
-
-            // Add unclustered point layer
-            map.addLayer({
-                'id': 'unclustered-point',
-                'type': 'circle',
-                'source': 'facilities',
-                'filter': ['!', ['has', 'point_count']],
-                'paint': {
-                    'circle-color': '#ff9800',
-                    'circle-radius': 8,
-                    'circle-stroke-width': 2,
-                    'circle-stroke-color': '#ffffff',
-                    'circle-opacity': 0.9,
-                    'circle-stroke-opacity': 0.8
-                }
-            });
-
-            // Apply filters to boundary layers
-            map.setFilter('la-fills', ['in', ['get', 'CITY_COMM_NAME'], ['literal', dashboardCities]]);
-            map.setFilter('la-borders', ['in', ['get', 'CITY_COMM_NAME'], ['literal', dashboardCities]]);
-
-            // Restore the zoom and center position
-            map.setZoom(currentZoom);
-            map.setCenter(currentCenter);
-
-            // Re-add event listeners
-            addMapEventListeners();
-        });
-    }); // Close the style-selector event listener
-
-    // Add this event listener after your map initialization
-    document.getElementById('style-selector').addEventListener('change', (event) => {
-        const selectedStyle = event.target.value;
-        const currentZoom = map.getZoom();
-        const currentCenter = map.getCenter();
-        
-        map.setStyle(selectedStyle);
-
-        // Re-add the data layers after the style change
-        map.on('style.load', () => {
-            // Store the dashboard cities for filtering
-            const dashboardCities = agencyData.map(a => {
-                return a.Agency.replace('City of ', '').trim().toUpperCase();
-            });
-
-            // Re-add boundaries source and layers
-            map.addSource('la-boundaries', {
-                'type': 'geojson',
-                'data': 'https://raw.githubusercontent.com/wbeng69527/erap/main/la_boundaries.geojson'
-            });
-
-            // Add fills layer
-            map.addLayer({
-                'id': 'la-fills',
-                'type': 'fill',
-                'source': 'la-boundaries',
-                'layout': {},
-                'paint': {
-                    'fill-color': '#3498db',
-                    'fill-opacity': 0.4
-                }
-            });
-
-            // Add borders layer
-            map.addLayer({
-                'id': 'la-borders',
-                'type': 'line',
-                'source': 'la-boundaries',
-                'layout': {},
-                'paint': {
-                    'line-color': '#2980b9',
-                    'line-width': 1
-                }
-            });
-
-            // Add hover layer
-            map.addLayer({
-                'id': 'la-fills-hover',
-                'type': 'fill',
-                'source': 'la-boundaries',
-                'paint': {
-                    'fill-color': '#2ecc71',
-                    'fill-opacity': 0.7
-                },
-                'filter': ['==', ['get', 'CITY_COMM_NAME'], '']
-            });
-
-            // Add labels layer
-            map.addLayer({
-                'id': 'boundary-labels',
-                'type': 'symbol',
-                'source': 'la-boundaries',
-                'filter': ['in', ['get', 'CITY_COMM_NAME'], ['literal', dashboardCities]],
-                'layout': {
-                    'text-field': ['get', 'CITY_COMM_NAME'],
-                    'text-variable-anchor': ['center'],
-                    'text-radial-offset': 0,
-                    'text-justify': 'center',
-                    'text-size': 14,
-                    'text-font': ['Nunito Bold', 'Arial Unicode MS Bold'],
-                    'text-padding': 3
-                },
-                'paint': {
-                    'text-color': '#2c3e50',
-                    'text-halo-color': '#ffffff',
-                    'text-halo-width': 2
-                }
-            });
-
-            // Re-add facilities source and layers
-            map.addSource('facilities', {
-                'type': 'geojson',
-                'data': facilityGeoJSON,
-                'cluster': true,
-                'clusterMaxZoom': 14,
-                'clusterRadius': 50
-            });
-
-            // Add clusters layer
-            map.addLayer({
-                'id': 'clusters',
-                'type': 'circle',
-                'source': 'facilities',
-                'filter': ['has', 'point_count'],
-                'paint': {
-                    'circle-radius': [
-                        'step',
-                        ['get', 'point_count'],
-                        25,
-                        10,
-                        30,
-                        25,
-                        35
-                    ],
-                    'circle-color': [
-                        'step',
-                        ['get', 'point_count'],
-                        '#ff9800',
-                        10,
-                        '#f57c00',
-                        25,
-                        '#e65100'
-                    ],
-                    'circle-opacity': 0.9,
-                    'circle-stroke-width': 2,
-                    'circle-stroke-color': '#ffffff',
-                    'circle-stroke-opacity': 0.8
-                }
-            });
-
-            // Add cluster count layer
-            map.addLayer({
-                'id': 'cluster-count',
-                'type': 'symbol',
-                'source': 'facilities',
-                'filter': ['has', 'point_count'],
-                'layout': {
-                    'text-field': '{point_count_abbreviated}',
-                    'text-font': ['DIN Offc Pro Bold', 'Arial Unicode MS Bold'],
-                    'text-size': 16
-                },
-                'paint': {
-                    'text-color': '#ffffff'
-                }
-            });
-
-            // Add unclustered point layer
-            map.addLayer({
-                'id': 'unclustered-point',
-                'type': 'circle',
-                'source': 'facilities',
-                'filter': ['!', ['has', 'point_count']],
-                'paint': {
-                    'circle-color': '#ff9800',
-                    'circle-radius': 8,
-                    'circle-stroke-width': 2,
-                    'circle-stroke-color': '#ffffff',
-                    'circle-opacity': 0.9,
-                    'circle-stroke-opacity': 0.8
-                }
-            });
-
-            // Apply filters to boundary layers
-            map.setFilter('la-fills', ['in', ['get', 'CITY_COMM_NAME'], ['literal', dashboardCities]]);
-            map.setFilter('la-borders', ['in', ['get', 'CITY_COMM_NAME'], ['literal', dashboardCities]]);
-
-            // Restore the zoom and center position
-            map.setZoom(currentZoom);
-            map.setCenter(currentCenter);
-
-            // Re-add event listeners
-            addMapEventListeners();
-        }); // Close style.load
-    }); // Close addEventListener
-
-    // Function to geocode a single address
-    async function geocodeAddress(address) {
-        const accessToken = mapboxgl.accessToken;
-        const query = encodeURIComponent(address + ', CA');
-        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${accessToken}&country=US&types=address`;
-        
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            if (data.features && data.features.length > 0) {
-                return data.features[0].center;
-            }
-            return null;
-        } catch (error) {
-            console.error('Geocoding error:', error);
-            return null;
-        }
-    }
-
-    // Function to update facility coordinates
-    async function updateFacilityCoordinates() {
-        for (let facility of facilityData) {
-            const address = `${facility.Address}`;
-            const coordinates = await geocodeAddress(address);
-            if (coordinates) {
-                facility.Longitude = coordinates[0];
-                facility.Latitude = coordinates[1];
-            }
-        }
-        
-        // Recreate the GeoJSON with updated coordinates
-        facilityGeoJSON = {
-            type: 'FeatureCollection',
-            features: facilityData.map(f => ({
-                type: 'Feature',
-                geometry: {
-                    type: 'Point',
-                    coordinates: [f.Longitude, f.Latitude]
-                },
-                properties: {
-                    Agency: f.Agency,
-                    FacilityName: f.FacilityName,
-                    Address: f.Address
-                }
-            }))
-        };
-
-        // Update the map source
-        if (map.getSource('facilities')) {
-            map.getSource('facilities').setData(facilityGeoJSON);
-        }
-    }
-
-    // Call this function after your data is loaded
-    updateFacilityCoordinates();
-    </script>
+</script>
 </body>
 </html>
