@@ -1,0 +1,22 @@
+Agency,Facility Name,Address,Latitude,Longitude,Year Built,Gross Floor Area (sq ft),Walkability,Existing Resilience Designation,Existing EV Chargers,Number of Planned EV Chargers,Exisiting PV or Battery Storage Capabilities,Planned PV (hours of autonomy),Planned Battery Storage (hours of autonomy),Building Type
+City of Bell,Bell Library,"4411 Gage Ave, Bell, CA",33.9765° N,118.1856° W,1965,"5,622",High,N/A,No,2,N/A,"3,912",25,Library
+City of Bell,Community Center,"6250 Pine Ave, Bell, CA",33.9760° N,118.1820° W,1980,"16,011",High,Cooling Center,No,2,Solar went live in August 2020,"1,899","1,748",Community center
+City of Bell,Camp Little Bear Park,"6704 Orchard Ave, Bell, CA",33.9770° N,118.1890° W,1962,"5,783",Medium,N/A,No,0,N/A,664,81,Park
+City of Bell,Veterans Memorial Park,"6500 Wilcox Ave, Bell, CA",33.9765° N,118.1875° W,1955,"7,500",Medium,Cooling Center,No Capacity,0,N/A,"3,397",381,Park
+City of Maywood,City Hall & Sheriff's Office,"4319 Slauson Ave, Maywood, CA",33.9880° N,118.1850° W,1938,"9,534",High,Cooling Center,No,4,No,2646,0,Office
+City of Maywood,Teen Center,"4801 E. Slauson Ave, Maywood, CA",33.9885° N,118.1700° W,N/A,N/A,Medium,N/A,No,0,No,Whole Year,Whole year,Community center
+City of Maywood,Maywood Park (YMCA),"4801 E. 58th St, Maywood, CA",33.9890° N,118.1705° W,1999,"30,819",Medium,N/A,No,4,No,1140,5,Community center
+City of Maywood,Cesar Chavez Library,"4323 Slauson Ave, Maywood, CA",33.9880° N,118.1845° W,1938,"3,382",High,N/A,No,0,No,2311,5,Library
+City of Bell Gardens,Ford Park and Recreation Center,"8000 Park Lane, Bell Gardens, CA",33.9650° N,118.1510° W,1976,"9,083",High,N/A,No,10,N/A,3563,13,Community center
+City of Bell Gardens,Community Family Services Center & Veterans Park,"6662 Loveland St, Bell Gardens, CA",33.9660° N,118.1530° W,1976,"20,000",Low,N/A,No,0,N/A,3330,71,Community center
+City of Bell Gardens,Youth Center,"5856 Ludell St, Bell Gardens, CA",33.9680° N,118.1500° W,1948,"11,446",Medium,N/A,No,0,N/A,3406,11,Community center
+City of Bell Gardens,Civic Center,"7100 Garfield St, Bell Gardens, CA",33.9655° N,118.1515° W,1967,"18,500",Medium,N/A,No,0,N/A,5,0,City Hall
+City of Pomona,Library,"625 S Garey Ave, Pomona, CA",34.0530° N,117.7500° W,1956,"25,977",High,Cooling Center,Yes,0,N/A,2057,0,Library
+City of Pomona,City Hall,"505 S Garey Ave, Pomona, CA",34.0525° N,117.7505° W,1969,"44,996",High,N/A,No,0,N/A,2482,14,Office
+City of Pomona,Palomares Park,"499 E Arrow Hwy, Pomona, CA",34.1000° N,117.7400° W,1983,"15,704",Low,Cooling Center,Yes,19,N/A,6470,48,Community center
+City of Pomona,Washington Senior Center,"865 E Granf Ave, Pomona, CA",34.0600° N,117.7400° W,1935,"2,539",Low,Cooling Center,No,6,N/A,4070,883,Senior Center
+City of Irwindale,Dan Diaz Recreation Center and Library,"16053 Calle De Paseo, Irwindale, CA",34.1100° N,117.9700° W,1970,"22,855",Low,N/A,No,0,N/A,1068,1,"Library and 
+recreation center"
+City of Irwindale,City Hall and Police Department,"5050 N Irwindale Ave, Irwindale, CA",34.1105° N,117.9350° W,1957,"20,600",Low,Emergency Operations Center,No,4,N/A,4,0,Office
+City of Irwindale,Senior Center and Annex,"16116 Arrow Hwy, Irwindale, CA",34.1100° N,117.9705° W,1985,"20,678",Low,Cooling Center,No,4,N/A,24,0,Multi-purpose / office
+City of Irwindale,New Library (Planned for 2026),N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,Library
