@@ -767,334 +767,332 @@
 </div>
 
 <script>
-// Initialize global variables for data
-let agencyData = [];
-let facilityData = [];
-let facilityGeoJSON = {
-    type: 'FeatureCollection',
-    features: []
-};
-// Mapbox token
-mapboxgl.accessToken = 'pk.eyJ1Ijoid2VuZ2xlMSIsImEiOiJjbGh0bTJ0OTUzN2dzM21tbTB0NzFmM2QyIn0.-ItjIktoJtcQUsk6l9TbbQ';
+    // Initialize global variables for data
+    let agencyData = [];
+    let facilityData = [];
+    let facilityGeoJSON = {
+        type: 'FeatureCollection',
+        features: []
+    };
+    // Mapbox token
+    mapboxgl.accessToken = 'pk.eyJ1Ijoid2VuZ2xlMSIsImEiOiJjbGh0bTJ0OTUzN2dzM21tbTB0NzFmM2QyIn0.-ItjIktoJtcQUsk6l9TbbQ';
 
-// Function to load CSV data using Papa Parse
-async function loadCSVData(url) {
-    return new Promise((resolve, reject) => {
-        Papa.parse(url, {
-            download: true,
-            header: true,
-            dynamicTyping: true,
-            complete: function(results) {
-                resolve(results.data);
-            },
-            error: function(error) {
-                reject(error);
-            }
-        });
-    });
-}
-    
-// Function to create COG dropdowns
-function createCOGDropdowns(agencies) {
-    const cogDropdowns = document.getElementById('cog-dropdowns');
-    const cogs = [...new Set(agencies.map(agency => agency['Council of Government']))];
-
-    cogs.forEach(cog => {
-        const dropdown = document.createElement('select');
-        dropdown.id = `cog-${cog.replace(/\s+/g, '-').toLowerCase()}`;
-        dropdown.style.display = 'none';
-
-        const defaultOption = document.createElement('option');
-        defaultOption.textContent = `Select an agency under ${cog}`;
-        defaultOption.value = '';
-        dropdown.appendChild(defaultOption);
-
-        agencies.filter(agency => agency['Council of Government'] === cog)
-                .forEach(agency => {
-                    const option = document.createElement('option');
-                    option.textContent = agency.Agency;
-                    option.value = agency.Agency;
-                    dropdown.appendChild(option);
-                });
-
-        cogDropdowns.appendChild(dropdown);
-    });
-
-    document.getElementById('cog-select').addEventListener('change', function () {
-        const selectedCOG = this.value;
-        cogs.forEach(cog => {
-            const dropdown = document.getElementById(`cog-${cog.replace(/\s+/g, '-').toLowerCase()}`);
-            dropdown.style.display = cog === selectedCOG ? 'block' : 'none';
-        });
-    });
-}
-
-// Load data and initialize dropdowns
-async function loadAllData() {
-    try {
-        const agencies = await loadCSVData('./data/agencies_df.csv');
-        createCOGDropdowns(agencies);
-    } catch (error) {
-        console.error('Error loading data:', error);
-    }
-}
-
-// Function to load all data
-async function loadAllData() {
-    try {
-        // Show loading spinner or message if you have one
-        if (document.getElementById('loading-spinner')) {
-            document.getElementById('loading-spinner').style.display = 'block';
-        }
-
-        // Load agencies and facilities data
-        const [agencies, facilities] = await Promise.all([
-            loadCSVData('./data/agencies_df.csv'),
-            loadCSVData('./data/facilities_df.csv')
-        ]);
-
-        // Load GeoJSON data
-        const boundariesResponse = await fetch('./data/la_boundaries.geojson');
-        const boundariesData = await boundariesResponse.json();
-
-        // Store the data globally
-        agencyData = agencies;
-        facilityData = facilities;
-
-        // Convert facilities data to GeoJSON
-        facilityGeoJSON = {
-            type: 'FeatureCollection',
-            features: facilities.map(facility => ({
-                type: 'Feature',
-                geometry: {
-                    type: 'Point',
-                    coordinates: [facility.Longitude, facility.Latitude]
+    // Function to load CSV data using Papa Parse
+    async function loadCSVData(url) {
+        return new Promise((resolve, reject) => {
+            Papa.parse(url, {
+                download: true,
+                header: true,
+                dynamicTyping: true,
+                complete: function(results) {
+                    resolve(results.data);
                 },
-                properties: {
-                    Agency: facility.Agency,
-                    FacilityName: facility.FacilityName,
-                    Address: facility.Address,
-                    ActualUse: facility.ActualUse,
-                    ExistingEV: facility.ExistingEV,
-                    ExistingPV: facility.ExistingPV
+                error: function(error) {
+                    reject(error);
                 }
-            }))
-        };
+            });
+        });
+    }
 
-        // Initialize the map with the loaded data
-        initializeMap(boundariesData);
+    // Function to create COG dropdowns
+    function createCOGDropdowns(agencies) {
+        const cogDropdowns = document.getElementById('cog-dropdowns');
+        const cogs = [...new Set(agencies.map(agency => agency['Council of Government']))];
 
-        // Hide loading spinner
-        if (document.getElementById('loading-spinner')) {
-            document.getElementById('loading-spinner').style.display = 'none';
-        }
+        cogs.forEach(cog => {
+            const dropdown = document.createElement('select');
+            dropdown.id = `cog-${cog.replace(/\s+/g, '-').toLowerCase()}`;
+            dropdown.style.display = 'none';
 
-    } catch (error) {
-        console.error('Error loading data:', error);
-        // Show error message to user
-        if (document.getElementById('loading-spinner')) {
-            document.getElementById('loading-spinner').innerHTML = 'Error loading data. Please refresh the page.';
+            const defaultOption = document.createElement('option');
+            defaultOption.textContent = `Select an agency under ${cog}`;
+            defaultOption.value = '';
+            dropdown.appendChild(defaultOption);
+
+            agencies.filter(agency => agency['Council of Government'] === cog)
+                    .forEach(agency => {
+                        const option = document.createElement('option');
+                        option.textContent = agency.Agency;
+                        option.value = agency.Agency;
+                        dropdown.appendChild(option);
+                    });
+
+            cogDropdowns.appendChild(dropdown);
+        });
+
+        document.getElementById('cog-select').addEventListener('change', function () {
+            const selectedCOG = this.value;
+            cogs.forEach(cog => {
+                const dropdown = document.getElementById(`cog-${cog.replace(/\s+/g, '-').toLowerCase()}`);
+                dropdown.style.display = cog === selectedCOG ? 'block' : 'none';
+            });
+        });
+    }
+
+    // Load data and initialize dropdowns
+    async function loadAllData() {
+        try {
+            // Show loading spinner or message if you have one
+            if (document.getElementById('loading-spinner')) {
+                document.getElementById('loading-spinner').style.display = 'block';
+            }
+
+            // Load agencies and facilities data
+            const [agencies, facilities] = await Promise.all([
+                loadCSVData('./data/agencies_df.csv'),
+                loadCSVData('./data/facilities_df.csv')
+            ]);
+
+            // Load GeoJSON data
+            const boundariesResponse = await fetch('./data/la_boundaries.geojson');
+            const boundariesData = await boundariesResponse.json();
+
+            // Store the data globally
+            agencyData = agencies;
+            facilityData = facilities;
+
+            // Convert facilities data to GeoJSON
+            facilityGeoJSON = {
+                type: 'FeatureCollection',
+                features: facilities.map(facility => ({
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [facility.Longitude, facility.Latitude]
+                    },
+                    properties: {
+                        Agency: facility.Agency,
+                        FacilityName: facility.FacilityName,
+                        Address: facility.Address,
+                        ActualUse: facility.ActualUse,
+                        ExistingEV: facility.ExistingEV,
+                        ExistingPV: facility.ExistingPV
+                    }
+                }))
+            };
+
+            // Initialize the map with the loaded data
+            initializeMap(boundariesData);
+
+            // Create COG dropdowns
+            createCOGDropdowns(agencies);
+
+            // Hide loading spinner
+            if (document.getElementById('loading-spinner')) {
+                document.getElementById('loading-spinner').style.display = 'none';
+            }
+
+        } catch (error) {
+            console.error('Error loading data:', error);
+            // Show error message to user
+            if (document.getElementById('loading-spinner')) {
+                document.getElementById('loading-spinner').innerHTML = 'Error loading data. Please refresh the page.';
+            }
         }
     }
-}
 
-// Initialize map function
-function initializeMap(boundariesData) {
-    const map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/wengle1/cm4m4sedc001v01sqdtx0cioz', // Updated style URL
-        center: [-118.2437, 34.0522],
-        zoom: 10
-    });
-        // Add geocoder control
-        const geocoder = new MapboxGeocoder({
-        accessToken: mapboxgl.accessToken,
-        mapboxgl: mapboxgl,
-        marker: false,
-        placeholder: 'Search for a location',
-        bbox: [-118.9517, 33.7037, -117.6462, 34.8233], // Bounds for LA County
-        proximity: {
-            longitude: -118.2437,
-            latitude: 34.0522
-        }
-    });
-    document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
-
-    map.on('load', () => {
-        // Add boundaries source
-        map.addSource('la-boundaries', {
-            'type': 'geojson',
-            'data': boundariesData
+    // Initialize map function
+    function initializeMap(boundariesData) {
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/wengle1/cm4m4sedc001v01sqdtx0cioz', // Updated style URL
+            center: [-118.2437, 34.0522],
+            zoom: 10
         });
-
-        // Add facilities source
-        map.addSource('facilities', {
-            'type': 'geojson',
-            'data': facilityGeoJSON,
-            'cluster': true,
-            'clusterMaxZoom': 14,
-            'clusterRadius': 50
-        });
-
-        // Add boundary layers
-        map.addLayer({
-            'id': 'la-fills',
-            'type': 'fill',
-            'source': 'la-boundaries',
-            'layout': {},
-            'paint': {
-                'fill-color': '#3498db',
-                'fill-opacity': 0.4
+            // Add geocoder control
+            const geocoder = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl,
+            marker: false,
+            placeholder: 'Search for a location',
+            bbox: [-118.9517, 33.7037, -117.6462, 34.8233], // Bounds for LA County
+            proximity: {
+                longitude: -118.2437,
+                latitude: 34.0522
             }
         });
+        document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
 
-        map.addLayer({
-            'id': 'la-borders',
-            'type': 'line',
-            'source': 'la-boundaries',
-            'layout': {},
-            'paint': {
-                'line-color': '#2980b9',
-                'line-width': 1
-            }
+        map.on('load', () => {
+            // Add boundaries source
+            map.addSource('la-boundaries', {
+                'type': 'geojson',
+                'data': boundariesData
+            });
+
+            // Add facilities source
+            map.addSource('facilities', {
+                'type': 'geojson',
+                'data': facilityGeoJSON,
+                'cluster': true,
+                'clusterMaxZoom': 14,
+                'clusterRadius': 50
+            });
+
+            // Add boundary layers
+            map.addLayer({
+                'id': 'la-fills',
+                'type': 'fill',
+                'source': 'la-boundaries',
+                'layout': {},
+                'paint': {
+                    'fill-color': '#3498db',
+                    'fill-opacity': 0.4
+                }
+            });
+
+            map.addLayer({
+                'id': 'la-borders',
+                'type': 'line',
+                'source': 'la-boundaries',
+                'layout': {},
+                'paint': {
+                    'line-color': '#2980b9',
+                    'line-width': 1
+                }
+            });
+
+            // Add hover layer for boundaries
+            map.addLayer({
+                'id': 'la-fills-hover',
+                'type': 'fill',
+                'source': 'la-boundaries',
+                'paint': {
+                    'fill-color': '#2ecc71',
+                    'fill-opacity': 0.7
+                },
+                'filter': ['==', ['get', 'CITY_COMM_NAME'], '']
+            });
+
+            // Add clusters layer
+            map.addLayer({
+                'id': 'clusters',
+                'type': 'circle',
+                'source': 'facilities',
+                'filter': ['has', 'point_count'],
+                'paint': {
+                    'circle-radius': [
+                        'step',
+                        ['get', 'point_count'],
+                        25,
+                        10,
+                        30,
+                        25,
+                        35
+                    ],
+                    'circle-color': [
+                        'step',
+                        ['get', 'point_count'],
+                        '#ff9800',
+                        10,
+                        '#f57c00',
+                        25,
+                        '#e65100'
+                    ],
+                    'circle-opacity': 0.9,
+                    'circle-stroke-width': 2,
+                    'circle-stroke-color': '#ffffff',
+                    'circle-stroke-opacity': 0.8
+                }
+            });
+
+            // Add cluster count layer
+            map.addLayer({
+                'id': 'cluster-count',
+                'type': 'symbol',
+                'source': 'facilities',
+                'filter': ['has', 'point_count'],
+                'layout': {
+                    'text-field': '{point_count_abbreviated}',
+                    'text-font': ['DIN Offc Pro Bold', 'Arial Unicode MS Bold'],
+                    'text-size': 16
+                },
+                'paint': {
+                    'text-color': '#ffffff'
+                }
+            });
+
+            // Add unclustered point layer
+            map.addLayer({
+                'id': 'unclustered-point',
+                'type': 'circle',
+                'source': 'facilities',
+                'filter': ['!', ['has', 'point_count']],
+                'paint': {
+                    'circle-color': '#ff9800',
+                    'circle-radius': 8,
+                    'circle-stroke-width': 2,
+                    'circle-stroke-color': '#ffffff',
+                    'circle-opacity': 0.9,
+                    'circle-stroke-opacity': 0.8
+                }
+            });
+
+            // Add labels layer
+            map.addLayer({
+                'id': 'boundary-labels',
+                'type': 'symbol',
+                'source': 'la-boundaries',
+                'layout': {
+                    'text-field': ['get', 'CITY_COMM_NAME'],
+                    'text-variable-anchor': ['center'],
+                    'text-radial-offset': 0,
+                    'text-justify': 'center',
+                    'text-size': 14,
+                    'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                    'text-padding': 2
+                },
+                'paint': {
+                    'text-color': '#34495e'
+                }
+            });
+
+            // Mouse enter event for boundaries
+            map.on('mouseenter', 'la-fills', (e) => {
+                map.getCanvas().style.cursor = 'pointer';
+                if (e.features.length > 0) {
+                    map.setFilter('la-fills-hover', ['==', ['get', 'CITY_COMM_NAME'], e.features[0].properties.CITY_COMM_NAME]);
+                }
+            });
+
+            // Mouse leave event for boundaries
+            map.on('mouseleave', 'la-fills', () => {
+                map.getCanvas().style.cursor = '';
+                map.setFilter('la-fills-hover', ['==', ['get', 'CITY_COMM_NAME'], '']);
+            });
+
+            // Mouse enter event for facilities
+            map.on('mouseenter', 'unclustered-point', (e) => {
+                map.getCanvas().style.cursor = 'pointer';
+                const coordinates = e.features[0].geometry.coordinates.slice();
+                const properties = e.features[0].properties;
+
+                // Create popup content
+                const popupContent = `
+                    <strong>${properties.FacilityName}</strong><br>
+                    ${properties.Agency}<br>
+                    ${properties.Address}<br>
+                    ${properties.ActualUse || 'Use not specified'}<br>
+                    ${properties.ExistingEV ? '✓ EV Charging Available' : '✗ No EV Charging'}<br>
+                    ${properties.ExistingPV ? '✓ Solar PV Installed' : '✗ No Solar PV'}
+                `;
+
+                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                }
+
+                new mapboxgl.Popup()
+                    .setLngLat(coordinates)
+                    .setHTML(popupContent)
+                    .addTo(map);
+            });
         });
+    }
 
-        // Add hover layer for boundaries
-        map.addLayer({
-            'id': 'la-fills-hover',
-            'type': 'fill',
-            'source': 'la-boundaries',
-            'paint': {
-                'fill-color': '#2ecc71',
-                'fill-opacity': 0.7
-            },
-            'filter': ['==', ['get', 'CITY_COMM_NAME'], '']
-        });
-
-        // Add clusters layer
-        map.addLayer({
-            'id': 'clusters',
-            'type': 'circle',
-            'source': 'facilities',
-            'filter': ['has', 'point_count'],
-            'paint': {
-                'circle-radius': [
-                    'step',
-                    ['get', 'point_count'],
-                    25,
-                    10,
-                    30,
-                    25,
-                    35
-                ],
-                'circle-color': [
-                    'step',
-                    ['get', 'point_count'],
-                    '#ff9800',
-                    10,
-                    '#f57c00',
-                    25,
-                    '#e65100'
-                ],
-                'circle-opacity': 0.9,
-                'circle-stroke-width': 2,
-                'circle-stroke-color': '#ffffff',
-                'circle-stroke-opacity': 0.8
-            }
-        });
-
-        // Add cluster count layer
-        map.addLayer({
-            'id': 'cluster-count',
-            'type': 'symbol',
-            'source': 'facilities',
-            'filter': ['has', 'point_count'],
-            'layout': {
-                'text-field': '{point_count_abbreviated}',
-                'text-font': ['DIN Offc Pro Bold', 'Arial Unicode MS Bold'],
-                'text-size': 16
-            },
-            'paint': {
-                'text-color': '#ffffff'
-            }
-        });
-                // Add unclustered point layer
-                map.addLayer({
-            'id': 'unclustered-point',
-            'type': 'circle',
-            'source': 'facilities',
-            'filter': ['!', ['has', 'point_count']],
-            'paint': {
-                'circle-color': '#ff9800',
-                'circle-radius': 8,
-                'circle-stroke-width': 2,
-                'circle-stroke-color': '#ffffff',
-                'circle-opacity': 0.9,
-                'circle-stroke-opacity': 0.8
-            }
-        });
-
-        // Add labels layer
-        map.addLayer({
-            'id': 'boundary-labels',
-            'type': 'symbol',
-            'source': 'la-boundaries',
-            'layout': {
-                'text-field': ['get', 'CITY_COMM_NAME'],
-                'text-variable-anchor': ['center'],
-                'text-radial-offset': 0,
-                'text-justify': 'center',
-                'text-size': 14,
-                'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-                'text-padding': 3
-            },
-            'paint': {
-                'text-color': '#2c3e50',
-                'text-halo-color': '#ffffff',
-                'text-halo-width': 2
-            }
-        });
-
-        // Mouse enter event for boundaries
-        map.on('mouseenter', 'la-fills', (e) => {
-            map.getCanvas().style.cursor = 'pointer';
-            if (e.features.length > 0) {
-                map.setFilter('la-fills-hover', ['==', ['get', 'CITY_COMM_NAME'], e.features[0].properties.CITY_COMM_NAME]);
-            }
-        });
-
-        // Mouse leave event for boundaries
-        map.on('mouseleave', 'la-fills', () => {
-            map.getCanvas().style.cursor = '';
-            map.setFilter('la-fills-hover', ['==', ['get', 'CITY_COMM_NAME'], '']);
-        });
-
-        // Mouse enter event for facilities
-        map.on('mouseenter', 'unclustered-point', (e) => {
-            map.getCanvas().style.cursor = 'pointer';
-            const coordinates = e.features[0].geometry.coordinates.slice();
-            const properties = e.features[0].properties;
-
-            // Create popup content
-            const popupContent = `
-                <strong>${properties.FacilityName}</strong><br>
-                ${properties.Agency}<br>
-                ${properties.Address}<br>
-                ${properties.ActualUse || 'Use not specified'}<br>
-                ${properties.ExistingEV ? '✓ EV Charging Available' : '✗ No EV Charging'}<br>
-                ${properties.ExistingPV ? '✓ Solar PV Installed' : '✗ No Solar PV'}
-            `;
-
-            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-            }
-
-            new mapboxgl.Popup()
-                .setLngLat(coordinates)
-                .setHTML(popupContent)
-                .addTo(map);
-        });
-
+    // Call the loadAllData function
+    loadAllData();
+</script>
+    
         // Mouse leave event for facilities
         map.on('mouseleave', 'unclustered-point', () => {
             map.getCanvas().style.cursor = '';
