@@ -102,12 +102,12 @@
             overflow: hidden;
         }
         #map {
-            position: relative;
-            flex: 3;
+            width: 60%;  /* Adjust this percentage as needed */
+            height: 100%;
         }
         .map-overlay {
-            position: relative;
-            flex: 1;
+            width: 40%;  /* Adjust this percentage as needed */
+            height: 100%;
             font: 14px/22px 'Roboto', sans-serif;
             background-color: #fafafa;
             padding: 20px;
@@ -665,14 +665,13 @@
         <div class="fullscreen-container" id="fullscreen-control"></div>
     </div>
 </header>
-<div id="container"></div>
+<div id="container">
     <div id="map"></div>
     <div class="map-overlay" id="dashboard-panel">
         <fieldset>
             <input id="agency-filter" type="text" placeholder="Search for an agency">
             <ul id="agency-suggestions" style="display:none;"></ul>
         </fieldset>
-
         <fieldset class="filters" id="agency-filters">
             <legend>Agency Filters</legend>
             <label><input type="checkbox" id="dac-filter"> Show only Disadvantaged Communities (DAC)</label>
@@ -688,41 +687,35 @@
             <input type="range" id="population-threshold" min="0" max="200000" value="0">
             <span id="population-threshold-value">0</span>
         </fieldset>
-
         <fieldset class="filters" id="facility-filters" style="display:none;">
             <legend>Facility Filters</legend>
             <label><input type="checkbox" id="pv-filter"> Show only facilities with PV capabilities</label>
             <label><input type="checkbox" id="ev-filter"> Show only facilities with existing EV chargers</label>
             <label><input type="checkbox" id="cooling-filter"> Show only Cooling Centers / Emergency Ops</label>
         </fieldset>
-
         <div id="listing" class="listing"></div>
-
         <div id="intro-section">
             <h4>Welcome to SoCalREN's ERAP Dashboard</h4>
             <p>
-                This dashboard provides insights into public agencies' energy resilience planning efforts across Southern California that have received support from the SoCalREN Public Agency Programs. Use the filters above to find agencies by name, select a council of governments, or set population thresholds. Click on an agency to view detailed metrics and access facility information.
+                This dashboard provides insights into public agencies' energy resilience planning efforts across Southern California that have received support from the SoCalREN Public Agency Programs.
             </p>
             <p>
-                The data displayed here includes key metrics collected throughout an agency's involvement in the ERAP program. The dashboard can help you understand community needs, identify facilities equipped with Electric Vehicle chargers, Solar or Battery Storage, and plans for resilience improvements.
+                The data displayed here includes key metrics collected throughout an agency's involvement in the ERAP program. The dashboard can help you understand community needs, identify facilities, etc.
             </p>
-            
             <h4>Getting Started</h4>
             <ul>
                 <li>Use the "Filter by agency name" box to quickly locate a participating agency.</li>
                 <li>Adjust the range filter to focus on agencies with larger populations.</li>
                 <li>Click an agency name to view its details and a list of associated facilities that were assessed by SoCalREN.</li>
             </ul>
-            
             <h4>What is ERAP?</h4>
             <p>
-                SoCalREN's Energy Resilience Action Plan (ERAP) program aims to address the growing impacts of climate change. Developed in collaboration with regional partners, the ERAP program enhances the energy resilience of critical infrastructure and future resilience hub locations for public agencies. By incorporating data-driven analysis and stakeholder input into the planning and development process, ERAP supports agencies in developing an actionable roadmap for near-term to long-term energy resilience strategies that will best serve the community.
+                SoCalREN's Energy Resilience Action Plan (ERAP) program aims to address the growing impacts of climate change. Developed in collaboration with regional partners, the ERAP program enhances community resilience.
             </p>
         </div>
         <div class="dashboard" id="dashboard">
             <button id="back-button">Back</button>
             <h3 id="data-overview-title">Data Overview</h3>
-
             <div id="agency-data" style="display:none; margin-top:20px;">
                 <h4>Agency-Level Data</h4>
                 <div class="metric">
@@ -738,7 +731,6 @@
                     <span class="metric-value" id="agency-pop">N/A</span>
                 </div>
             </div>
-
             <div class="chart-section">
                 <div id="populationChartContainer">
                     <canvas id="populationChart"></canvas>
