@@ -1004,78 +1004,48 @@
                 'filter': ['has', 'point_count'],
                 'layout': {
                     'text-field': '{point_count_abbreviated}',
-                    'text-font': ['DIN Offc Pro Bold', 'Arial Unicode MS Bold'],
-                    'text-size': 16
-                },
-                'paint': {
-                    'text-color': '#ffffff'
+                    'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                    'text-size': 12
                 }
             });
 
-            // Add unclustered point layer
+            // Add unclustered points layer
             map.addLayer({
                 'id': 'unclustered-point',
                 'type': 'circle',
                 'source': 'facilities',
                 'filter': ['!', ['has', 'point_count']],
                 'paint': {
-                    'circle-color': '#ff9800',
+                    'circle-color': '#11b4da',
                     'circle-radius': 8,
-                    'circle-stroke-width': 2,
-                    'circle-stroke-color': '#ffffff',
-                    'circle-opacity': 0.9,
-                    'circle-stroke-opacity': 0.8
+                    'circle-stroke-width': 1,
+                    'circle-stroke-color': '#fff'
                 }
             });
 
-            // Add labels layer
-            map.addLayer({
-                'id': 'boundary-labels',
-                'type': 'symbol',
-                'source': 'la-boundaries',
-                'layout': {
-                    'text-field': ['get', 'CITY_COMM_NAME'],
-                    'text-variable-anchor': ['center'],
-                    'text-radial-offset': 0,
-                    'text-justify': 'center',
-                    'text-size': 14,
-                    'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-                    'text-padding': 2
-                },
-                'paint': {
-                    'text-color': '#34495e'
-                }
+            // Add click event for clusters
+            map.on('click', 'clusters', (e) => {
+                const features = map.queryRenderedFeatures(e.point, {
+                    layers: ['clusters']
+                });
+                const clusterId = features[0].properties.cluster_id;
+                map.getSource('facilities').getClusterExpansionZoom(
+                    clusterId,
+                    (err, zoom) => {
+                        if (err) return;
+
+                        map.easeTo({
+                            center: features[0].geometry.coordinates,
+                            zoom: zoom
+                        });
+                    }
+                );
             });
 
-            // Mouse enter event for boundaries
-            map.on('mouseenter', 'la-fills', (e) => {
-                map.getCanvas().style.cursor = 'pointer';
-                if (e.features.length > 0) {
-                    map.setFilter('la-fills-hover', ['==', ['get', 'CITY_COMM_NAME'], e.features[0].properties.CITY_COMM_NAME]);
-                }
-            });
-
-            // Mouse leave event for boundaries
-            map.on('mouseleave', 'la-fills', () => {
-                map.getCanvas().style.cursor = '';
-                map.setFilter('la-fills-hover', ['==', ['get', 'CITY_COMM_NAME'], '']);
-            });
-
-            // Mouse enter event for facilities
-            map.on('mouseenter', 'unclustered-point', (e) => {
-                map.getCanvas().style.cursor = 'pointer';
+            // Add click event for unclustered points
+            map.on('click', 'unclustered-point', (e) => {
                 const coordinates = e.features[0].geometry.coordinates.slice();
-                const properties = e.features[0].properties;
-
-                // Create popup content
-                const popupContent = `
-                    <strong>${properties.FacilityName}</strong><br>
-                    ${properties.Agency}<br>
-                    ${properties.Address}<br>
-                    ${properties.ActualUse || 'Use not specified'}<br>
-                    ${properties.ExistingEV ? '✓ EV Charging Available' : '✗ No EV Charging'}<br>
-                    ${properties.ExistingPV ? '✓ Solar PV Installed' : '✗ No Solar PV'}
-                `;
+                const { Agency, FacilityName, Address, ActualUse, ExistingEV, ExistingPV } = e.features[0].properties;
 
                 while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
@@ -1083,14 +1053,33 @@
 
                 new mapboxgl.Popup()
                     .setLngLat(coordinates)
-                    .setHTML(popupContent)
+                    .setHTML(
+                        `<strong>${FacilityName}</strong><br>${Address}<br>${ActualUse}<br>EV Chargers: ${ExistingEV}<br>PV: ${ExistingPV}`
+                    )
                     .addTo(map);
+            });
+
+            // Change the cursor to a pointer when the mouse is over the clusters
+            map.on('mouseenter', 'clusters', () => {
+                map.getCanvas().style.cursor = 'pointer';
+            });
+            map.on('mouseleave', 'clusters', () => {
+                map.getCanvas().style.cursor = '';
             });
         });
     }
 
-    // Call the loadAllData function
-    loadAllData();
+    function closeWelcome() {
+        const welcomePopup = document.getElementById('welcome-popup');
+        welcomePopup.classList.add('fade-out');
+        setTimeout(() => {
+            welcomePopup.style.display = 'none';
+        }, 400);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadAllData();
+    });
 </script>
     
         // Mouse leave event for facilities
