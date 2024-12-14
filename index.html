@@ -892,61 +892,63 @@
         maxBounds: [[-119.5, 33.2], [-117.0, 34.8]]  // LA County bounds
     });
 
-// Fetch and load the GeoJson data
-fetch('data/la_boundaries.geojson')
-    .then(response => response.json())
-    .then(data => {
-        // Add GeoJson data as a new layer
-        map.on('load', function () {
-            if (!map.getSource('la-boundaries')) {
-                map.addSource('la-boundaries', {
-                    'type': 'geojson',
-                    'data': data
-                });
-            }
-
-            if (map.getLayer('la-boundaries-outline')) {
-                map.removeLayer('la-boundaries-outline');
-            }
-
-            map.addLayer({
-                'id': 'la-boundaries-layer',
-                'type': 'fill',
-                'source': 'la-boundaries',
-                'layout': {},
-                'paint': {
-                    'fill-color': '#003865', // Corrected color format
-                    'fill-opacity': 0.4
+    // Fetch and load the GeoJson data
+    fetch('data/la_boundaries.geojson')
+        .then(response => response.json())
+        .then(data => {
+            // Add GeoJson data as a new layer
+            map.on('load', function () {
+                if (!map.getSource('la-boundaries')) {
+                    map.addSource('la-boundaries', {
+                        'type': 'geojson',
+                        'data': data
+                    });
                 }
+    
+                if (map.getLayer('la-boundaries-outline')) {
+                    map.removeLayer('la-boundaries-outline');
+                }
+    
+                map.addLayer({
+                    'id': 'la-boundaries-layer',
+                    'type': 'fill',
+                    'source': 'la-boundaries',
+                    'layout': {},
+                    'paint': {
+                        'fill-color': '#003865', // Corrected color format
+                        'fill-opacity': 0.4
+                    }
+                });
+    
+                // Add hover effect
+                map.on('mouseenter', 'la-boundaries-layer', function () {
+                    map.setPaintProperty('la-boundaries-layer', 'fill-color', '#78BE20');
+                    map.getCanvas().style.cursor = 'pointer';
+                });
+    
+                map.on('mouseleave', 'la-boundaries-layer', function () {
+                    map.setPaintProperty('la-boundaries-layer', 'fill-color', '#003865');
+                    map.getCanvas().style.cursor = '';
+                });
+    
+                // Add a new layer to display city names
+                map.addLayer({
+                    'id': 'la-boundaries-labels',
+                    'type': 'symbol',
+                    'source': 'la-boundaries',
+                    'layout': {
+                        'text-field': ['concat', 'City of ', ['to-string', ['get', 'CITY_COMM_NAME']]],
+                        'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+                        'text-size': 12
+                    },
+                    'paint': {
+                        'text-color': '#000000'
+                    }
+                });
             });
-
-            // Add hover effect
-            map.on('mouseenter', 'la-boundaries-layer', function () {
-                map.setPaintProperty('la-boundaries-layer', 'fill-color', '#78BE20');
-                map.getCanvas().style.cursor = 'pointer';
-            });
-
-            map.on('mouseleave', 'la-boundaries-layer', function () {
-                map.setPaintProperty('la-boundaries-layer', 'fill-color', '#003865');
-                map.getCanvas().style.cursor = '';
-            });
-
-            // Add a new layer to display city names
-            map.addLayer({
-                'id': 'la-boundaries-labels',
-                'type': 'symbol',
-                'source': 'la-boundaries',
-                'layout': {
-                    'text-field': ['concat', 'City of ', ['to-string', ['get', 'CITY_COMM_NAME']]],
-                    'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
-                    'text-size': 12
-                },
-                'paint': {
-                    'text-color': '#000000'
-        });
-    })
-    .catch(error => console.error('Error loading GeoJson data:', error));
-
+        })
+        .catch(error => console.error('Error loading GeoJson data:', error));
+</script>
 
     // Utility functions
     function parseCoordinate(coordStr) {
