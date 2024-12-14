@@ -940,13 +940,12 @@ fetch('data/la_boundaries.geojson')
                     'text-field': [
                         'concat', 
                         'City of ', 
-                        ['to-string', ['downcase', ['get', 'CITY_COMM_NAME']]],
                         ['case', 
                             ['==', ['get', 'CITY_COMM_NAME'], ''], 
                             '', 
                             ['concat', 
                                 ['upcase', ['slice', ['get', 'CITY_COMM_NAME'], 0, 1]], 
-                                ['slice', ['downcase', ['get', 'CITY_COMM_NAME']], 1]
+                                ['downcase', ['slice', ['get', 'CITY_COMM_NAME'], 1]]
                             ]
                         ]
                     ],
