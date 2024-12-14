@@ -968,10 +968,7 @@
                             ['case', 
                                 ['==', ['get', 'CITY_COMM_NAME'], ''], 
                                 '', 
-                                ['concat', 
-                                    ['upcase', ['slice', ['get', 'CITY_COMM_NAME'], 0, 1]], 
-                                    ['downcase', ['slice', ['get', 'CITY_COMM_NAME'], 1]]
-                                ]
+                                ['join', ' ', ['map', ['split', ['get', 'CITY_COMM_NAME'], ' '], ['concat', ['upcase', ['slice', ['get', 'CITY_COMM_NAME'], 0, 1]], ['downcase', ['slice', ['get', 'CITY_COMM_NAME'], 1]]]]]
                             ]
                         ],
                         'text-font': ['Nunito Sans Bold', 'Arial Unicode MS Bold'],
