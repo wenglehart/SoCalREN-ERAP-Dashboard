@@ -892,44 +892,47 @@
         maxBounds: [[-119.5, 33.2], [-117.0, 34.8]]  // LA County bounds
     });
 
-    // Fetch and load the GeoJson data
-    fetch('data/la_boundaries.geojson')
-        .then(response => response.json())
-        .then(data => {
-            // Add GeoJson data as a new layer
-            map.on('load', function () {
+// Fetch and load the GeoJson data
+fetch('data/la_boundaries.geojson')
+    .then(response => response.json())
+    .then(data => {
+        // Add GeoJson data as a new layer
+        map.on('load', function () {
+            if (!map.getSource('la-boundaries')) {
                 map.addSource('la-boundaries', {
                     'type': 'geojson',
                     'data': data
                 });
+            }
 
-                map.addLayer({
-                    'id': 'la-boundaries-layer',
-                    'type': 'fill',
-                    'source': 'la-boundaries',
-                    'layout': {},
-                    'paint': {
-                        'fill-color': '##003865',
-                        'fill-opacity': 0.4
-                    }
-                });
-
-                // Remove the outline layer
+            if (map.getLayer('la-boundaries-outline')) {
                 map.removeLayer('la-boundaries-outline');
+            }
 
-                // Add hover effect
-                map.on('mouseenter', 'la-boundaries-layer', function () {
-                    map.setPaintProperty('la-boundaries-layer', 'fill-color', '#78BE20');
-                    map.getCanvas().style.cursor = 'pointer';
-                });
-
-                map.on('mouseleave', 'la-boundaries-layer', function () {
-                    map.setPaintProperty('la-boundaries-layer', 'fill-color', '##003865');
-                    map.getCanvas().style.cursor = '';
-                });
+            map.addLayer({
+                'id': 'la-boundaries-layer',
+                'type': 'fill',
+                'source': 'la-boundaries',
+                'layout': {},
+                'paint': {
+                    'fill-color': '#003865', // Corrected color format
+                    'fill-opacity': 0.4
+                }
             });
-        })
-        .catch(error => console.error('Error loading GeoJson data:', error));
+
+            // Add hover effect
+            map.on('mouseenter', 'la-boundaries-layer', function () {
+                map.setPaintProperty('la-boundaries-layer', 'fill-color', '#78BE20');
+                map.getCanvas().style.cursor = 'pointer';
+            });
+
+            map.on('mouseleave', 'la-boundaries-layer', function () {
+                map.setPaintProperty('la-boundaries-layer', 'fill-color', '#003865');
+                map.getCanvas().style.cursor = '';
+            });
+        });
+    })
+    .catch(error => console.error('Error loading GeoJson data:', error));
 
 
     // Utility functions
