@@ -937,7 +937,7 @@
                     'type': 'symbol',
                     'source': 'la-boundaries',
                     'layout': {
-                        'text-field': ['concat', 'City of ', ['to-string', ['downcase', ['get', 'CITY_COMM_NAME']]], ['case', ['==', ['get', 'CITY_COMM_NAME'], ''], '', ['upcase', ['slice', ['get', 'CITY_COMM_NAME'], 0, 1]]], ['slice', ['downcase', ['get', 'CITY_COMM_NAME']], 1]]],
+                        'text-field': ['concat', 'City of ', ['to-string', ['downcase', ['get', 'CITY_COMM_NAME']]], ['case', ['==', ['get', 'CITY_COMM_NAME'], ''], '', ['concat', ['upcase', ['slice', ['get', 'CITY_COMM_NAME'], 0, 1]], ['slice', ['downcase', ['get', 'CITY_COMM_NAME']], 1]]]]]
                         'text-font': ['Nunito Sans Bold', 'Arial Unicode MS Bold'],
                         'text-size': 12
                     },
