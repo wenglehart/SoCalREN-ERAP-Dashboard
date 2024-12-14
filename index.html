@@ -892,75 +892,100 @@
         maxBounds: [[-119.5, 33.2], [-117.0, 34.8]]  // LA County bounds
     });
 
-// Fetch and load the GeoJson data
-fetch('data/la_boundaries.geojson')
-    .then(response => response.json())
-    .then(data => {
-        // Add GeoJson data as a new layer
-        map.on('load', function () {
-            if (!map.getSource('la-boundaries')) {
-                map.addSource('la-boundaries', {
-                    'type': 'geojson',
-                    'data': data
+    fetch('data/la_boundaries.geojson')
+        .then(response => response.json())
+        .then(data => {
+            map.on('load', function () {
+                if (!map.getSource('la-boundaries')) {
+                    map.addSource('la-boundaries', {
+                        'type': 'geojson',
+                        'data': data
+                    });
+                }
+
+                if (map.getLayer('la-boundaries-outline')) {
+                    map.removeLayer('la-boundaries-outline');
+                }
+
+                map.addLayer({
+                    'id': 'la-boundaries-layer',
+                    'type': 'fill',
+                    'source': 'la-boundaries',
+                    'layout': {},
+                    'paint': {
+                        'fill-color': [
+                            'case',
+                            ['boolean', ['feature-state', 'hover'], false],
+                            '#78BE20',
+                            '#003865'
+                        ],
+                        'fill-opacity': 0.4
+                    }
                 });
-            }
 
-            if (map.getLayer('la-boundaries-outline')) {
-                map.removeLayer('la-boundaries-outline');
-            }
+                // Variable to store the currently hovered stateId
+                let hoveredStateId = null;
 
-            map.addLayer({
-                'id': 'la-boundaries-layer',
-                'type': 'fill',
-                'source': 'la-boundaries',
-                'layout': {},
-                'paint': {
-                    'fill-color': '#003865', // Corrected color format
-                    'fill-opacity': 0.4
-                }
-            });
+                map.on('mousemove', 'la-boundaries-layer', function (e) {
+                    if (e.features.length > 0) {
+                        if (hoveredStateId) {
+                            map.setFeatureState(
+                                { source: 'la-boundaries', id: hoveredStateId },
+                                { hover: false }
+                            );
+                        }
+                        hoveredStateId = e.features[0].id;
+                        map.setFeatureState(
+                            { source: 'la-boundaries', id: hoveredStateId },
+                            { hover: true }
+                        );
+                    }
+                });
 
-            // Add hover effect
-            map.on('mouseenter', 'la-boundaries-layer', function () {
-                map.setPaintProperty('la-boundaries-layer', 'fill-color', '#78BE20');
-                map.getCanvas().style.cursor = 'pointer';
-            });
+                map.on('mouseleave', 'la-boundaries-layer', function () {
+                    if (hoveredStateId) {
+                        map.setFeatureState(
+                            { source: 'la-boundaries', id: hoveredStateId },
+                            { hover: false }
+                        );
+                    }
+                    hoveredStateId = null;
+                    map.getCanvas().style.cursor = '';
+                });
 
-            map.on('mouseleave', 'la-boundaries-layer', function () {
-                map.setPaintProperty('la-boundaries-layer', 'fill-color', '#003865');
-                map.getCanvas().style.cursor = '';
-            });
+                map.on('mouseenter', 'la-boundaries-layer', function () {
+                    map.getCanvas().style.cursor = 'pointer';
+                });
 
-            // Add a new layer to display city names
-            map.addLayer({
-                'id': 'la-boundaries-labels',
-                'type': 'symbol',
-                'source': 'la-boundaries',
-                'layout': {
-                    'text-field': [
-                        'concat', 
-                        'City of ', 
-                        ['case', 
-                            ['==', ['get', 'CITY_COMM_NAME'], ''], 
-                            '', 
-                            ['concat', 
-                                ['upcase', ['slice', ['get', 'CITY_COMM_NAME'], 0, 1]], 
-                                ['downcase', ['slice', ['get', 'CITY_COMM_NAME'], 1]]
+                map.addLayer({
+                    'id': 'la-boundaries-labels',
+                    'type': 'symbol',
+                    'source': 'la-boundaries',
+                    'layout': {
+                        'text-field': [
+                            'concat', 
+                            'City of ', 
+                            ['case', 
+                                ['==', ['get', 'CITY_COMM_NAME'], ''], 
+                                '', 
+                                ['concat', 
+                                    ['upcase', ['slice', ['get', 'CITY_COMM_NAME'], 0, 1]], 
+                                    ['downcase', ['slice', ['get', 'CITY_COMM_NAME'], 1]]
+                                ]
                             ]
-                        ]
-                    ],
-                    'text-font': ['Nunito Sans Bold', 'Arial Unicode MS Bold'],
-                    'text-size': 12
-                },
-                'paint': {
-                    'text-color': '#F68B1F',
-                    'text-halo-color': '#ffffff',
-                    'text-halo-width': 1
-                }
+                        ],
+                        'text-font': ['Nunito Sans Bold', 'Arial Unicode MS Bold'],
+                        'text-size': 12
+                    },
+                    'paint': {
+                        'text-color': '#F68B1F',
+                        'text-halo-color': '#ffffff',
+                        'text-halo-width': 1
+                    }
+                });
             });
-        });
-    })
-    .catch(error => console.error('Error loading GeoJson data:', error));
+        })
+        .catch(error => console.error('Error loading GeoJson data:', error));
 
     // Utility functions
     function parseCoordinate(coordStr) {
