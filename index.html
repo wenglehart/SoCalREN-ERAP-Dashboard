@@ -930,6 +930,19 @@ fetch('data/la_boundaries.geojson')
                 map.setPaintProperty('la-boundaries-layer', 'fill-color', '#003865');
                 map.getCanvas().style.cursor = '';
             });
+
+            // Add a new layer to display city names
+            map.addLayer({
+                'id': 'la-boundaries-labels',
+                'type': 'symbol',
+                'source': 'la-boundaries',
+                'layout': {
+                    'text-field': ['concat', 'City of ', ['to-string', ['get', 'CITY_COMM_NAME']]],
+                    'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+                    'text-size': 12
+                },
+                'paint': {
+                    'text-color': '#000000'
         });
     })
     .catch(error => console.error('Error loading GeoJson data:', error));
