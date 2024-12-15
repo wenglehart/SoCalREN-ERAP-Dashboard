@@ -1294,8 +1294,14 @@
         
         if (!facility) return;
 
-        // Show facility data section and update values
+        // Show facility data section and hide agency data section
         document.getElementById('facility-data').style.display = 'block';
+        document.getElementById('agency-data').style.display = 'none'; // Hide agency data
+
+        // Update the dashboard title to show facility name
+        document.getElementById('data-overview-title').textContent = facilityName;
+
+        // Update facility data values
         document.getElementById('facility-year').textContent = facility.YearBuilt || 'N/A';
         document.getElementById('facility-sqft').textContent = facility.GrossFloorArea || 'N/A';
         document.getElementById('facility-walkability').textContent = facility.Walkability || 'N/A';
