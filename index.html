@@ -963,21 +963,11 @@
                     'source': 'la-boundaries',
                     'layout': {
                         'text-field': [
-                            'concat',
+                            'format',
                             'City of ',
-                            [
-                                'join',
-                                ' ',
-                                [
-                                    'map',
-                                    ['split', ['get', 'CITY_COMM_NAME'], ' '],
-                                    [
-                                        'concat',
-                                        ['upcase', ['slice', ['get', 'word'], 0, 1]],
-                                        ['downcase', ['slice', ['get', 'word'], 1]]
-                                    ]
-                                ]
-                            ]
+                            {},
+                            ['title', ['get', 'CITY_COMM_NAME']],
+                            {}
                         ],
                         'text-font': ['Nunito Sans Bold', 'Arial Unicode MS Bold'],
                         'text-size': 12,
