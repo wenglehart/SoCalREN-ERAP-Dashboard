@@ -830,23 +830,6 @@
         <fieldset>
             <input id="agency-filter" type="text" placeholder="Search for an agency">
             <ul id="agency-suggestions" style="display:none;"></ul>
-            
-            <div class="population-filter">
-                <label for="population-min">Population Range:</label>
-                <div class="population-inputs">
-                    <input type="number" 
-                           id="population-min" 
-                           placeholder="Min Population" 
-                           min="0" 
-                           class="population-input">
-                    <span>to</span>
-                    <input type="number" 
-                           id="population-max" 
-                           placeholder="Max Population" 
-                           min="0" 
-                           class="population-input">
-                </div>
-            </div>
         </fieldset>
 
         <fieldset class="filters" id="agency-filters">
@@ -1129,6 +1112,24 @@
                 map.on('mouseenter', 'la-boundaries-layer', function () {
                     map.getCanvas().style.cursor = 'pointer';
                 });
+
+                //map.addLayer({
+                  //  id: 'la-boundaries-labels',
+                   // type: 'symbol',
+                    //source: 'la-boundaries',
+                    //layout: {
+                      //  'text-field': ['get', 'CITY_COMM_NAME'],
+                        //'text-font': ['Nunito Sans Bold', 'Arial Unicode MS Bold'],
+                        //'text-size': 12,
+                        //'text-max-width': 10,
+                        //'text-allow-overlap': false
+                    //},
+                    //paint: {
+                      //  'text-color': '#00008b',
+                       // 'text-halo-color': '#FFFFFF',
+                        //'text-halo-width': 1
+                    //}
+                //});
 
                 // Add click event to handle clicks on boundary layers
                 map.on('click', 'la-boundaries-layer', function (e) {
