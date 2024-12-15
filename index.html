@@ -1439,12 +1439,15 @@
                 const cityName = e.features[0].properties.CITY_COMM_NAME;
                 // Find matching agency (accounting for "City of" prefix)
                 const matchingAgency = agencyData.find(a => 
-                    a.Agency.replace('City of ', '').trim().toUpperCase() === cityName.trim()
+                    a.Agency.replace('City of ', '').trim().toUpperCase() === cityName.trim().toUpperCase()
                 );
                 
                 if (matchingAgency) {
-                    // Call existing onAgencyClick function
-                    onAgencyClick(matchingAgency);
+                    // Get facilities for this agency
+                    const facilities = facilityData.filter(f => f.Agency === matchingAgency.Agency);
+                    
+                    // Show the agency's facilities and data
+                    showFacilities(matchingAgency, facilities);
                     
                     // Scroll dashboard into view if needed
                     document.getElementById('dashboard-panel').scrollIntoView({ 
