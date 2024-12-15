@@ -686,6 +686,81 @@
             width: 100vw !important;
         }
 
+        .header-left img {
+            transition: transform 0.3s ease;
+        }
+
+        .header-left img:hover {
+            transform: scale(1.05);
+        }
+
+        .map-overlay {
+            background: linear-gradient(to bottom, #fff, #f8f9fa);
+            border-left: 1px solid rgba(0,0,0,0.1);
+            padding: 25px;
+        }
+
+        .dashboard {
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .dashboard:hover {
+            transform: translateY(-2px);
+        }
+
+        .facility-title {
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .facility-title:hover {
+            background: linear-gradient(to right, #e3f2fd, transparent);
+            border-left-color: #2196f3;
+        }
+
+        .mapboxgl-popup {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .header-controls {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .map-overlay {
+                height: 50vh;
+                overflow-y: auto;
+            }
+        }
+
+        /* Better focus states */
+        :focus {
+            outline: 2px solid #2196f3;
+            outline-offset: 2px;
+        }
+
+        /* ARIA labels and roles */
+        [role="button"] {
+            cursor: pointer;
+        }
+
+        .search-box {
+            background: #fff;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 12px 16px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            border-color: #2196f3;
+            box-shadow: 0 0 0 3px rgba(33,150,243,0.1);
+        }
+
     </style>
 </head>
 <body>
@@ -1113,7 +1188,7 @@
         ["City of Irwindale","Dan Diaz Recreation Center and Library","16053 Calle De Paseo, Irwindale, CA","34.1100° N","117.9700° W","N/A","No","0","N/A","1,068","1","Library and recreation center","Low","22,855","1970"],
         ["City of Irwindale","City Hall and Police Department","5050 N Irwindale Ave, Irwindale, CA","34.1105° N","117.9350° W","Emergency Operations Center","No","4","N/A","4","0","Office","Low","20,600","1957"],
         ["City of Irwindale","Senior Center and Annex","16116 Arrow Hwy, Irwindale, CA","34.1100° N","117.9705° W","Cooling Center","No","4","N/A","24","0","Multi-purpose/ office","Low","20,678","1985"],
-        ["City of Irwindale","New Library (Planned for 2026)","N/A","N/A","N/A","N/A","N/A","N/A","N/A","N/A","N/A","Library","N/A","N/A","N/A"]
+        ["City of Irwindale","New Library (Planned for 2026)","N/A","N/A","N/A","N/A","N/A","N/A","N/A","N/A","Library","N/A","N/A","N/A"]
     ];
 
     // Process the facility data
