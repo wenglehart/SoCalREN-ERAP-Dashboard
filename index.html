@@ -762,6 +762,43 @@
             box-shadow: 0 0 0 3px rgba(33,150,243,0.1);
         }
 
+        .population-filter {
+            margin-top: 15px;
+        }
+
+        .population-filter label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #2c3e50;
+        }
+
+        .population-inputs {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .population-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            width: calc(50% - 15px);
+        }
+
+        .population-inputs span {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .population-input:focus {
+            border-color: #2196f3;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(33,150,243,0.1);
+        }
+
     </style>
 </head>
 <body>
@@ -1733,6 +1770,71 @@
     });
 
     document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+
+    // Add these event listeners after your map.on('load') function
+    document.getElementById('population-min').addEventListener('input', filterAgencies);
+    document.getElementById('population-max').addEventListener('input', filterAgencies);
+
+    function filterAgencies() {
+        const minPop = parseInt(document.getElementById('population-min').value) || 0;
+        const maxPop = parseInt(document.getElementById('population-max').value) || Infinity;
+        const searchText = document.getElementById('agency-filter').value.toLowerCase();
+        const dacFilter = document.getElementById('dac-filter').checked;
+        const ces90Filter = document.getElementById('ces90-filter').checked;
+
+        const filteredAgencies = agencyData.filter(agency => {
+            const matchesSearch = agency.Agency.toLowerCase().includes(searchText);
+            const matchesPopulation = agency.Population >= minPop && 
+                                     (maxPop === Infinity || agency.Population <= maxPop);
+            const matchesDAC = !dacFilter || agency.DAC === "Yes";
+            const matchesCES = !ces90Filter || agency.CalEnviroscreen > 90;
+
+            return matchesSearch && matchesPopulation && matchesDAC && matchesCES;
+        });
+
+        // Update the listing with filtered agencies
+        const listingElement = document.getElementById('listing');
+        listingElement.innerHTML = '';
+
+        // Group filtered agencies by Council
+        const councilGroups = {};
+        filteredAgencies.forEach(agency => {
+            if (!councilGroups[agency.Council]) {
+                councilGroups[agency.Council] = [];
+            }
+            councilGroups[agency.Council].push(agency);
+        });
+
+        // Render the filtered and grouped agencies
+        Object.entries(councilGroups).forEach(([council, agencies]) => {
+            if (agencies.length > 0) {
+                const cogSection = document.createElement('div');
+                cogSection.className = 'cog-section';
+
+                const cogHeader = document.createElement('div');
+                cogHeader.className = 'cog-header';
+                cogHeader.textContent = council;
+
+                const agencyList = document.createElement('div');
+                agencyList.className = 'agency-list';
+
+                agencies.forEach(agency => {
+                    const agencyDiv = document.createElement('div');
+                    agencyDiv.className = 'agency-title';
+                    agencyDiv.textContent = agency.Agency;
+                    agencyDiv.onclick = () => {
+                        const facilities = facilityData.filter(f => f.Agency === agency.Agency);
+                        showFacilities(agency, facilities);
+                    };
+                    agencyList.appendChild(agencyDiv);
+                });
+
+                cogSection.appendChild(cogHeader);
+                cogSection.appendChild(agencyList);
+                listingElement.appendChild(cogSection);
+            }
+        });
+    }
 
 </script>
 
