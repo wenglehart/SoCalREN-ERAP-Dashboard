@@ -916,6 +916,8 @@
         container: document.querySelector('#container')
     }), 'top-right');
 
+    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
     map.on('load', function () {
         fetch('data/la_boundaries.geojson')
             .then(response => response.json())
@@ -1642,6 +1644,20 @@
 
     // Additional functions and event listeners
     // ...
+
+    // Add the geocoder control
+    const geocoder = new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        mapboxgl: mapboxgl,
+        placeholder: 'Search for a location',
+        bbox: [-119.5, 33.2, -117.0, 34.8], // Restrict to LA County bounds
+        proximity: {
+            longitude: -118.2437,
+            latitude: 34.0522
+        }
+    });
+
+    document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
 
 </script>
 
