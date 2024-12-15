@@ -686,6 +686,57 @@
             width: 100vw !important;
         }
 
+        .population-filter {
+            margin-top: 15px;
+            padding: 10px 0;
+        }
+
+        .population-filter label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #2c3e50;
+        }
+
+        .population-filter input[type="range"] {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .population-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #666;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 5px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #2c3e50;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #2c3e50;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
@@ -717,6 +768,16 @@
         <fieldset>
             <input id="agency-filter" type="text" placeholder="Search for an agency">
             <ul id="agency-suggestions" style="display:none;"></ul>
+            
+            <!-- Add this new population filter section -->
+            <div class="population-filter">
+                <label for="population-range">Population Range:</label>
+                <input type="range" id="population-range" min="0" max="200000" step="1000" value="200000">
+                <div class="population-display">
+                    <span>0</span>
+                    <span id="population-value">200,000</span>
+                </div>
+            </div>
         </fieldset>
 
         <fieldset class="filters" id="agency-filters">
@@ -982,24 +1043,6 @@
                     map.getCanvas().style.cursor = 'pointer';
                 });
 
-                //map.addLayer({
-                  //  id: 'la-boundaries-labels',
-                   // type: 'symbol',
-                    //source: 'la-boundaries',
-                    //layout: {
-                      //  'text-field': ['get', 'CITY_COMM_NAME'],
-                        //'text-font': ['Nunito Sans Bold', 'Arial Unicode MS Bold'],
-                        //'text-size': 12,
-                        //'text-max-width': 10,
-                        //'text-allow-overlap': false
-                    //},
-                    //paint: {
-                      //  'text-color': '#00008b',
-                       // 'text-halo-color': '#FFFFFF',
-                        //'text-halo-width': 1
-                    //}
-                //});
-
                 // Add click event to handle clicks on boundary layers
                 map.on('click', 'la-boundaries-layer', function (e) {
                     if (e.features.length > 0) {
@@ -1108,7 +1151,7 @@
         ["City of Bell Gardens","Civic Center","7100 Garfield St, Bell Gardens, CA","33.9655° N","118.1515° W","N/A","No","0","N/A","5","0","City Hall","Medium","18,500","1967"],
         ["City of Pomona","Library","625 S Garey Ave, Pomona, CA","34.0530° N","117.7500° W","Cooling Center","Yes","0","N/A","2,057","0","Library","High","25,977","1956"],
         ["City of Pomona","City Hall","505 S Garey Ave, Pomona, CA","34.0525° N","117.7505° W","N/A","No","0","N/A","2,482","14","Office","High","44,996","1969"],
-        ["City of Pomona","Palomares Park","499 E Arrow Hwy, Pomona, CA","34.1000° N","117.7400° W","Cooling Center","Yes","19","N/A","6,470","48","Community center","Low","15,704","1983"],
+        ["City of Pomona","Palomares Park","499 E Arrow Hwy, Pomona, CA","34.1000° N","117.7400�� W","Cooling Center","Yes","19","N/A","6,470","48","Community center","Low","15,704","1983"],
         ["City of Pomona","Washington Senior Center","865 E Granf Ave, Pomona, CA","34.0600° N","117.7400° W","Cooling Center","No","6","N/A","4,070","883","Senior Center","Low","2,539","1935"],
         ["City of Irwindale","Dan Diaz Recreation Center and Library","16053 Calle De Paseo, Irwindale, CA","34.1100° N","117.9700° W","N/A","No","0","N/A","1,068","1","Library and recreation center","Low","22,855","1970"],
         ["City of Irwindale","City Hall and Police Department","5050 N Irwindale Ave, Irwindale, CA","34.1105° N","117.9350° W","Emergency Operations Center","No","4","N/A","4","0","Office","Low","20,600","1957"],
@@ -1157,80 +1200,7 @@
 
     // Add the renderListing function before it's called
     function renderListing() {
-        const listingElement = document.getElementById('listing');
-        const introSection = document.getElementById('intro-section');
-        const agencyFilters = document.getElementById('agency-filters');
-        const facilityFilters = document.getElementById('facility-filters');
-        if (!listingElement) return;
-
-        // Clear existing content
-        listingElement.innerHTML = '';
-        
-        // Show the intro section and agency filters, hide facility filters
-        introSection.style.display = 'block';
-        agencyFilters.style.display = 'block';
-        facilityFilters.style.display = 'none';
-        
-        // Group agencies by Council
-        const councilGroups = {
-            'Gateway Cities Council of Governments': [],
-            'San Gabriel Valley Council of Governments': [],
-            'South Bay Cities Council of Governments': []
-        };
-
-        // Sort agencies into their respective councils
-        agencyData.forEach(agency => {
-            if (councilGroups.hasOwnProperty(agency.Council)) {
-                councilGroups[agency.Council].push(agency);
-            }
-        });
-
-        // Create sections for each Council of Government
-        Object.entries(councilGroups).forEach(([council, agencies]) => {
-            if (agencies.length > 0) {
-                // Create council section
-                const cogSection = document.createElement('div');
-                cogSection.className = 'cog-section';
-
-                // Add council header
-                const cogHeader = document.createElement('div');
-                cogHeader.className = 'cog-header';
-                cogHeader.textContent = council;
-                cogHeader.addEventListener('click', () => {
-                    cogHeader.classList.toggle('expanded');
-                    agencyList.style.display = agencyList.style.display === 'none' ? 'block' : 'none';
-                });
-
-                // Create agency list container
-                const agencyList = document.createElement('div');
-                agencyList.className = 'agency-list';
-
-                // Sort agencies alphabetically
-                agencies.sort((a, b) => a.Agency.localeCompare(b.Agency));
-
-                // Add agencies to the list
-                agencies.forEach(agency => {
-                    const agencyDiv = document.createElement('div');
-                    agencyDiv.className = 'agency-title';
-                    agencyDiv.textContent = agency.Agency;
-                    
-                    // Add click event to show facilities
-                    agencyDiv.addEventListener('click', () => {
-                        const facilities = facilityData.filter(f => f.Agency === agency.Agency);
-                        showFacilities(agency, facilities);
-                    });
-
-                    agencyList.appendChild(agencyDiv);
-                });
-
-                cogSection.appendChild(cogHeader);
-                cogSection.appendChild(agencyList);
-                listingElement.appendChild(cogSection);
-            }
-        });
-
-        // Hide loading spinner
-        document.getElementById('loading-spinner').style.display = 'none';
+        filterAgencies();
     }
 
     function showFacilities(agency, facilities) {
@@ -1657,6 +1627,84 @@
     });
 
     document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+
+    // Population filter functionality
+    const populationRange = document.getElementById('population-range');
+    const populationValue = document.getElementById('population-value');
+
+    populationRange.addEventListener('input', function() {
+        const value = this.value;
+        populationValue.textContent = Number(value).toLocaleString();
+        filterAgencies();
+    });
+
+    function filterAgencies() {
+        const searchText = document.getElementById('agency-filter').value.toLowerCase();
+        const maxPopulation = parseInt(populationRange.value);
+        const listingElement = document.getElementById('listing');
+        
+        // Clear existing content
+        listingElement.innerHTML = '';
+        
+        // Group agencies by Council
+        const councilGroups = {
+            'Gateway Cities Council of Governments': [],
+            'San Gabriel Valley Council of Governments': [],
+            'South Bay Cities Council of Governments': []
+        };
+
+        // Filter and sort agencies
+        agencyData.forEach(agency => {
+            if (
+                agency.Agency.toLowerCase().includes(searchText) &&
+                agency.Population <= maxPopulation &&
+                councilGroups.hasOwnProperty(agency.Council)
+            ) {
+                councilGroups[agency.Council].push(agency);
+            }
+        });
+
+        // Create sections for each Council of Government
+        Object.entries(councilGroups).forEach(([council, agencies]) => {
+            if (agencies.length > 0) {
+                const cogSection = document.createElement('div');
+                cogSection.className = 'cog-section';
+
+                const cogHeader = document.createElement('div');
+                cogHeader.className = 'cog-header';
+                cogHeader.textContent = council;
+                cogHeader.addEventListener('click', () => {
+                    cogHeader.classList.toggle('expanded');
+                    agencyList.style.display = agencyList.style.display === 'none' ? 'block' : 'none';
+                });
+
+                const agencyList = document.createElement('div');
+                agencyList.className = 'agency-list';
+
+                agencies.sort((a, b) => a.Agency.localeCompare(b.Agency));
+
+                agencies.forEach(agency => {
+                    const agencyDiv = document.createElement('div');
+                    agencyDiv.className = 'agency-title';
+                    agencyDiv.textContent = agency.Agency;
+                    
+                    agencyDiv.addEventListener('click', () => {
+                        const facilities = facilityData.filter(f => f.Agency === agency.Agency);
+                        showFacilities(agency, facilities);
+                    });
+
+                    agencyList.appendChild(agencyDiv);
+                });
+
+                cogSection.appendChild(cogHeader);
+                cogSection.appendChild(agencyList);
+                listingElement.appendChild(cogSection);
+            }
+        });
+    }
+
+    // Update the existing agency filter input event listener
+    document.getElementById('agency-filter').addEventListener('input', filterAgencies);
 
 </script>
 
