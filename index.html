@@ -884,7 +884,7 @@
 
 <script>
     // Mapbox access token and map initialization
-    mapboxgl.accessToken = 'pk.eyJ1Ijoid2VuZ2xlMSIsImEiOiJjbHBtaWx0N2IwMGljMmxwNjBsMnU4a2E4In0.Dzf3G-WBKzDfgnXsGHiMXw';
+        mapboxgl.accessToken = 'pk.eyJ1Ijoid2VuZ2xlMSIsImEiOiJjbHBtaWx0N2IwMGljMmxwNjBsMnU4a2E4In0.Dzf3G-WBKzDfgnXsGHiMXw';
 
     const map = new mapboxgl.Map({
         container: 'map',
@@ -895,125 +895,130 @@
         maxBounds: [[-119.5, 33.2], [-117.0, 34.8]]  // LA County bounds
     });
 
-fetch('data/la_boundaries.geojson')
-    .then(response => response.json())
-    .then(data => {
-        map.on('load', function () {
-            if (!map.getSource('la-boundaries')) {
-                map.addSource('la-boundaries', {
-                    'type': 'geojson',
-                    'data': data
-                });
-            }
-
-            if (map.getLayer('la-boundaries-outline')) {
-                map.removeLayer('la-boundaries-outline');
-            }
-
-            map.addLayer({
-                'id': 'la-boundaries-layer',
-                'type': 'fill',
-                'source': 'la-boundaries',
-                'layout': {},
-                'paint': {
-                    'fill-color': [
-                        'case',
-                        ['boolean', ['feature-state', 'hover'], false],
-                        '#78BE20',
-                        '#003865'
-                    ],
-                    'fill-opacity': 0.4
+    map.on('load', function () {
+        fetch('data/la_boundaries.geojson')
+            .then(response => response.json())
+            .then(data => {
+                if (!map.getSource('la-boundaries')) {
+                    map.addSource('la-boundaries', {
+                        type: 'geojson',
+                        data: data
+                    });
                 }
-            });
 
-            // Variable to store the currently hovered stateId
-            let hoveredStateId = null;
+                if (map.getLayer('la-boundaries-outline')) {
+                    map.removeLayer('la-boundaries-outline');
+                }
 
-            map.on('mousemove', 'la-boundaries-layer', function (e) {
-                if (e.features.length > 0) {
+                map.addLayer({
+                    id: 'la-boundaries-layer',
+                    type: 'fill',
+                    source: 'la-boundaries',
+                    layout: {},
+                    paint: {
+                        'fill-color': [
+                            'case',
+                            ['boolean', ['feature-state', 'hover'], false],
+                            '#78BE20',
+                            '#003865'
+                        ],
+                        'fill-opacity': 0.4
+                    }
+                });
+
+                // Variable to store the currently hovered stateId
+                let hoveredStateId = null;
+
+                map.on('mousemove', 'la-boundaries-layer', function (e) {
+                    if (e.features.length > 0) {
+                        if (hoveredStateId) {
+                            map.setFeatureState(
+                                { source: 'la-boundaries', id: hoveredStateId },
+                                { hover: false }
+                            );
+                        }
+                        hoveredStateId = e.features[0].id;
+                        map.setFeatureState(
+                            { source: 'la-boundaries', id: hoveredStateId },
+                            { hover: true }
+                        );
+                    }
+                });
+
+                map.on('mouseleave', 'la-boundaries-layer', function () {
                     if (hoveredStateId) {
                         map.setFeatureState(
                             { source: 'la-boundaries', id: hoveredStateId },
                             { hover: false }
                         );
                     }
-                    hoveredStateId = e.features[0].id;
-                    map.setFeatureState(
-                        { source: 'la-boundaries', id: hoveredStateId },
-                        { hover: true }
-                    );
+                    hoveredStateId = null;
+                    map.getCanvas().style.cursor = '';
+                });
+
+                map.on('mouseenter', 'la-boundaries-layer', function () {
+                    map.getCanvas().style.cursor = 'pointer';
+                });
+
+                map.addLayer({
+                    id: 'la-boundaries-labels',
+                    type: 'symbol',
+                    source: 'la-boundaries',
+                    layout: {
+                        'text-field': ['get', 'CITY_COMM_NAME'],
+                        'text-font': ['Nunito Sans Bold', 'Arial Unicode MS Bold'],
+                        'text-size': 12,
+                        'text-max-width': 10,
+                        'text-allow-overlap': false
+                    },
+                    paint: {
+                        'text-color': '#00008b',
+                        'text-halo-color': '#FFFFFF',
+                        'text-halo-width': 1
+                    }
+                });
+
+                // Add click event to handle clicks on boundary layers
+                map.on('click', 'la-boundaries-layer', function (e) {
+                    if (e.features.length > 0) {
+                        const cityName = e.features[0].properties.CITY_COMM_NAME;
+                        showCityDataInDashboard(cityName);
+                    }
+                });
+            })
+            .catch(error => console.error('Error loading GeoJson data:', error));
+    });
+
+    // Function to show city data in the dashboard
+    function showCityDataInDashboard(cityName) {
+        // Fetch and display city data in the dashboard
+        fetch(`data/${cityName}_data.json`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
                 }
-            });
-
-            map.on('mouseleave', 'la-boundaries-layer', function () {
-                if (hoveredStateId) {
-                    map.setFeatureState(
-                        { source: 'la-boundaries', id: hoveredStateId },
-                        { hover: false }
-                    );
-                }
-                hoveredStateId = null;
-                map.getCanvas().style.cursor = '';
-            });
-
-            map.on('mouseenter', 'la-boundaries-layer', function () {
-                map.getCanvas().style.cursor = 'pointer';
-            });
-
-            map.addLayer({
-                'id': 'la-boundaries-labels',
-                'type': 'symbol',
-                'source': 'la-boundaries',
-                'layout': {
-                    'text-field': ['get', 'CITY_COMM_NAME'],
-                    'text-font': ['Nunito Sans Bold', 'Arial Unicode MS Bold'],
-                    'text-size': 12,
-                    'text-max-width': 10,
-                    'text-allow-overlap': false
-                },
-                'paint': {
-                    'text-color': '#00008b',
-                    'text-halo-color': '#FFFFFF',
-                    'text-halo-width': 1
-                }
-            });
-
-            // Add click event to handle clicks on boundary layers
-            map.on('click', 'la-boundaries-layer', function (e) {
-                if (e.features.length > 0) {
-                    const cityName = e.features[0].properties.CITY_COMM_NAME;
-                    showCityDataInDashboard(cityName);
-                }
-            });
-        });
-    })
-    .catch(error => console.error('Error loading GeoJson data:', error));
-
-// Function to show city data in the dashboard
-function showCityDataInDashboard(cityName) {
-    // Fetch and display city data in the dashboard
-    fetch(`data/${cityName}_data.json`)
-        .then(response => response.json())
-        .then(data => {
-            // Update dashboard with city data
-            document.getElementById('dashboard').style.display = 'block';
-            document.getElementById('data-overview-title').textContent = `${cityName} Data Overview`;
-            // Populate data fields with fetched data
-            document.getElementById('agency-dac').textContent = data.dac;
-            document.getElementById('agency-cal').textContent = data.calEnviroScreenScore;
-            document.getElementById('agency-pollution').textContent = data.pollutionBurdenPercentile;
-            document.getElementById('agency-pop').textContent = data.population;
-            document.getElementById('agency-children-seniors').textContent = data.percentChildrenSeniors;
-            document.getElementById('agency-area').textContent = data.agencyArea;
-            document.getElementById('agency-density').textContent = data.populationDensity;
-            document.getElementById('agency-heat-days').textContent = data.extremeHeatDays;
-            document.getElementById('agency-income').textContent = data.averageHouseholdIncome;
-            document.getElementById('agency-low-income').textContent = data.percentLowIncomeCensusTracts;
-            document.getElementById('agency-circuits').textContent = data.numElectricCircuits;
-            document.getElementById('agency-kwh').textContent = data.annualConsumptionKwh;
-            document.getElementById('agency-therms').textContent = data.annualConsumptionTherms;
-        })
-        .catch(error => console.error('Error fetching city data:', error));
+                return response.json();
+            })
+            .then(data => {
+                // Update dashboard with city data
+                document.getElementById('dashboard').style.display = 'block';
+                document.getElementById('data-overview-title').textContent = `${cityName} Data Overview`;
+                // Populate data fields with fetched data
+                document.getElementById('agency-dac').textContent = data.dac || 'N/A';
+                document.getElementById('agency-cal').textContent = data.calEnviroScreenScore || 'N/A';
+                document.getElementById('agency-pollution').textContent = data.pollutionBurdenPercentile || 'N/A';
+                document.getElementById('agency-pop').textContent = data.population || 'N/A';
+                document.getElementById('agency-children-seniors').textContent = data.percentChildrenSeniors || 'N/A';
+                document.getElementById('agency-area').textContent = data.agencyArea || 'N/A';
+                document.getElementById('agency-density').textContent = data.populationDensity || 'N/A';
+                document.getElementById('agency-heat-days').textContent = data.extremeHeatDays || 'N/A';
+                document.getElementById('agency-income').textContent = data.averageHouseholdIncome || 'N/A';
+                document.getElementById('agency-low-income').textContent = data.percentLowIncomeCensusTracts || 'N/A';
+                document.getElementById('agency-circuits').textContent = data.numElectricCircuits || 'N/A';
+                document.getElementById('agency-kwh').textContent = data.annualConsumptionKwh || 'N/A';
+                document.getElementById('agency-therms').textContent = data.annualConsumptionTherms || 'N/A';
+            })
+            .catch(error => console.error('Error fetching city data:', error));
 }
 
     // Utility functions
