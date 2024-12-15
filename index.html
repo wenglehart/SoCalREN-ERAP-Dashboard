@@ -1130,24 +1130,6 @@
                     map.getCanvas().style.cursor = 'pointer';
                 });
 
-                //map.addLayer({
-                  //  id: 'la-boundaries-labels',
-                   // type: 'symbol',
-                    //source: 'la-boundaries',
-                    //layout: {
-                      //  'text-field': ['get', 'CITY_COMM_NAME'],
-                        //'text-font': ['Nunito Sans Bold', 'Arial Unicode MS Bold'],
-                        //'text-size': 12,
-                        //'text-max-width': 10,
-                        //'text-allow-overlap': false
-                    //},
-                    //paint: {
-                      //  'text-color': '#00008b',
-                       // 'text-halo-color': '#FFFFFF',
-                        //'text-halo-width': 1
-                    //}
-                //});
-
                 // Add click event to handle clicks on boundary layers
                 map.on('click', 'la-boundaries-layer', function (e) {
                     if (e.features.length > 0) {
