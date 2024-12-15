@@ -666,6 +666,26 @@
             font-size: 16px;
         }
 
+        .mapboxgl-ctrl-fullscreen {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .mapboxgl-ctrl-fullscreen:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Style for fullscreen mode */
+        .mapboxgl-map.mapboxgl-fullscreen {
+            height: 100vh !important;
+        }
+
+        /* Ensure the container maintains proper layout in fullscreen */
+        #container.mapboxgl-fullscreen {
+            height: 100vh !important;
+            width: 100vw !important;
+        }
+
     </style>
 </head>
 <body>
@@ -891,6 +911,10 @@
         pitch: 30,
         maxBounds: [[-119.5, 33.2], [-117.0, 34.8]]  // LA County bounds
     });
+
+    map.addControl(new mapboxgl.FullscreenControl({
+        container: document.querySelector('#container')
+    }), 'top-right');
 
     map.on('load', function () {
         fetch('data/la_boundaries.geojson')
