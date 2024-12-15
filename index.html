@@ -962,17 +962,12 @@
                     'type': 'symbol',
                     'source': 'la-boundaries',
                     'layout': {
-                        'text-field': ['concat',
+                        'text-field': [
+                            'format',
                             'City of ',
-                            ['join', ' ',
-                                ['map',
-                                    ['split', ['get', 'CITY_COMM_NAME'], ' '],
-                                    ['concat',
-                                        ['upcase', ['slice', ['var', 'word'], 0, 1]],
-                                        ['downcase', ['slice', ['var', 'word'], 1]]
-                                    ]
-                                ]
-                            ]
+                            { 'font-scale': 0.9 },
+                            ['title', ['get', 'CITY_COMM_NAME']],
+                            { 'font-scale': 1 }
                         ],
                         'text-font': ['Nunito Sans Bold', 'Arial Unicode MS Bold'],
                         'text-size': 12
