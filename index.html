@@ -962,7 +962,11 @@
                     'type': 'symbol',
                     'source': 'la-boundaries',
                     'layout': {
-                        'text-field': ['concat', 'City of ', ['get', 'CITY_COMM_NAME']],
+                        'text-field': ['format',
+                            ['upcase', ['slice', ['get', 'CITY_COMM_NAME'], 0, 1]], // Capitalize first letter
+                            ['downcase', ['slice', ['get', 'CITY_COMM_NAME'], 1]], // Lowercase the rest
+                            { 'text-transform': 'capitalize' } // Capitalize each word
+                        ],
                         'text-font': ['Nunito Sans Bold', 'Arial Unicode MS Bold'],
                         'text-size': 12
                     },
