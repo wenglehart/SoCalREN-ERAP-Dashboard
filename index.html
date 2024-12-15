@@ -962,35 +962,7 @@
                     'type': 'symbol',
                     'source': 'la-boundaries',
                     'layout': {
-                        'text-field': [
-                            'concat',
-                            'City of ',
-                            ['case',
-                                // First check if the field exists
-                                ['has', 'CITY_COMM_NAME'],
-                                [
-                                    'let',
-                                    'name', ['get', 'CITY_COMM_NAME'],
-                                    [
-                                        'case',
-                                        // Then check if it's empty
-                                        ['==', ['var', 'name'], ''],
-                                        '',
-                                        // If not empty, apply the title case transformation
-                                        ['join', ' ', 
-                                            ['map', 
-                                                ['split', ['var', 'name'], ' '],
-                                                ['concat',
-                                                    ['upcase', ['slice', ['at', ['split', ['var', 'name'], ' '], 0], 0, 1]],
-                                                    ['downcase', ['slice', ['at', ['split', ['var', 'name'], ' '], 0], 1]]
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ],
-                                ''
-                            ]
-                        ],
+                        'text-field': ['concat', 'City of ', ['get', 'CITY_COMM_NAME']],
                         'text-font': ['Nunito Sans Bold', 'Arial Unicode MS Bold'],
                         'text-size': 12
                     },
