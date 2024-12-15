@@ -858,6 +858,24 @@
             <label>
                 <input type="checkbox" id="ces90-filter"> 
                 Show only agencies with CalEnviroScreen Score > 90
+            </label>
+            
+            <div class="population-filter">
+                <label for="population-min">Population Range:</label>
+                <div class="population-inputs">
+                    <input type="number" 
+                           id="population-min" 
+                           placeholder="Min Population" 
+                           min="0" 
+                           class="population-input">
+                    <span>to</span>
+                    <input type="number" 
+                           id="population-max" 
+                           placeholder="Max Population" 
+                           min="0" 
+                           class="population-input">
+                </div>
+            </div>
         </fieldset>
 
         <fieldset class="filters" id="facility-filters" style="display:none;">
