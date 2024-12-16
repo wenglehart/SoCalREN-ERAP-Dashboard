@@ -1364,6 +1364,37 @@
         document.getElementById('loading-spinner').style.display = 'none';
     }
 
+    // Add this function to handle facility filtering
+    function filterFacilities(facilities) {
+        const pvFilter = document.getElementById('pv-filter').checked;
+        const evFilter = document.getElementById('ev-filter').checked;
+        const coolingFilter = document.getElementById('cooling-filter').checked;
+
+        return facilities.filter(facility => {
+            // Check for PV or Battery Storage
+            const hasPV = facility.ExistingPV && facility.ExistingPV.toLowerCase() !== 'n/a' && facility.ExistingPV.toLowerCase() !== 'no';
+            
+            // Check for EV chargers
+            const hasEV = facility.ExistingEVChargers && 
+                         facility.ExistingEVChargers.toLowerCase() !== 'n/a' && 
+                         facility.ExistingEVChargers.toLowerCase() !== 'no' &&
+                         facility.ExistingEVChargers !== '0';
+            
+            // Check for Resilience Designation
+            const hasResilience = facility.ExistingResilienceDesignation && 
+                                facility.ExistingResilienceDesignation.toLowerCase() !== 'n/a' && 
+                                facility.ExistingResilienceDesignation.toLowerCase() !== 'no';
+
+            // Apply filters
+            const matchesPV = !pvFilter || hasPV;
+            const matchesEV = !evFilter || hasEV;
+            const matchesResilience = !coolingFilter || hasResilience;
+
+            return matchesPV && matchesEV && matchesResilience;
+        });
+    }
+
+    // Update the showFacilities function to include the filtering
     function showFacilities(agency, facilities) {
         const listingElement = document.getElementById('listing');
         const dashboardElement = document.getElementById('dashboard');
@@ -1372,18 +1403,21 @@
         const introSection = document.getElementById('intro-section');
         const agencyFilters = document.getElementById('agency-filters');
         const facilityFilters = document.getElementById('facility-filters');
+
+        // Apply facility filters
+        const filteredFacilities = filterFacilities(facilities);
         
         // Create and insert back button before the filters
         listingElement.innerHTML = `
             <button id="back-button">Back to Agencies</button>
             <h4>Facilities in ${agency.Agency}</h4>
-            ${facilities.length > 0 
-                ? facilities.map(facility => `
+            ${filteredFacilities.length > 0 
+                ? filteredFacilities.map(facility => `
                     <div class="facility-title" onclick="showFacilityDetails('${facility.Agency}', '${facility.FacilityName}')">
                         ${facility.FacilityName}
                     </div>
                 `).join('')
-                : '<div id="no-facilities-msg">No facilities found for this agency.</div>'
+                : '<div id="no-facilities-msg">No facilities found matching the selected filters.</div>'
             }
         `;
 
@@ -1404,6 +1438,42 @@
         facilityDataElement.style.display = 'none';
         
         // Update agency data in the dashboard
+        updateAgencyDashboard(agency);
+    }
+
+    // Add event listeners for facility filters
+    document.getElementById('pv-filter').addEventListener('change', function() {
+        const agency = getCurrentlyDisplayedAgency(); // You'll need to implement this
+        if (agency) {
+            const facilities = facilityData.filter(f => f.Agency === agency.Agency);
+            showFacilities(agency, facilities);
+        }
+    });
+
+    document.getElementById('ev-filter').addEventListener('change', function() {
+        const agency = getCurrentlyDisplayedAgency();
+        if (agency) {
+            const facilities = facilityData.filter(f => f.Agency === agency.Agency);
+            showFacilities(agency, facilities);
+        }
+    });
+
+    document.getElementById('cooling-filter').addEventListener('change', function() {
+        const agency = getCurrentlyDisplayedAgency();
+        if (agency) {
+            const facilities = facilityData.filter(f => f.Agency === agency.Agency);
+            showFacilities(agency, facilities);
+        }
+    });
+
+    // Helper function to get the currently displayed agency
+    function getCurrentlyDisplayedAgency() {
+        const agencyName = document.querySelector('#data-overview-title').textContent.replace('Data Overview', '').trim();
+        return agencyData.find(a => a.Agency === agencyName);
+    }
+
+    // Helper function to update agency dashboard
+    function updateAgencyDashboard(agency) {
         document.getElementById('agency-dac').textContent = agency.DAC || 'N/A';
         document.getElementById('agency-cal').textContent = agency.CalEnviroscreen || 'N/A';
         document.getElementById('agency-pollution').textContent = agency.PollutionBurden || 'N/A';
@@ -1417,27 +1487,6 @@
         document.getElementById('agency-circuits').textContent = agency.ElectricCircuits || 'N/A';
         document.getElementById('agency-kwh').textContent = agency.AnnualKWh?.toLocaleString() || 'N/A';
         document.getElementById('agency-therms').textContent = agency.AnnualTherms?.toLocaleString() || 'N/A';
-
-        // Clear and update the listing with facilities
-        listingElement.innerHTML = `
-            <h4>Facilities in ${agency.Agency}</h4>
-            ${facilities.length > 0 
-                ? facilities.map(facility => `
-                    <div class="facility-title" onclick="showFacilityDetails('${facility.Agency}', '${facility.FacilityName}')">
-                        ${facility.FacilityName}
-                    </div>
-                `).join('')
-                : '<div id="no-facilities-msg">No facilities found for this agency.</div>'
-            }
-        `;
-
-        // Add back button
-        const backButton = document.getElementById('back-button');
-        backButton.style.display = 'block';
-        backButton.onclick = () => {
-            dashboardElement.style.display = 'none';
-            renderListing(); // Return to main agency listing
-        };
     }
 
     function showFacilityDetails(agencyName, facilityName) {
@@ -1801,12 +1850,20 @@
         const ces90Filter = document.getElementById('ces90-filter').checked;
 
         const filteredAgencies = agencyData.filter(agency => {
+            // Check if the agency name matches the search text
             const matchesSearch = searchText === '' || agency.Agency.toLowerCase().includes(searchText);
+            
+            // Check if the agency's population is within the specified range
             const matchesPopulation = agency.Population >= minPop && 
                                      (maxPop === Infinity || agency.Population <= maxPop);
-            const matchesDAC = !dacFilter || agency.DAC === "Yes";
-            const matchesCES = !ces90Filter || agency.CalEnviroscreen > 90;
+            
+            // Check if the agency meets the DAC filter criteria
+            const matchesDAC = !dacFilter || (agency.DAC && agency.DAC.toLowerCase() === 'yes');
+            
+            // Check if the agency meets the CalEnviroScreen filter criteria
+            const matchesCES = !ces90Filter || (agency.CalEnviroscreen && agency.CalEnviroscreen > 90);
 
+            // Agency must match all active filters
             return matchesSearch && matchesPopulation && matchesDAC && matchesCES;
         });
 
@@ -1835,9 +1892,9 @@
 
                 const agencyList = document.createElement('div');
                 agencyList.className = 'agency-list';
-                agencyList.style.display = 'block'; // Ensure the list is visible
+                agencyList.style.display = 'block';
 
-                agencies.sort((a, b) => a.Agency.localeCompare(b.Agency)); // Sort alphabetically
+                agencies.sort((a, b) => a.Agency.localeCompare(b.Agency));
 
                 agencies.forEach(agency => {
                     const agencyDiv = document.createElement('div');
@@ -1861,9 +1918,14 @@
         if (introSection) {
             introSection.style.display = filteredAgencies.length > 0 ? 'block' : 'none';
         }
+
+        // Log filtering results for debugging
+        console.log('Filtered Agencies:', filteredAgencies.length);
+        console.log('DAC Filter:', dacFilter);
+        console.log('CES Filter:', ces90Filter);
     }
 
-    // Add event listeners for all filter inputs
+    // Make sure all filter inputs trigger the filterAgencies function
     document.getElementById('agency-filter').addEventListener('input', filterAgencies);
     document.getElementById('population-min').addEventListener('input', filterAgencies);
     document.getElementById('population-max').addEventListener('input', filterAgencies);
