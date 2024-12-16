@@ -1394,7 +1394,7 @@
         });
     }
 
-    // Update the showFacilities function to include the filtering
+    // Update the showFacilities function to only include one back button
     function showFacilities(agency, facilities) {
         const listingElement = document.getElementById('listing');
         const dashboardElement = document.getElementById('dashboard');
@@ -1407,7 +1407,7 @@
         // Apply facility filters
         const filteredFacilities = filterFacilities(facilities);
         
-        // Create and insert back button before the filters
+        // Create and insert only one back button
         listingElement.innerHTML = `
             <button id="back-button">Back to Agencies</button>
             <h4>Facilities in ${agency.Agency}</h4>
