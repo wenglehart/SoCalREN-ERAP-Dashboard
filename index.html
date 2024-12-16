@@ -976,7 +976,7 @@
                     <span class="metric-value" id="facility-walkability">N/A</span>
                 </div>
                 <div class="metric">
-                    <span class="metric-label">Resilience Designation:</span>
+                    <span class="metric-label">Existing Resilience Designation:</span>
                     <span class="metric-value" id="facility-resilience">N/A</span>
                 </div>
                 <div class="metric">
@@ -1796,12 +1796,12 @@
     function filterAgencies() {
         const minPop = parseInt(document.getElementById('population-min').value) || 0;
         const maxPop = parseInt(document.getElementById('population-max').value) || Infinity;
-        const searchText = document.getElementById('agency-filter').value.toLowerCase();
+        const searchText = document.getElementById('agency-filter').value.toLowerCase().trim();
         const dacFilter = document.getElementById('dac-filter').checked;
         const ces90Filter = document.getElementById('ces90-filter').checked;
 
         const filteredAgencies = agencyData.filter(agency => {
-            const matchesSearch = agency.Agency.toLowerCase().includes(searchText);
+            const matchesSearch = searchText === '' || agency.Agency.toLowerCase().includes(searchText);
             const matchesPopulation = agency.Population >= minPop && 
                                      (maxPop === Infinity || agency.Population <= maxPop);
             const matchesDAC = !dacFilter || agency.DAC === "Yes";
@@ -1835,6 +1835,9 @@
 
                 const agencyList = document.createElement('div');
                 agencyList.className = 'agency-list';
+                agencyList.style.display = 'block'; // Ensure the list is visible
+
+                agencies.sort((a, b) => a.Agency.localeCompare(b.Agency)); // Sort alphabetically
 
                 agencies.forEach(agency => {
                     const agencyDiv = document.createElement('div');
@@ -1852,7 +1855,20 @@
                 listingElement.appendChild(cogSection);
             }
         });
+
+        // Show/hide intro section based on whether there are results
+        const introSection = document.getElementById('intro-section');
+        if (introSection) {
+            introSection.style.display = filteredAgencies.length > 0 ? 'block' : 'none';
+        }
     }
+
+    // Add event listeners for all filter inputs
+    document.getElementById('agency-filter').addEventListener('input', filterAgencies);
+    document.getElementById('population-min').addEventListener('input', filterAgencies);
+    document.getElementById('population-max').addEventListener('input', filterAgencies);
+    document.getElementById('dac-filter').addEventListener('change', filterAgencies);
+    document.getElementById('ces90-filter').addEventListener('change', filterAgencies);
 
 </script>
 
