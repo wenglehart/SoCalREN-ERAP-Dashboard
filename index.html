@@ -1091,31 +1091,54 @@
 
                 // Debug: Log when mouse enters boundary
                 map.on('mouseenter', 'la-boundaries-layer', function (e) {
-                    console.log('Mouse entered boundary:', e.features[0].properties);
+                    // Debug log
+                    console.log('Mouse entered boundary');
+                    
                     if (e.features.length > 0) {
-                        if (hoveredStateId) {
-                            map.setFeatureState(
-                                { source: 'la-boundaries', id: hoveredStateId },
-                                { hover: false }
-                            );
-                        }
-                        hoveredStateId = e.features[0].id;
-                        map.setFeatureState(
-                            { source: 'la-boundaries', id: hoveredStateId },
-                            { hover: true }
+                        const cityName = e.features[0].properties.CITY_COMM_NAME;
+                        console.log('City Name:', cityName);
+                        
+                        // Find matching agency
+                        const matchingAgency = agencyData.find(a => 
+                            a.Agency.replace('City of ', '').trim().toUpperCase() === cityName.trim().toUpperCase()
                         );
+                        
+                        console.log('Matching Agency:', matchingAgency);
+                        
+                        if (matchingAgency) {
+                            map.getCanvas().style.cursor = 'pointer';
+                            
+                            // Create popup content
+                            const popupContent = `
+                                <strong>${matchingAgency.Agency}</strong><br>
+                                Population: ${matchingAgency.Population?.toLocaleString() || 'N/A'}<br>
+                                DAC: ${matchingAgency.DAC || 'N/A'}<br>
+                                CalEnviroScreen: ${matchingAgency.CalEnviroscreen || 'N/A'}
+                            `;
+
+                            // Get the center of the polygon for popup placement
+                            const coordinates = e.lngLat;
+                            
+                            // Create new popup instance each time
+                            new mapboxgl.Popup({
+                                closeButton: false,
+                                closeOnClick: false,
+                                className: 'boundary-popup'
+                            })
+                                .setLngLat(coordinates)
+                                .setHTML(popupContent)
+                                .addTo(map);
+                        }
                     }
                 });
 
                 map.on('mouseleave', 'la-boundaries-layer', function () {
-                    if (hoveredStateId) {
-                        map.setFeatureState(
-                            { source: 'la-boundaries', id: hoveredStateId },
-                            { hover: false }
-                        );
-                    }
-                    hoveredStateId = null;
                     map.getCanvas().style.cursor = '';
+                    // Remove all popups
+                    const popups = document.getElementsByClassName('mapboxgl-popup');
+                    while(popups[0]) {
+                        popups[0].remove();
+                    }
                 });
 
                 map.on('mouseenter', 'la-boundaries-layer', function () {
@@ -1181,9 +1204,7 @@
                     }
                 });
             })
-            .catch(error => {
-                console.error('Error loading GeoJSON data:', error);
-            });
+            .catch(error => console.error('Error loading GeoJson data:', error));
     });
 
     // Function to show city data in the dashboard
