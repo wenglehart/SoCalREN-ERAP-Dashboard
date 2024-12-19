@@ -784,29 +784,6 @@
             box-shadow: 0 0 0 2px rgba(33,150,243,0.1);
         }
 
-        /* Add to your existing style section */
-        .boundary-popup .mapboxgl-popup-content {
-            background-color: rgba(255, 255, 255, 0.95);
-            border-radius: 6px;
-            padding: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            font-family: 'Montserrat', sans-serif;
-            font-size: 13px;
-            line-height: 1.4;
-            max-width: 250px;
-        }
-
-        .boundary-popup .mapboxgl-popup-tip {
-            border-top-color: rgba(255, 255, 255, 0.95);
-        }
-
-        .boundary-popup strong {
-            color: #2c3e50;
-            display: block;
-            margin-bottom: 5px;
-            font-size: 14px;
-        }
-
     </style>
 </head>
 <body>
@@ -1056,13 +1033,9 @@
     map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
     map.on('load', function () {
-        console.log('Map loaded');
-        
         fetch('data/la_boundaries.geojson')
             .then(response => response.json())
             .then(data => {
-                console.log('GeoJSON data loaded');
-
                 if (!map.getSource('la-boundaries')) {
                     map.addSource('la-boundaries', {
                         type: 'geojson',
@@ -1070,113 +1043,87 @@
                     });
                 }
 
-                // Add the fill layer
+                if (map.getLayer('la-boundaries-outline')) {
+                    map.removeLayer('la-boundaries-outline');
+                }
+
                 map.addLayer({
-                    'id': 'la-fills',
-                    'type': 'fill',
-                    'source': 'la-boundaries',
-                    'layout': {},
-                    'paint': {
+                    id: 'la-boundaries-layer',
+                    type: 'fill',
+                    source: 'la-boundaries',
+                    layout: {},
+                    paint: {
                         'fill-color': [
                             'case',
                             ['boolean', ['feature-state', 'hover'], false],
-                            '#78BE20',  // hover color
-                            '#003865'   // default color
+                            '#78BE20',
+                            '#003865'
                         ],
                         'fill-opacity': 0.4
                     }
                 });
 
-                // Variable to track the hovered feature
+                // Variable to store the currently hovered stateId
                 let hoveredStateId = null;
 
-                // Mouse enter event
-                map.on('mouseenter', 'la-fills', function (e) {
-                    console.log('Mouse entered boundary');
-                    
+                map.on('mousemove', 'la-boundaries-layer', function (e) {
                     if (e.features.length > 0) {
-                        map.getCanvas().style.cursor = 'pointer';
-                        
-                        if (hoveredStateId !== null) {
+                        if (hoveredStateId) {
                             map.setFeatureState(
                                 { source: 'la-boundaries', id: hoveredStateId },
                                 { hover: false }
                             );
                         }
-                        
                         hoveredStateId = e.features[0].id;
                         map.setFeatureState(
                             { source: 'la-boundaries', id: hoveredStateId },
                             { hover: true }
                         );
-
-                        const cityName = e.features[0].properties.CITY_COMM_NAME;
-                        console.log('City Name:', cityName);
-                        
-                        // Find matching agency
-                        const matchingAgency = agencyData.find(a => 
-                            a.Agency.replace('City of ', '').trim().toUpperCase() === cityName.trim().toUpperCase()
-                        );
-                        
-                        console.log('Matching Agency:', matchingAgency);
-                        
-                        if (matchingAgency) {
-                            // Create popup content
-                            const popupContent = `
-                                <strong>${matchingAgency.Agency}</strong><br>
-                                Population: ${matchingAgency.Population?.toLocaleString() || 'N/A'}<br>
-                                DAC: ${matchingAgency.DAC || 'N/A'}<br>
-                                CalEnviroScreen: ${matchingAgency.CalEnviroscreen || 'N/A'}
-                            `;
-
-                            // Create new popup
-                            new mapboxgl.Popup({
-                                closeButton: false,
-                                closeOnClick: false,
-                                className: 'boundary-popup'
-                            })
-                                .setLngLat(e.lngLat)
-                                .setHTML(popupContent)
-                                .addTo(map);
-                        }
                     }
                 });
 
-                // Mouse leave event
-                map.on('mouseleave', 'la-fills', function () {
-                    map.getCanvas().style.cursor = '';
-                    
-                    if (hoveredStateId !== null) {
+                map.on('mouseleave', 'la-boundaries-layer', function () {
+                    if (hoveredStateId) {
                         map.setFeatureState(
                             { source: 'la-boundaries', id: hoveredStateId },
                             { hover: false }
                         );
                     }
                     hoveredStateId = null;
-
-                    // Remove all popups
-                    const popups = document.getElementsByClassName('mapboxgl-popup');
-                    while(popups[0]) {
-                        popups[0].remove();
-                    }
+                    map.getCanvas().style.cursor = '';
                 });
 
-                // Click event
-                map.on('click', 'la-fills', function (e) {
+                map.on('mouseenter', 'la-boundaries-layer', function () {
+                    map.getCanvas().style.cursor = 'pointer';
+                });
+
+                //map.addLayer({
+                  //  id: 'la-boundaries-labels',
+                   // type: 'symbol',
+                    //source: 'la-boundaries',
+                    //layout: {
+                      //  'text-field': ['get', 'CITY_COMM_NAME'],
+                        //'text-font': ['Nunito Sans Bold', 'Arial Unicode MS Bold'],
+                        //'text-size': 12,
+                        //'text-max-width': 10,
+                        //'text-allow-overlap': false
+                    //},
+                    //paint: {
+                      //  'text-color': '#00008b',
+                       // 'text-halo-color': '#FFFFFF',
+                        //'text-halo-width': 1
+                    //}
+                //});
+
+                // Add click event to handle clicks on boundary layers
+                map.on('click', 'la-boundaries-layer', function (e) {
                     if (e.features.length > 0) {
                         const cityName = e.features[0].properties.CITY_COMM_NAME;
-                        const matchingAgency = agencyData.find(a => 
-                            a.Agency.replace('City of ', '').trim().toUpperCase() === cityName.trim().toUpperCase()
-                        );
-                        
-                        if (matchingAgency) {
-                            const facilities = facilityData.filter(f => f.Agency === matchingAgency.Agency);
-                            showFacilities(matchingAgency, facilities);
-                        }
+                        showCityDataInDashboard(cityName);
                     }
                 });
             })
-            .catch(error => console.error('Error loading GeoJSON data:', error));
+            .catch(error => console.error('Error loading GeoJson data:', error));
     });
 
     // Function to show city data in the dashboard
@@ -1822,7 +1769,8 @@
                     facility.Longitude = coordinates[0];
                     facility.Latitude = coordinates[1];
                 }
-            }  // <-- Closing brace for 'for' loop
+            }
+        }  // <-- Closing brace for 'for' loop
 
         // Update the GeoJSON
         const updatedGeoJSON = {
