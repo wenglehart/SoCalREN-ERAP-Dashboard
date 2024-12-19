@@ -1164,11 +1164,18 @@
                     boundaryPopup.remove();
                 });
 
-                // Add click event to handle clicks on boundary layers
+                // Update the click handler for boundaries
                 map.on('click', 'la-boundaries-layer', function (e) {
                     if (e.features.length > 0) {
                         const cityName = e.features[0].properties.CITY_COMM_NAME;
-                        showCityDataInDashboard(cityName);
+                        const matchingAgency = agencyData.find(a => 
+                            a.Agency.replace('City of ', '').trim().toUpperCase() === cityName.trim().toUpperCase()
+                        );
+                        
+                        if (matchingAgency) {
+                            const facilities = facilityData.filter(f => f.Agency === matchingAgency.Agency);
+                            showFacilities(matchingAgency, facilities);
+                        }
                     }
                 });
             })
