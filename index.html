@@ -4,11 +4,16 @@
     <meta charset="utf-8">
     <title>SoCalREN's ERAP Dashboard</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
-    <link href="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css" rel="stylesheet">
-    <script src="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js"></script>
+    
+    <!-- Corrected Mapbox GL JS and Geocoder Plugin Versions -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@300;400&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.min.js"></script>
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.css" type="text/css">
+    
     <style>
         body {
             margin: 0;
@@ -710,6 +715,15 @@
             animation: fadeIn 0.3s ease;
         }
 
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
         @media (max-width: 768px) {
             .header-controls {
                 flex-wrap: wrap;
@@ -783,7 +797,6 @@
             outline: none;
             box-shadow: 0 0 0 2px rgba(33,150,243,0.1);
         }
-
     </style>
 </head>
 <body>
@@ -989,6 +1002,7 @@
                 </div>
             </div>
         </div>
+    </div>
 
 <div id="welcome-popup">
     <div class="welcome-content">
@@ -1003,25 +1017,23 @@
     </div>
 </div>
 
-<div id="loading-spinner">
+<div id="loading-spinner" style="display: flex; justify-content: center; align-items: center; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 20px; color: #2c3e50;">
     <i class="fas fa-spinner fa-spin"></i> Loading...
 </div>
 
 <!-- Include external scripts -->
 <script src="https://unpkg.com/@mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
-<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.min.js"></script>
-<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.css" type="text/css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 
 <script>
     // Mapbox access token and map initialization
-        mapboxgl.accessToken = 'pk.eyJ1Ijoid2VuZ2xlMSIsImEiOiJjbHBtaWx0N2IwMGljMmxwNjBsMnU4a2E4In0.Dzf3G-WBKzDfgnXsGHiMXw';
+    mapboxgl.accessToken = 'pk.eyJ1Ijoid2VuZ2xlMSIsImEiOiJjbHBtaWx0N2IwMGljMmxwNjBsMnU4a2E4In0.Dzf3G-WBKzDfgnXsGHiMXw';
 
     const map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/wengle1/cm4m4sedc001v01sqdtx0cioz',
         center: [-118.2437, 34.0522],
-        zoom: 5,
+        zoom: 10,
         pitch: 35,
         maxBounds: [[-119.5, 33.2], [-117.0, 34.8]]  // LA County bounds
     });
@@ -1032,133 +1044,7 @@
 
     map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-    map.on('load', function () {
-        fetch('data/la_boundaries.geojson')
-            .then(response => response.json())
-            .then(data => {
-                if (!map.getSource('la-boundaries')) {
-                    map.addSource('la-boundaries', {
-                        type: 'geojson',
-                        data: data
-                    });
-                }
-
-                if (map.getLayer('la-boundaries-outline')) {
-                    map.removeLayer('la-boundaries-outline');
-                }
-
-                map.addLayer({
-                    id: 'la-boundaries-layer',
-                    type: 'fill',
-                    source: 'la-boundaries',
-                    layout: {},
-                    paint: {
-                        'fill-color': [
-                            'case',
-                            ['boolean', ['feature-state', 'hover'], false],
-                            '#78BE20',
-                            '#003865'
-                        ],
-                        'fill-opacity': 0.4
-                    }
-                });
-
-                // Variable to store the currently hovered stateId
-                let hoveredStateId = null;
-
-                map.on('mousemove', 'la-boundaries-layer', function (e) {
-                    if (e.features.length > 0) {
-                        if (hoveredStateId) {
-                            map.setFeatureState(
-                                { source: 'la-boundaries', id: hoveredStateId },
-                                { hover: false }
-                            );
-                        }
-                        hoveredStateId = e.features[0].id;
-                        map.setFeatureState(
-                            { source: 'la-boundaries', id: hoveredStateId },
-                            { hover: true }
-                        );
-                    }
-                });
-
-                map.on('mouseleave', 'la-boundaries-layer', function () {
-                    if (hoveredStateId) {
-                        map.setFeatureState(
-                            { source: 'la-boundaries', id: hoveredStateId },
-                            { hover: false }
-                        );
-                    }
-                    hoveredStateId = null;
-                    map.getCanvas().style.cursor = '';
-                });
-
-                map.on('mouseenter', 'la-boundaries-layer', function () {
-                    map.getCanvas().style.cursor = 'pointer';
-                });
-
-                //map.addLayer({
-                  //  id: 'la-boundaries-labels',
-                   // type: 'symbol',
-                    //source: 'la-boundaries',
-                    //layout: {
-                      //  'text-field': ['get', 'CITY_COMM_NAME'],
-                        //'text-font': ['Nunito Sans Bold', 'Arial Unicode MS Bold'],
-                        //'text-size': 12,
-                        //'text-max-width': 10,
-                        //'text-allow-overlap': false
-                    //},
-                    //paint: {
-                      //  'text-color': '#00008b',
-                       // 'text-halo-color': '#FFFFFF',
-                        //'text-halo-width': 1
-                    //}
-                //});
-
-                // Add click event to handle clicks on boundary layers
-                map.on('click', 'la-boundaries-layer', function (e) {
-                    if (e.features.length > 0) {
-                        const cityName = e.features[0].properties.CITY_COMM_NAME;
-                        showCityDataInDashboard(cityName);
-                    }
-                });
-            })
-            .catch(error => console.error('Error loading GeoJson data:', error));
-    });
-
-    // Function to show city data in the dashboard
-    function showCityDataInDashboard(cityName) {
-        // Fetch and display city data in the dashboard
-        fetch(`data/${cityName}_data.json`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Update dashboard with city data
-                document.getElementById('dashboard').style.display = 'block';
-                document.getElementById('data-overview-title').textContent = `${cityName} Data Overview`;
-                // Populate data fields with fetched data
-                document.getElementById('agency-dac').textContent = data.dac || 'N/A';
-                document.getElementById('agency-cal').textContent = data.calEnviroScreenScore || 'N/A';
-                document.getElementById('agency-pollution').textContent = data.pollutionBurdenPercentile || 'N/A';
-                document.getElementById('agency-pop').textContent = data.population || 'N/A';
-                document.getElementById('agency-children-seniors').textContent = data.percentChildrenSeniors || 'N/A';
-                document.getElementById('agency-area').textContent = data.agencyArea || 'N/A';
-                document.getElementById('agency-density').textContent = data.populationDensity || 'N/A';
-                document.getElementById('agency-heat-days').textContent = data.extremeHeatDays || 'N/A';
-                document.getElementById('agency-income').textContent = data.averageHouseholdIncome || 'N/A';
-                document.getElementById('agency-low-income').textContent = data.percentLowIncomeCensusTracts || 'N/A';
-                document.getElementById('agency-circuits').textContent = data.numElectricCircuits || 'N/A';
-                document.getElementById('agency-kwh').textContent = data.annualConsumptionKwh || 'N/A';
-                document.getElementById('agency-therms').textContent = data.annualConsumptionTherms || 'N/A';
-            })
-            .catch(error => console.error('Error fetching city data:', error));
-}
-
-    // Utility functions
+    // Process Facility Data
     function parseCoordinate(coordStr) {
         if (!coordStr || coordStr.trim().toUpperCase() === 'N/A') return null;
         let parts = coordStr.split('°');
@@ -1168,10 +1054,10 @@
         if (direction.startsWith('S') || direction.startsWith('W')) {
             value = -value;
         }
+        console.log(`Parsed Coordinate: ${value} (${direction}) from "${coordStr}"`);
         return value;
     }
 
-    // Add the missing processFacilityData function here
     function processFacilityData(rawData) {
         return rawData.map(row => ({
             Agency: row[0],
@@ -1191,22 +1077,6 @@
             YearBuilt: row[14]
         }));
     }
-
-    // Data arrays and processing
-    const agencyData = [
-        {"Agency":"City of Bell","Council":"Gateway Cities Council of Governments","DAC":"Yes","CalEnviroscreen":96,"Population":31864,"AgencyArea":2.5,"PopulationDensity":13400,"ExtremeHeatDays":91,"ChildrenSeniors":36,"AvgHouseholdIncome":47800,"PollutionBurden":88,"LowIncomeTracts":100,"ElectricCircuits":14,"AnnualKWh":2200000,"AnnualTherms":91100},
-        {"Agency":"City of Maywood","Council":"Gateway Cities Council of Governments","DAC":"Yes","CalEnviroscreen":90,"Population":27127,"AgencyArea":1.18,"PopulationDensity":23257,"ExtremeHeatDays":77,"ChildrenSeniors":38,"AvgHouseholdIncome":50996,"PollutionBurden":92,"LowIncomeTracts":100,"ElectricCircuits":6,"AnnualKWh":939153,"AnnualTherms":1232},
-        {"Agency":"City of Bell Gardens","Council":"Gateway Cities Council of Governments","DAC":"Yes","CalEnviroscreen":92,"Population":37467,"AgencyArea":2.5,"PopulationDensity":17100,"ExtremeHeatDays":90,"ChildrenSeniors":30,"AvgHouseholdIncome":45300,"PollutionBurden":97,"LowIncomeTracts":100,"ElectricCircuits":9,"AnnualKWh":1597960,"AnnualTherms":25833},
-        {"Agency":"City of Pomona","Council":"San Gabriel Valley Council of Governments","DAC":"Yes","CalEnviroscreen":97,"Population":151100,"AgencyArea":22.99,"PopulationDensity":6572,"ExtremeHeatDays":118,"ChildrenSeniors":37,"AvgHouseholdIncome":62400,"PollutionBurden":81,"LowIncomeTracts":82,"ElectricCircuits":56,"AnnualKWh":20971427,"AnnualTherms":23848},
-        {"Agency":"City of Irwindale","Council":"San Gabriel Valley Council of Governments","DAC":"Yes","CalEnviroscreen":83,"Population":1400,"AgencyArea":9.5,"PopulationDensity":142,"ExtremeHeatDays":146,"ChildrenSeniors":"N/A","AvgHouseholdIncome":86250,"PollutionBurden":100,"LowIncomeTracts":100,"ElectricCircuits":30,"AnnualKWh":2452708,"AnnualTherms":11686},
-        {"Agency":"El Monte Union High School District (EMUSHD)","Council":"Council of Governments","DAC":"Yes","CalEnviroscreen":80,"Population":163151,"AgencyArea":22.38,"PopulationDensity":7290,"ExtremeHeatDays":129,"ChildrenSeniors":"N/A","AvgHouseholdIncome":62000,"PollutionBurden":92,"LowIncomeTracts":"N/A","ElectricCircuits":79,"AnnualKWh":"N/A","AnnualTherms":"N/A"},
-        {"Agency":"City of Cudahy","Council":"Gateway Cities Council of Governments","DAC":"Yes","CalEnviroscreen":95,"Population":21700,"AgencyArea":1.23,"PopulationDensity":17642,"ExtremeHeatDays":85,"ChildrenSeniors":36,"AvgHouseholdIncome":49600,"PollutionBurden":94,"LowIncomeTracts":100,"ElectricCircuits":20,"AnnualKWh":"N/A","AnnualTherms":"N/A"},
-        {"Agency":"City of South El Monte","Council":"San Gabriel Valley Council of Governments","DAC":"Yes","CalEnviroscreen":97,"Population":19000,"AgencyArea":2.84,"PopulationDensity":6690,"ExtremeHeatDays":124,"ChildrenSeniors":37,"AvgHouseholdIncome":67700,"PollutionBurden":98,"LowIncomeTracts":80,"ElectricCircuits":12,"AnnualKWh":593500,"AnnualTherms":39700},
-        {"Agency":"City of Lynwood","Council":"Gateway Cities Council of Governments","DAC":"Yes","CalEnviroscreen":91,"Population":63200,"AgencyArea":4.84,"PopulationDensity":13058,"ExtremeHeatDays":33,"ChildrenSeniors":35,"AvgHouseholdIncome":67400,"PollutionBurden":92,"LowIncomeTracts":66,"ElectricCircuits":22,"AnnualKWh":1340300,"AnnualTherms":30100},
-        {"Agency":"City of Duarte","Council":"San Gabriel Valley Council of Governments","DAC":"Yes","CalEnviroscreen":78,"Population":23100,"AgencyArea":6.71,"PopulationDensity":3443,"ExtremeHeatDays":132,"ChildrenSeniors":38,"AvgHouseholdIncome":93900,"PollutionBurden":58,"LowIncomeTracts":20,"ElectricCircuits":10,"AnnualKWh":417700,"AnnualTherms":"N/A"},
-        {"Agency":"City of Rancho Palos Verdes","Council":"South Bay Cities Council of Governments","DAC":"Yes","CalEnviroscreen":11,"Population":41600,"AgencyArea":13.5,"PopulationDensity":3081,"ExtremeHeatDays":11,"ChildrenSeniors":"N/A","AvgHouseholdIncome":146200,"PollutionBurden":29,"LowIncomeTracts":0,"ElectricCircuits":25,"AnnualKWh":359100,"AnnualTherms":900},
-        {"Agency":"City of El Segundo","Council":"South Bay Cities Council of Governments","DAC":"Yes","CalEnviroscreen":26,"Population":16500,"AgencyArea":5.5,"PopulationDensity":3000,"ExtremeHeatDays":7,"ChildrenSeniors":"N/A","AvgHouseholdIncome":115900,"PollutionBurden":87,"LowIncomeTracts":0,"ElectricCircuits":20,"AnnualKWh":94470,"AnnualTherms":40800}
-    ];
 
     const rawFacilityData = [
         ["City of Bell","Bell Library","4411 Gage Ave, Bell, CA","33.9765° N","118.1856° W","N/A","No","2","N/A","3,912","25","Library","High","5,622","1965"],
@@ -1233,7 +1103,6 @@
 
     // Process the facility data
     const facilityData = processFacilityData(rawFacilityData);
-
     console.log('Initial facility data:', facilityData);
 
     // Convert facility data to GeoJSON features
@@ -1270,7 +1139,344 @@
         "features": facilityFeatures
     };
 
-    // Add the renderListing function before it's called
+    console.log('Facility GeoJSON:', JSON.stringify(facilityGeoJSON, null, 2));
+
+    // Function to geocode a single address
+    async function geocodeAddress(address) {
+        const accessToken = mapboxgl.accessToken;
+        const query = encodeURIComponent(address + ', CA');
+        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${accessToken}&country=US&types=address`;
+        
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            if (data.features && data.features.length > 0) {
+                return data.features[0].center;
+            }
+            return null;
+        } catch (error) {
+            console.error('Geocoding error:', error);
+            return null;
+        }
+    }
+
+    // Function to update facility coordinates
+    async function updateFacilityCoordinates() {
+        const facilitiesToUpdate = facilityData.filter(facility => 
+            !facility.Latitude || !facility.Longitude
+        );
+
+        for (let facility of facilitiesToUpdate) {
+            const address = `${facility.Address}`;
+            const coordinates = await geocodeAddress(address);
+            if (coordinates) {
+                facility.Longitude = coordinates[0];
+                facility.Latitude = coordinates[1];
+                console.log(`Geocoded ${facility.FacilityName}: [${coordinates[0]}, ${coordinates[1]}]`);
+            } else {
+                console.warn(`Failed to geocode address: ${address}`);
+            }
+        }
+
+        // Update the GeoJSON
+        const updatedGeoJSON = {
+            type: 'FeatureCollection',
+            features: facilityData.map(f => ({
+                type: 'Feature',
+                geometry: {
+                    type: 'Point',
+                    coordinates: [f.Longitude, f.Latitude]
+                },
+                properties: {
+                    ...f // Spread all facility properties
+                }
+            })).filter(f => f.geometry.coordinates[0] && f.geometry.coordinates[1]) // Filter out invalid coordinates
+        };
+
+        // Update the map source if it exists
+        if (map.getSource('facilities')) {
+            map.getSource('facilities').setData(updatedGeoJSON);
+        }
+
+        console.log('Updated GeoJSON after geocoding:', JSON.stringify(updatedGeoJSON, null, 2));
+    }
+
+    // Initialize the map and related functionalities
+    map.on('load', function () {
+        // Load LA boundaries
+        fetch('data/la_boundaries.geojson')
+            .then(response => response.json())
+            .then(data => {
+                if (!map.getSource('la-boundaries')) {
+                    map.addSource('la-boundaries', {
+                        type: 'geojson',
+                        data: data
+                    });
+                }
+
+                if (map.getLayer('la-boundaries-outline')) {
+                    map.removeLayer('la-boundaries-outline');
+                }
+
+                map.addLayer({
+                    id: 'la-boundaries-layer',
+                    type: 'fill',
+                    source: 'la-boundaries',
+                    layout: {},
+                    paint: {
+                        'fill-color': [
+                            'case',
+                            ['boolean', ['feature-state', 'hover'], false],
+                            '#78BE20',
+                            '#003865'
+                        ],
+                        'fill-opacity': 0.4
+                    }
+                });
+
+                // Hover effects for LA Boundaries
+                let hoveredStateId = null;
+
+                map.on('mousemove', 'la-boundaries-layer', function (e) {
+                    if (e.features.length > 0) {
+                        if (hoveredStateId) {
+                            map.setFeatureState(
+                                { source: 'la-boundaries', id: hoveredStateId },
+                                { hover: false }
+                            );
+                        }
+                        hoveredStateId = e.features[0].id;
+                        map.setFeatureState(
+                            { source: 'la-boundaries', id: hoveredStateId },
+                            { hover: true }
+                        );
+                    }
+                });
+
+                map.on('mouseleave', 'la-boundaries-layer', function () {
+                    if (hoveredStateId) {
+                        map.setFeatureState(
+                            { source: 'la-boundaries', id: hoveredStateId },
+                            { hover: false }
+                        );
+                    }
+                    hoveredStateId = null;
+                    map.getCanvas().style.cursor = '';
+                });
+
+                map.on('mouseenter', 'la-boundaries-layer', function () {
+                    map.getCanvas().style.cursor = 'pointer';
+                });
+
+                // Click event on LA Boundaries
+                map.on('click', 'la-boundaries-layer', function (e) {
+                    if (e.features.length > 0) {
+                        const cityName = e.features[0].properties.CITY_COMM_NAME;
+                        showCityDataInDashboard(cityName);
+                    }
+                });
+            })
+            .catch(error => console.error('Error loading GeoJson data:', error));
+
+        // Add Facilities Source and Layers
+        if (!map.getSource('facilities')) {
+            map.addSource('facilities', {
+                type: 'geojson',
+                data: facilityGeoJSON,
+                cluster: true,
+                clusterMaxZoom: 14,
+                clusterRadius: 50
+            });
+        }
+
+        // Add Cluster Layers
+        if (!map.getLayer('clusters')) {
+            map.addLayer({
+                id: 'clusters',
+                type: 'circle',
+                source: 'facilities',
+                filter: ['has', 'point_count'],
+                paint: {
+                    'circle-radius': [
+                        'step',
+                        ['get', 'point_count'],
+                        25,    // radius for clusters with count < 10
+                        10,    
+                        30,    // radius for clusters with count < 25
+                        25,    
+                        35     // radius for clusters with count >= 25
+                    ],
+                    'circle-color': [
+                        'step',
+                        ['get', 'point_count'],
+                        '#ff9800',  // small clusters
+                        10,
+                        '#f57c00',  // medium clusters
+                        25,
+                        '#e65100'   // large clusters
+                    ],
+                    'circle-opacity': 0.9,
+                    'circle-stroke-width': 2,
+                    'circle-stroke-color': '#ffffff',
+                    'circle-stroke-opacity': 0.8
+                }
+            });
+
+            map.addLayer({
+                id: 'cluster-count',
+                type: 'symbol',
+                source: 'facilities',
+                filter: ['has', 'point_count'],
+                layout: {
+                    'text-field': '{point_count_abbreviated}',
+                    'text-font': ['DIN Offc Pro Bold', 'Arial Unicode MS Bold'],
+                    'text-size': 16,
+                    'text-allow-overlap': true
+                },
+                paint: {
+                    'text-color': '#ffffff',
+                    'text-halo-color': 'rgba(0, 0, 0, 0.2)',
+                    'text-halo-width': 1
+                }
+            });
+
+            map.addLayer({
+                id: 'unclustered-point',
+                type: 'circle',
+                source: 'facilities',
+                filter: ['!', ['has', 'point_count']],
+                paint: {
+                    'circle-color': '#ff9800',
+                    'circle-radius': 8,
+                    'circle-stroke-width': 2,
+                    'circle-stroke-color': '#ffffff',
+                    'circle-opacity': 0.9,
+                    'circle-stroke-opacity': 0.8
+                }
+            });
+        }
+
+        // Add Popups for Unclustered Points
+        const popup = new mapboxgl.Popup({
+            closeButton: false,
+            closeOnClick: false,
+            anchor: 'bottom',
+            offset: [0, -10],
+            className: 'facility-popup'
+        });
+
+        map.on('mouseenter', 'unclustered-point', (e) => {
+            map.getCanvas().style.cursor = 'pointer';
+            const props = e.features[0].properties;
+            const desc = `
+                <strong>${props.FacilityName}</strong><br>
+                Use: ${props.BuildingType || 'N/A'}<br>
+                EV: ${props.ExistingEVChargers || 'N/A'}<br>
+                PV: ${props.ExistingPV || 'N/A'}
+            `;
+            popup.setLngLat(e.features[0].geometry.coordinates)
+                 .setHTML(desc)
+                 .addTo(map);
+        });
+
+        map.on('mouseleave', 'unclustered-point', () => {
+            map.getCanvas().style.cursor = '';
+            popup.remove();
+        });
+
+        // Cluster Click Event
+        map.on('click', 'clusters', (e) => {
+            const features = map.queryRenderedFeatures(e.point, {
+                layers: ['clusters']
+            });
+            const clusterId = features[0].properties.cluster_id;
+            map.getSource('facilities').getClusterExpansionZoom(
+                clusterId,
+                (err, zoom) => {
+                    if (err) return;
+                    map.easeTo({
+                        center: features[0].geometry.coordinates,
+                        zoom: zoom
+                    });
+                }
+            );
+        });
+
+        // Change Cursor on Cluster Hover
+        map.on('mouseenter', 'clusters', () => {
+            map.getCanvas().style.cursor = 'pointer';
+        });
+
+        map.on('mouseleave', 'clusters', () => {
+            map.getCanvas().style.cursor = '';
+        });
+
+        // Click Event for Unclustered Points
+        map.on('click', 'unclustered-point', (e) => {
+            const props = e.features[0].properties;
+
+            // Find the matching agency
+            const matchingAgency = agencyData.find(a => a.Agency === props.Agency);
+            if (matchingAgency) {
+                // Show agency information
+                showFacilities(matchingAgency, facilityData.filter(f => f.Agency === matchingAgency.Agency));
+
+                // Show facility details
+                showFacilityDetails(props.Agency, props.FacilityName);
+
+                // Scroll dashboard into view
+                document.getElementById('dashboard-panel').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }
+        });
+
+        // Render the Agency Listing
+        renderListing();
+
+        // Update facility coordinates if needed
+        updateFacilityCoordinates();
+
+        // Hide loading spinner
+        document.getElementById('loading-spinner').style.display = 'none';
+    });
+
+    // Function to show city data in the dashboard
+    function showCityDataInDashboard(cityName) {
+        // Fetch and display city data in the dashboard
+        fetch(`data/${cityName}_data.json`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Update dashboard with city data
+                document.getElementById('dashboard').style.display = 'block';
+                document.getElementById('data-overview-title').textContent = `${cityName} Data Overview`;
+                // Populate data fields with fetched data
+                document.getElementById('agency-dac').textContent = data.dac || 'N/A';
+                document.getElementById('agency-cal').textContent = data.calEnviroScreenScore || 'N/A';
+                document.getElementById('agency-pollution').textContent = data.pollutionBurdenPercentile || 'N/A';
+                document.getElementById('agency-pop').textContent = data.population || 'N/A';
+                document.getElementById('agency-children-seniors').textContent = data.percentChildrenSeniors || 'N/A';
+                document.getElementById('agency-area').textContent = data.agencyArea || 'N/A';
+                document.getElementById('agency-density').textContent = data.populationDensity || 'N/A';
+                document.getElementById('agency-heat-days').textContent = data.extremeHeatDays || 'N/A';
+                document.getElementById('agency-income').textContent = data.averageHouseholdIncome || 'N/A';
+                document.getElementById('agency-low-income').textContent = data.percentLowIncomeCensusTracts || 'N/A';
+                document.getElementById('agency-circuits').textContent = data.numElectricCircuits || 'N/A';
+                document.getElementById('agency-kwh').textContent = data.annualConsumptionKwh || 'N/A';
+                document.getElementById('agency-therms').textContent = data.annualConsumptionTherms || 'N/A';
+            })
+            .catch(error => console.error('Error fetching city data:', error));
+    }
+
+    // Utility functions
+
+    // Function to render the agency listing
     function renderListing() {
         const listingElement = document.getElementById('listing');
         const introSection = document.getElementById('intro-section');
@@ -1348,7 +1554,7 @@
         document.getElementById('loading-spinner').style.display = 'none';
     }
 
-    // Add this function to handle facility filtering
+    // Function to filter facilities based on selected filters
     function filterFacilities(facilities) {
         const pvFilter = document.getElementById('pv-filter').checked;
         const evFilter = document.getElementById('ev-filter').checked;
@@ -1378,7 +1584,7 @@
         });
     }
 
-    // Update the showFacilities function to only include one back button
+    // Function to show facilities of an agency
     function showFacilities(agency, facilities) {
         const listingElement = document.getElementById('listing');
         const dashboardElement = document.getElementById('dashboard');
@@ -1391,72 +1597,61 @@
         // Apply facility filters
         const filteredFacilities = filterFacilities(facilities);
         
-        // Create and insert only one back button
-        listingElement.innerHTML = `
-            <button id="back-button">Back to Agencies</button>
-            <h4>Facilities in ${agency.Agency}</h4>
-            ${filteredFacilities.length > 0 
-                ? filteredFacilities.map(facility => `
-                    <div class="facility-title" onclick="showFacilityDetails('${facility.Agency}', '${facility.FacilityName}')">
-                        ${facility.FacilityName}
-                    </div>
-                `).join('')
-                : '<div id="no-facilities-msg">No facilities found matching the selected filters.</div>'
-            }
-        `;
+        // Clear existing content
+        listingElement.innerHTML = '';
 
-        // Add back button functionality
-        document.getElementById('back-button').onclick = () => {
+        // Create back button
+        const backButton = document.createElement('button');
+        backButton.id = 'back-button';
+        backButton.textContent = 'Back to Agencies';
+        backButton.onclick = () => {
             dashboardElement.style.display = 'none';
             renderListing();
         };
-        
-        // Hide the intro section and agency filters, show facility filters
+        listingElement.appendChild(backButton);
+
+        // Add header
+        const header = document.createElement('h4');
+        header.textContent = `Facilities in ${agency.Agency}`;
+        listingElement.appendChild(header);
+
+        // Add facilities or no facilities message
+        if (filteredFacilities.length > 0) {
+            filteredFacilities.forEach(facility => {
+                const facilityDiv = document.createElement('div');
+                facilityDiv.className = 'facility-title';
+                facilityDiv.textContent = facility.FacilityName;
+                facilityDiv.onclick = () => showFacilityDetails(facility.Agency, facility.FacilityName);
+                listingElement.appendChild(facilityDiv);
+            });
+        } else {
+            const noFacilitiesMsg = document.createElement('div');
+            noFacilitiesMsg.id = 'no-facilities-msg';
+            noFacilitiesMsg.textContent = 'No facilities found matching the selected filters.';
+            listingElement.appendChild(noFacilitiesMsg);
+        }
+
+        // Hide/show relevant sections
         introSection.style.display = 'none';
         agencyFilters.style.display = 'none';
         facilityFilters.style.display = 'block';
-        
+
         // Show the dashboard and agency data, hide facility data initially
         dashboardElement.style.display = 'block';
         agencyDataElement.style.display = 'block';
         facilityDataElement.style.display = 'none';
-        
+
         // Update agency data in the dashboard
         updateAgencyDashboard(agency);
     }
 
-    // Add event listeners for facility filters
-    document.getElementById('pv-filter').addEventListener('change', function() {
-        const agency = getCurrentlyDisplayedAgency(); // You'll need to implement this
-        if (agency) {
-            const facilities = facilityData.filter(f => f.Agency === agency.Agency);
-            showFacilities(agency, facilities);
-        }
-    });
-
-    document.getElementById('ev-filter').addEventListener('change', function() {
-        const agency = getCurrentlyDisplayedAgency();
-        if (agency) {
-            const facilities = facilityData.filter(f => f.Agency === agency.Agency);
-            showFacilities(agency, facilities);
-        }
-    });
-
-    document.getElementById('cooling-filter').addEventListener('change', function() {
-        const agency = getCurrentlyDisplayedAgency();
-        if (agency) {
-            const facilities = facilityData.filter(f => f.Agency === agency.Agency);
-            showFacilities(agency, facilities);
-        }
-    });
-
-    // Helper function to get the currently displayed agency
+    // Function to get the currently displayed agency
     function getCurrentlyDisplayedAgency() {
         const agencyName = document.querySelector('#data-overview-title').textContent.replace('Data Overview', '').trim();
         return agencyData.find(a => a.Agency === agencyName);
     }
 
-    // Helper function to update agency dashboard
+    // Function to update agency dashboard
     function updateAgencyDashboard(agency) {
         document.getElementById('agency-dac').textContent = agency.DAC || 'N/A';
         document.getElementById('agency-cal').textContent = agency.CalEnviroscreen || 'N/A';
@@ -1466,13 +1661,14 @@
         document.getElementById('agency-area').textContent = agency.AgencyArea || 'N/A';
         document.getElementById('agency-density').textContent = agency.PopulationDensity?.toLocaleString() || 'N/A';
         document.getElementById('agency-heat-days').textContent = agency.ExtremeHeatDays || 'N/A';
-        document.getElementById('agency-income').textContent = `$${agency.AvgHouseholdIncome?.toLocaleString()}` || 'N/A';
-        document.getElementById('agency-low-income').textContent = `${agency.LowIncomeTracts}%` || 'N/A';
+        document.getElementById('agency-income').textContent = agency.AvgHouseholdIncome ? `$${agency.AvgHouseholdIncome.toLocaleString()}` : 'N/A';
+        document.getElementById('agency-low-income').textContent = agency.LowIncomeTracts ? `${agency.LowIncomeTracts}%` : 'N/A';
         document.getElementById('agency-circuits').textContent = agency.ElectricCircuits || 'N/A';
-        document.getElementById('agency-kwh').textContent = agency.AnnualKWh?.toLocaleString() || 'N/A';
-        document.getElementById('agency-therms').textContent = agency.AnnualTherms?.toLocaleString() || 'N/A';
+        document.getElementById('agency-kwh').textContent = agency.AnnualKWh ? agency.AnnualKWh.toLocaleString() : 'N/A';
+        document.getElementById('agency-therms').textContent = agency.AnnualTherms ? agency.AnnualTherms.toLocaleString() : 'N/A';
     }
 
+    // Function to show facility details
     function showFacilityDetails(agencyName, facilityName) {
         const facility = facilityData.find(f => 
             f.Agency === agencyName && f.FacilityName === facilityName
@@ -1514,288 +1710,6 @@
         }
     }
 
-    // Map 'load' event handler
-    map.on('load', () => {
-        console.log('Map loaded');
-        
-        // Add boundaries source
-       // map.addSource('la-boundaries', {
-       //     'type': 'geojson',
-        //    'data': 'https://raw.githubusercontent.com/wbeng69527/erap/main/path_to_la_boundaries.geojson'
-       // });
-
-        // Add boundaries layer
-        map.addLayer({
-            'id': 'la-fills',
-            'type': 'fill',
-            'source': 'la-boundaries',
-            'layout': {},
-            'paint': {
-                'fill-color': '#3498db',
-                'fill-opacity': 0.4
-            }
-        });
-
-        // Add facilities source
-        map.addSource('facilities', {
-            'type': 'geojson',
-            'data': facilityGeoJSON,
-            'cluster': true,
-            'clusterMaxZoom': 14,
-            'clusterRadius': 50
-        });
-
-        // Add layers for clusters and unclustered points
-        map.addLayer({
-            'id': 'clusters',
-            'type': 'circle',
-            'source': 'facilities',
-            'filter': ['has', 'point_count'],
-            'paint': {
-                'circle-radius': [
-                    'step',
-                    ['get', 'point_count'],
-                    25,    // radius for clusters with count < 10
-                    10,    
-                    30,    // radius for clusters with count < 25
-                    25,    
-                    35     // radius for clusters with count >= 25
-                ],
-                'circle-color': [
-                    'step',
-                    ['get', 'point_count'],
-                    '#ff9800',  // small clusters
-                    10,
-                    '#f57c00',  // medium clusters
-                    25,
-                    '#e65100'   // large clusters
-                ],
-                'circle-opacity': 0.9,
-                'circle-stroke-width': 2,
-                'circle-stroke-color': '#ffffff',
-                'circle-stroke-opacity': 0.8
-            }
-        });
-
-        map.addLayer({
-            'id': 'cluster-count',
-            'type': 'symbol',
-            'source': 'facilities',
-            'filter': ['has', 'point_count'],
-            'layout': {
-                'text-field': '{point_count_abbreviated}',
-                'text-font': ['DIN Offc Pro Bold', 'Arial Unicode MS Bold'],
-                'text-size': 16,
-                'text-allow-overlap': true
-            },
-            'paint': {
-                'text-color': '#ffffff',
-                'text-halo-color': 'rgba(0, 0, 0, 0.2)',
-                'text-halo-width': 1
-            }
-        });
-
-        map.addLayer({
-            'id': 'unclustered-point',
-            'type': 'circle',
-            'source': 'facilities',
-            'filter': ['!', ['has', 'point_count']],
-            'paint': {
-                'circle-color': '#ff9800',
-                'circle-radius': 8,
-                'circle-stroke-width': 2,
-                'circle-stroke-color': '#ffffff',
-                'circle-opacity': 0.9,
-                'circle-stroke-opacity': 0.8
-            }
-        });
-
-        // Update popup styling
-        const popup = new mapboxgl.Popup({
-            closeButton: false,
-            closeOnClick: false,
-            anchor: 'bottom',
-            offset: [0, -10],
-            className: 'facility-popup'
-        });
-
-        // Add mouse events for popups
-        map.on('mouseenter', 'unclustered-point', (e) => {
-            map.getCanvas().style.cursor = 'pointer';
-            const props = e.features[0].properties;
-            const desc = `
-                <strong>${props.FacilityName}</strong><br>
-                Use: ${props.BuildingType || 'N/A'}<br>
-                EV: ${props.ExistingEVChargers || 'N/A'}<br>
-                PV: ${props.ExistingPV || 'N/A'}
-            `;
-            popup.setLngLat(e.features[0].geometry.coordinates)
-                 .setHTML(desc)
-                 .addTo(map);
-        });
-
-        map.on('mouseleave', 'unclustered-point', () => {
-            map.getCanvas().style.cursor = '';
-            popup.remove();
-        });
-
-        // Add click event for clusters
-        map.on('click', 'clusters', (e) => {
-            const features = map.queryRenderedFeatures(e.point, {
-                layers: ['clusters']
-            });
-            const clusterId = features[0].properties.cluster_id;
-            map.getSource('facilities').getClusterExpansionZoom(
-                clusterId,
-                (err, zoom) => {
-                    if (err) return;
-                    map.easeTo({
-                        center: features[0].geometry.coordinates,
-                        zoom: zoom
-                    });
-                }
-            );
-        });
-
-        // Change cursor when hovering over clusters
-        map.on('mouseenter', 'clusters', () => {
-            map.getCanvas().style.cursor = 'pointer';
-        });
-        
-        map.on('mouseleave', 'clusters', () => {
-            map.getCanvas().style.cursor = '';
-        });
-
-        // Add this click handler for boundary areas after your other map event listeners
-        map.on('click', 'la-fills', (e) => {
-            if (e.features.length > 0) {
-                const cityName = e.features[0].properties.CITY_COMM_NAME;
-                // Find matching agency (accounting for "City of" prefix)
-                const matchingAgency = agencyData.find(a => 
-                    a.Agency.replace('City of ', '').trim().toUpperCase() === cityName.trim().toUpperCase()
-                );
-                
-                if (matchingAgency) {
-                    // Get facilities for this agency
-                    const facilities = facilityData.filter(f => f.Agency === matchingAgency.Agency);
-                    
-                    // Show the agency's facilities and data
-                    showFacilities(matchingAgency, facilities);
-                    
-                    // Scroll dashboard into view if needed
-                    document.getElementById('dashboard-panel').scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'start' 
-                    });
-                }
-            }
-        });
-
-        // Update the click handler for individual facility points
-        map.on('click', 'unclustered-point', (e) => {
-            const props = e.features[0].properties;
-            
-            // Find the matching agency first
-            const matchingAgency = agencyData.find(a => a.Agency === props.Agency);
-            if (matchingAgency) {
-                // First show the agency's information
-                onAgencyClick(matchingAgency);
-                
-                // Then find and show the facility's information
-                const matchingFacility = facilityData.find(f => 
-                    f.Agency === props.Agency && 
-                    f.FacilityName === props.FacilityName
-                );
-                
-                if (matchingFacility) {
-                    // Update facility dashboard
-                    updateFacilityDashboard(matchingFacility);
-                    
-                    // Find and highlight the facility in the listing
-                    const facilityLinks = document.querySelectorAll('.facility-title');
-                    facilityLinks.forEach(link => {
-                        if (link.textContent === props.FacilityName) {
-                            link.classList.add('active');
-                            link.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        } else {
-                            link.classList.remove('active');
-                        }
-                    });
-                }
-                
-                // Scroll dashboard into view
-                document.getElementById('dashboard-panel').scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start' 
-                });
-            }
-        });
-
-        // Call renderListing after data sources and layers are added
-        renderListing();
-
-        // Hide loading spinner
-        document.getElementById('loading-spinner').style.display = 'none';
-    });
-
-    // Function to geocode a single address
-    async function geocodeAddress(address) {
-        const accessToken = mapboxgl.accessToken;
-        const query = encodeURIComponent(address + ', CA');
-        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${accessToken}&country=US&types=address`;
-        
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            if (data.features && data.features.length > 0) {
-                return data.features[0].center;
-            }
-            return null;
-        } catch (error) {
-            console.error('Geocoding error:', error);
-            return null;
-        }
-    }
-
-    // Update facility coordinates
-    async function updateFacilityCoordinates() {
-        const updatedFacilities = [...facilityData]; // Create a copy of the array
-        
-        for (let facility of updatedFacilities) {
-            if (!facility.Latitude || !facility.Longitude) {
-                const address = `${facility.Address}`;
-                const coordinates = await geocodeAddress(address);
-                if (coordinates) {
-                    facility.Longitude = coordinates[0];
-                    facility.Latitude = coordinates[1];
-                }
-            }
-        }  // <-- Closing brace for 'for' loop
-
-        // Update the GeoJSON
-        const updatedGeoJSON = {
-            type: 'FeatureCollection',
-            features: updatedFacilities.map(f => ({
-                type: 'Feature',
-                geometry: {
-                    type: 'Point',
-                    coordinates: [f.Longitude, f.Latitude]
-                },
-                properties: {
-                    ...f // Spread all facility properties
-                }
-            })).filter(f => f.geometry.coordinates[0] && f.geometry.coordinates[1]) // Filter out invalid coordinates
-        };
-
-        // Update the map source if it exists
-        if (map.getSource('facilities')) {
-            map.getSource('facilities').setData(updatedGeoJSON);
-        }
-    }  // This closes the 'updateFacilityCoordinates' function
-
-    // Call this function after your data is loaded
-    updateFacilityCoordinates();
-
     // Function to close the welcome popup
     function closeWelcome() {
         const popup = document.getElementById('welcome-popup');
@@ -1805,10 +1719,7 @@
         }, 400);
     }
 
-    // Additional functions and event listeners
-    // ...
-
-    // Add the geocoder control
+    // Geocoder Control
     const geocoder = new MapboxGeocoder({
         accessToken: mapboxgl.accessToken,
         mapboxgl: mapboxgl,
@@ -1822,10 +1733,35 @@
 
     document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
 
-    // Add these event listeners after your map.on('load') function
+    // Event Listeners for Filters
     document.getElementById('population-min').addEventListener('input', filterAgencies);
     document.getElementById('population-max').addEventListener('input', filterAgencies);
+    document.getElementById('agency-filter').addEventListener('input', filterAgencies);
+    document.getElementById('dac-filter').addEventListener('change', filterAgencies);
+    document.getElementById('ces90-filter').addEventListener('change', filterAgencies);
+    document.getElementById('pv-filter').addEventListener('change', function() {
+        const agency = getCurrentlyDisplayedAgency();
+        if (agency) {
+            const facilities = facilityData.filter(f => f.Agency === agency.Agency);
+            showFacilities(agency, facilities);
+        }
+    });
+    document.getElementById('ev-filter').addEventListener('change', function() {
+        const agency = getCurrentlyDisplayedAgency();
+        if (agency) {
+            const facilities = facilityData.filter(f => f.Agency === agency.Agency);
+            showFacilities(agency, facilities);
+        }
+    });
+    document.getElementById('cooling-filter').addEventListener('change', function() {
+        const agency = getCurrentlyDisplayedAgency();
+        if (agency) {
+            const facilities = facilityData.filter(f => f.Agency === agency.Agency);
+            showFacilities(agency, facilities);
+        }
+    });
 
+    // Function to filter agencies based on input
     function filterAgencies() {
         const minPop = parseInt(document.getElementById('population-min').value) || 0;
         const maxPop = parseInt(document.getElementById('population-max').value) || Infinity;
@@ -1873,6 +1809,10 @@
                 const cogHeader = document.createElement('div');
                 cogHeader.className = 'cog-header';
                 cogHeader.textContent = council;
+                cogHeader.addEventListener('click', () => {
+                    cogHeader.classList.toggle('expanded');
+                    agencyList.style.display = agencyList.style.display === 'none' ? 'block' : 'none';
+                });
 
                 const agencyList = document.createElement('div');
                 agencyList.className = 'agency-list';
@@ -1908,13 +1848,6 @@
         console.log('DAC Filter:', dacFilter);
         console.log('CES Filter:', ces90Filter);
     }
-
-    // Make sure all filter inputs trigger the filterAgencies function
-    document.getElementById('agency-filter').addEventListener('input', filterAgencies);
-    document.getElementById('population-min').addEventListener('input', filterAgencies);
-    document.getElementById('population-max').addEventListener('input', filterAgencies);
-    document.getElementById('dac-filter').addEventListener('change', filterAgencies);
-    document.getElementById('ces90-filter').addEventListener('change', filterAgencies);
 
 </script>
 
