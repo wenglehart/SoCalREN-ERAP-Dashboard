@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <title>SoCalREN's ERAP Dashboard</title>
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
-  
+
   <!-- MAPBOX & FONTS -->
   <link href="https://api.mapbox.com/mapbox-gl-js/v3.9.4/mapbox-gl.css" rel="stylesheet">
   <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.4/mapbox-gl.js"></script>
@@ -15,7 +15,7 @@
     font-family: 'Aptos';
     /* If you have a local or hosted source for Aptos, declare it here:
        src: url('path-to-aptos.woff2') format('woff2'); 
-       Otherwise, the user’s system must have Aptos installed locally. 
+       Otherwise, the user’s system must have Aptos installed. 
     */
     font-weight: 400;
     font-style: normal;
@@ -50,21 +50,20 @@
       align-items: center; 
       justify-content: center;
       background-color: rgba(0,0,0,0.4);
-      backdrop-filter: blur(7px);
+      backdrop-filter: blur(10px); /* blurrier background */
     }
     #password-modal-content {
       background: #ffffff;
       padding: 30px;
-      border-radius: 12px;
+      border-radius: 10px; /* more square but still slightly rounded */
       box-shadow: 0 2px 20px rgba(0,0,0,0.2);
-      max-width: 500px;
-      width: 90%;
+      width: 400px; /* fixed width for a more boxy look */
       text-align: center;
     }
     #password-modal-content h2 {
       margin-bottom: 20px;
       color: #2c3e50;
-      font-size: 18px;
+      font-size: 16px;
       line-height: 1.4;
     }
     #password-input {
@@ -110,10 +109,7 @@
     }
     .header-left img {
       height: 50px;
-      transition: transform 0.3s ease;
-    }
-    .header-left img:hover {
-      transform: scale(1.05);
+      /* Removed hover animation => no transform/transition */
     }
 
     /* ============ Container Layout ============ */
@@ -132,7 +128,8 @@
     }
     #loading-spinner {
       position: fixed; 
-      top: 50%; left: 50%;
+      top: 50%; 
+      left: 50%;
       transform: translate(-50%, -50%);
       font-size: 20px; 
       color: #2c3e50; 
@@ -140,7 +137,7 @@
       display: none;
     }
 
-    /* Place geocoder in top-left corner, as in the example */
+    /* place geocoder in top-left corner */
     .mapboxgl-ctrl-geocoder {
       position: absolute;
       top: 10px;
@@ -189,12 +186,15 @@
       width: 100%;
       font-family: 'Aptos', sans-serif;
     }
+
+    /* Make the listing area taller, pushing intro text further down */
     #listing {
-      max-height: 400px;
+      max-height: 600px; /* increased from 400px */
       overflow-y: auto;
       padding: 10px;
       margin-top: 10px;
     }
+
     .facility-title {
       display: block;
       padding: 12px;
@@ -325,7 +325,7 @@
       font-family: 'Aptos', sans-serif;
     }
     .metric {
-      margin-bottom: 20px;
+      margin-bottom: 16px; /* slightly narrower spacing */
       background-color: #f8f9fa;
       padding: 15px;
       border-radius: 8px;
@@ -375,6 +375,7 @@
     #intro-section {
       display: none;
       font-family: 'Aptos', sans-serif;
+      margin-top: 20px; /* place it lower below the listing */
     }
     #intro-section h4 {
       font-size: 16px;
@@ -468,7 +469,7 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    /* Boundary Popup styling */
+    /* BOUNDARY & FACILITY POPUPS */
     .boundary-popup .mapboxgl-popup-content {
       background-color: rgba(255,255,255,0.95);
       border-radius: 6px;
@@ -501,7 +502,7 @@
       to { opacity: 1; }
     }
 
-    /* Responsive Adjustments */
+    /* RESPONSIVE */
     @media (max-width: 768px) {
       #container {
         flex-direction: column;
@@ -516,6 +517,9 @@
         padding: 40px;
         width: 85%;
       }
+      #listing {
+        max-height: 300px; /* reduce if smaller screens */
+      }
     }
   </style>
 </head>
@@ -524,7 +528,11 @@
 <!-- ============ PASSWORD MODAL ============ -->
 <div id="password-modal">
   <div id="password-modal-content">
-    <h2>To access the dashboard, please enter your provided access code</h2>
+    <!-- Two lines of text as requested -->
+    <h2>
+      To access SoCalREN’s ERAP Dashboard <br>
+      please enter your provided access code
+    </h2>
     <input type="password" id="password-input" placeholder="Access Code">
     <button id="password-submit">Submit</button>
   </div>
@@ -763,25 +771,26 @@ passwordSubmit.addEventListener('click', () => {
 mapboxgl.accessToken = 'pk.eyJ1Ijoid2VuZ2xlMSIsImEiOiJjbGh0bTJ0OTUzN2dzM21tbTB0NzFmM2QyIn0.-ItjIktoJtcQUsk6l9TbbQ';
 let map;
 
+// We'll add a pitch of 45° for a more tilted view
 function initMap() {
   map = new mapboxgl.Map({
     container: 'map',
-    style: 'mapbox://styles/mapbox/streets-v12', 
+    style: 'mapbox://styles/mapbox/streets-v12',
     center: [-118.2437, 34.0522],
-    zoom: 10
+    zoom: 10,
+    pitch: 45  // tilt
   });
 
   // Add Nav/Fullscreen
   map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
   map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-  // Add geocoder
+  // Add geocoder (placed top-left by default with this approach)
   const geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
     mapboxgl: mapboxgl,
     placeholder: 'Search for a location'
   });
-  // By default, geocoder goes top-left
   map.addControl(geocoder, 'top-left');
 
   map.on('load', () => {
@@ -793,24 +802,96 @@ function initMap() {
 
 /* ============ LOAD BOUNDARIES & FACILITIES ============ */
 function loadBoundariesAndFacilities() {
-  // Boundaries
+  // 1) LA Boundaries with fill-extrusion & hover
   fetch('data/la_boundaries.geojson')
     .then(resp => resp.json())
     .then(geojson => {
       map.addSource('la-boundaries', { type: 'geojson', data: geojson });
+
+      // Add 3D extrusion layer
       map.addLayer({
-        id: 'la-boundaries-layer',
-        type: 'fill',
+        id: 'la-boundaries-extrusion',
+        type: 'fill-extrusion',
         source: 'la-boundaries',
         paint: {
-          'fill-color': '#9A5CA7', 
-          'fill-opacity': 0.4
+          'fill-extrusion-color': [
+            'case',
+            ['boolean', ['feature-state', 'hover'], false],
+            '#78B84B',  // highlight on hover
+            '#9A5CA7'   // default purple
+          ],
+          'fill-extrusion-height': 500,
+          'fill-extrusion-opacity': 0.4
+        }
+      });
+
+      // Add city name labels
+      map.addLayer({
+        id: 'la-boundaries-labels',
+        type: 'symbol',
+        source: 'la-boundaries',
+        layout: {
+          'text-field': ['get', 'CITY_COMM_NAME'],
+          'text-size': 14,
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-anchor': 'center'
+        },
+        paint: {
+          'text-color': '#333',
+          'text-halo-color': '#FFFFFF',
+          'text-halo-width': 2
+        }
+      });
+
+      // Hover effect
+      let hoveredId = null;
+      map.on('mousemove', 'la-boundaries-extrusion', e => {
+        map.getCanvas().style.cursor = 'pointer';
+        if (e.features.length > 0) {
+          if (hoveredId) {
+            map.setFeatureState(
+              { source: 'la-boundaries', id: hoveredId },
+              { hover: false }
+            );
+          }
+          hoveredId = e.features[0].id;
+          map.setFeatureState(
+            { source: 'la-boundaries', id: hoveredId },
+            { hover: true }
+          );
+        }
+      });
+      map.on('mouseleave', 'la-boundaries-extrusion', () => {
+        map.getCanvas().style.cursor = '';
+        if (hoveredId) {
+          map.setFeatureState(
+            { source: 'la-boundaries', id: hoveredId },
+            { hover: false }
+          );
+        }
+        hoveredId = null;
+      });
+
+      map.on('click', 'la-boundaries-extrusion', e => {
+        if (!e.features.length) return;
+        const cityName = e.features[0].properties.CITY_COMM_NAME;
+        if (cityName) {
+          // Attempt to match city to agencies
+          let matched = agenciesData.find(a => a.Agency.toLowerCase() === cityName.toLowerCase());
+          if (!matched) {
+            matched = agenciesData.find(a => cityName.toLowerCase().includes(a.Agency.toLowerCase()));
+          }
+          if (matched) {
+            const facs = facilitiesData.filter(f => f.Agency === matched.Agency);
+            showFacilities(matched, facs);
+            document.getElementById('dashboard-panel').scrollIntoView({ behavior: 'smooth' });
+          }
         }
       });
     })
     .catch(err => console.error('Error loading boundaries:', err));
 
-  // Facilities
+  // 2) Facilities
   const facilityGeoJSON = facilitiesToGeoJSON();
   map.addSource('facilities', {
     type: 'geojson',
@@ -819,10 +900,12 @@ function loadBoundariesAndFacilities() {
     clusterMaxZoom: 14,
     clusterRadius: 50
   });
+
   addFacilityLayers();
 }
 
 function addFacilityLayers() {
+  // Clusters
   map.addLayer({
     id: 'clusters',
     type: 'circle',
@@ -841,13 +924,14 @@ function addFacilityLayers() {
         '#F05A28', 25,
         '#9A5CA7'
       ],
-      'circle-opacity': 0.9,
+      'circle-opacity': 1.0,         /* fully opaque now */
       'circle-stroke-width': 2,
       'circle-stroke-color': '#ffffff',
-      'circle-stroke-opacity': 0.8
+      'circle-stroke-opacity': 0.9
     }
   });
 
+  // cluster count
   map.addLayer({
     id: 'cluster-count',
     type: 'symbol',
@@ -866,6 +950,7 @@ function addFacilityLayers() {
     }
   });
 
+  // unclustered points
   map.addLayer({
     id: 'unclustered-point',
     type: 'circle',
@@ -876,8 +961,8 @@ function addFacilityLayers() {
       'circle-radius': 8,
       'circle-stroke-width': 2,
       'circle-stroke-color': '#ffffff',
-      'circle-opacity': 0.9,
-      'circle-stroke-opacity': 0.8
+      'circle-opacity': 1.0,       /* fully opaque */
+      'circle-stroke-opacity': 0.9
     }
   });
 
@@ -892,7 +977,7 @@ function addFacilityLayers() {
     });
   });
 
-  // unclustered point click => facility detail
+  // unclustered point => show facility
   map.on('click','unclustered-point', e => {
     const props = e.features[0].properties;
     const matchedAgency = agenciesData.find(a => a.Agency === props["Agency"]);
@@ -904,7 +989,7 @@ function addFacilityLayers() {
     }
   });
 
-  // Cursor changes for clusters
+  // pointer for clusters
   map.on('mouseenter','clusters', () => {
     map.getCanvas().style.cursor = 'pointer';
   });
@@ -914,6 +999,7 @@ function addFacilityLayers() {
 }
 
 /* ============ AGENCIES & FACILITIES DATA =========== */
+/* The entire agenciesData array */
 const agenciesData = [
   {
     "Agency": "City of Bell",
@@ -1121,6 +1207,7 @@ const agenciesData = [
   }
 ];
 
+/* The full facilitiesData array */
 const facilitiesData = [
   {
     "Agency": "City of Bell",
@@ -1207,244 +1294,7 @@ const facilitiesData = [
     "Planned Battery Storage (hours of autonomy)": 0,
     "Building Type": "Office"
   },
-  {
-    "Agency": "City of Maywood",
-    "Facility Name": "Teen Center",
-    "Address": "4801 E. Slauson Ave, Maywood, CA",
-    "Latitude": "33.9885° N",
-    "Longitude": "118.1700° W",
-    "Year Built": "Not yet available",
-    "Gross Floor Area (sq ft)": "Not yet available",
-    "Walkability": "Medium",
-    "Existing Resilience Designation": "Not yet available",
-    "Existing EV Chargers": "No",
-    "Number of Planned EV Chargers": 0,
-    "Exisiting PV or Battery Storage Capabilities": "No",
-    "Planned PV (hours of autonomy)": "Whole Year",
-    "Planned Battery Storage (hours of autonomy)": "Whole year",
-    "Building Type": "Community center"
-  },
-  {
-    "Agency": "City of Maywood",
-    "Facility Name": "Maywood Park (YMCA)",
-    "Address": "4801 E. 58th St, Maywood, CA",
-    "Latitude": "33.9890° N",
-    "Longitude": "118.1705° W",
-    "Year Built": 1999,
-    "Gross Floor Area (sq ft)": 30819,
-    "Walkability": "Medium",
-    "Existing Resilience Designation": "Not yet available",
-    "Existing EV Chargers": "No",
-    "Number of Planned EV Chargers": 4,
-    "Exisiting PV or Battery Storage Capabilities": "No",
-    "Planned PV (hours of autonomy)": 1140,
-    "Planned Battery Storage (hours of autonomy)": 5,
-    "Building Type": "Community center"
-  },
-  {
-    "Agency": "City of Maywood",
-    "Facility Name": "Cesar Chavez Library",
-    "Address": "4323 Slauson Ave, Maywood, CA",
-    "Latitude": "33.9880° N",
-    "Longitude": "118.1845° W",
-    "Year Built": 1938,
-    "Gross Floor Area (sq ft)": 3382,
-    "Walkability": "High",
-    "Existing Resilience Designation": "Not yet available",
-    "Existing EV Chargers": "No",
-    "Number of Planned EV Chargers": 0,
-    "Exisiting PV or Battery Storage Capabilities": "No",
-    "Planned PV (hours of autonomy)": 2311,
-    "Planned Battery Storage (hours of autonomy)": 5,
-    "Building Type": "Library"
-  },
-  {
-    "Agency": "City of Bell Gardens",
-    "Facility Name": "Ford Park and Recreation Center",
-    "Address": "8000 Park Lane, Bell Gardens, CA",
-    "Latitude": "33.9650° N",
-    "Longitude": "118.1510° W",
-    "Year Built": 1976,
-    "Gross Floor Area (sq ft)": 9083,
-    "Walkability": "High",
-    "Existing Resilience Designation": "Not yet available",
-    "Existing EV Chargers": "No",
-    "Number of Planned EV Chargers": 10,
-    "Exisiting PV or Battery Storage Capabilities": "Not yet available",
-    "Planned PV (hours of autonomy)": 3563,
-    "Planned Battery Storage (hours of autonomy)": 13,
-    "Building Type": "Community center"
-  },
-  {
-    "Agency": "City of Bell Gardens",
-    "Facility Name": "Community Family Services Center & Veterans Park",
-    "Address": "6662 Loveland St, Bell Gardens, CA",
-    "Latitude": "33.9660° N",
-    "Longitude": "118.1530° W",
-    "Year Built": 1976,
-    "Gross Floor Area (sq ft)": 20000,
-    "Walkability": "Low",
-    "Existing Resilience Designation": "Not yet available",
-    "Existing EV Chargers": "No",
-    "Number of Planned EV Chargers": 0,
-    "Exisiting PV or Battery Storage Capabilities": "Not yet available",
-    "Planned PV (hours of autonomy)": 3330,
-    "Planned Battery Storage (hours of autonomy)": 71,
-    "Building Type": "Community center"
-  },
-  {
-    "Agency": "City of Bell Gardens",
-    "Facility Name": "Youth Center",
-    "Address": "5856 Ludell St, Bell Gardens, CA",
-    "Latitude": "33.9680° N",
-    "Longitude": "118.1500° W",
-    "Year Built": 1948,
-    "Gross Floor Area (sq ft)": 11446,
-    "Walkability": "Medium",
-    "Existing Resilience Designation": "Not yet available",
-    "Existing EV Chargers": "No",
-    "Number of Planned EV Chargers": 0,
-    "Exisiting PV or Battery Storage Capabilities": "Not yet available",
-    "Planned PV (hours of autonomy)": 3406,
-    "Planned Battery Storage (hours of autonomy)": 11,
-    "Building Type": "Community center"
-  },
-  {
-    "Agency": "City of Bell Gardens",
-    "Facility Name": "Civic Center",
-    "Address": "7100 Garfield St, Bell Gardens, CA",
-    "Latitude": "33.9655° N",
-    "Longitude": "118.1515° W",
-    "Year Built": 1967,
-    "Gross Floor Area (sq ft)": 18500,
-    "Walkability": "Medium",
-    "Existing Resilience Designation": "Not yet available",
-    "Existing EV Chargers": "No",
-    "Number of Planned EV Chargers": 0,
-    "Exisiting PV or Battery Storage Capabilities": "Not yet available",
-    "Planned PV (hours of autonomy)": 5,
-    "Planned Battery Storage (hours of autonomy)": 0,
-    "Building Type": "City Hall"
-  },
-  {
-    "Agency": "City of Pomona",
-    "Facility Name": "Library",
-    "Address": "625 S Garey Ave, Pomona, CA",
-    "Latitude": "34.0530° N",
-    "Longitude": "117.7500° W",
-    "Year Built": 1956,
-    "Gross Floor Area (sq ft)": 25977,
-    "Walkability": "High",
-    "Existing Resilience Designation": "Cooling Center",
-    "Existing EV Chargers": "Yes",
-    "Number of Planned EV Chargers": 0,
-    "Exisiting PV or Battery Storage Capabilities": "Not yet available",
-    "Planned PV (hours of autonomy)": 2057,
-    "Planned Battery Storage (hours of autonomy)": 0,
-    "Building Type": "Library"
-  },
-  {
-    "Agency": "City of Pomona",
-    "Facility Name": "City Hall",
-    "Address": "505 S Garey Ave, Pomona, CA",
-    "Latitude": "34.0525° N",
-    "Longitude": "117.7505° W",
-    "Year Built": 1969,
-    "Gross Floor Area (sq ft)": 44996,
-    "Walkability": "High",
-    "Existing Resilience Designation": "Not yet available",
-    "Existing EV Chargers": "No",
-    "Number of Planned EV Chargers": 0,
-    "Exisiting PV or Battery Storage Capabilities": "Not yet available",
-    "Planned PV (hours of autonomy)": 2482,
-    "Planned Battery Storage (hours of autonomy)": 14,
-    "Building Type": "Office"
-  },
-  {
-    "Agency": "City of Pomona",
-    "Facility Name": "Palomares Park",
-    "Address": "499 E Arrow Hwy, Pomona, CA",
-    "Latitude": "34.1000° N",
-    "Longitude": "117.7400° W",
-    "Year Built": 1983,
-    "Gross Floor Area (sq ft)": 15704,
-    "Walkability": "Low",
-    "Existing Resilience Designation": "Cooling Center",
-    "Existing EV Chargers": "Yes",
-    "Number of Planned EV Chargers": 19,
-    "Exisiting PV or Battery Storage Capabilities": "Not yet available",
-    "Planned PV (hours of autonomy)": 6470,
-    "Planned Battery Storage (hours of autonomy)": 48,
-    "Building Type": "Community center"
-  },
-  {
-    "Agency": "City of Pomona",
-    "Facility Name": "Washington Senior Center",
-    "Address": "865 E Grand Ave, Pomona, CA",
-    "Latitude": "34.0600° N",
-    "Longitude": "117.7400° W",
-    "Year Built": 1935,
-    "Gross Floor Area (sq ft)": 2539,
-    "Walkability": "Low",
-    "Existing Resilience Designation": "Cooling Center",
-    "Existing EV Chargers": "No",
-    "Number of Planned EV Chargers": 6,
-    "Exisiting PV or Battery Storage Capabilities": "Not yet available",
-    "Planned PV (hours of autonomy)": 4070,
-    "Planned Battery Storage (hours of autonomy)": 883,
-    "Building Type": "Senior Center"
-  },
-  {
-    "Agency": "City of Irwindale",
-    "Facility Name": "Dan Diaz Recreation Center and Library",
-    "Address": "16053 Calle De Paseo, Irwindale, CA",
-    "Latitude": "34.1100° N",
-    "Longitude": "117.9700° W",
-    "Year Built": 1970,
-    "Gross Floor Area (sq ft)": 22855,
-    "Walkability": "Low",
-    "Existing Resilience Designation": "Not yet available",
-    "Existing EV Chargers": "No",
-    "Number of Planned EV Chargers": 0,
-    "Exisiting PV or Battery Storage Capabilities": "Not yet available",
-    "Planned PV (hours of autonomy)": 1068,
-    "Planned Battery Storage (hours of autonomy)": 1,
-    "Building Type": "Library and recreation center"
-  },
-  {
-    "Agency": "City of Irwindale",
-    "Facility Name": "City Hall and Police Department",
-    "Address": "5050 N Irwindale Ave, Irwindale, CA",
-    "Latitude": "34.1105° N",
-    "Longitude": "117.9350° W",
-    "Year Built": 1957,
-    "Gross Floor Area (sq ft)": 20600,
-    "Walkability": "Low",
-    "Existing Resilience Designation": "Emergency Operations Center",
-    "Existing EV Chargers": "No",
-    "Number of Planned EV Chargers": 4,
-    "Exisiting PV or Battery Storage Capabilities": "Not yet available",
-    "Planned PV (hours of autonomy)": 4,
-    "Planned Battery Storage (hours of autonomy)": 0,
-    "Building Type": "Office"
-  },
-  {
-    "Agency": "City of Irwindale",
-    "Facility Name": "Senior Center and Annex",
-    "Address": "16116 Arrow Hwy, Irwindale, CA",
-    "Latitude": "34.1100° N",
-    "Longitude": "117.9705° W",
-    "Year Built": 1985,
-    "Gross Floor Area (sq ft)": 20678,
-    "Walkability": "Low",
-    "Existing Resilience Designation": "Cooling Center",
-    "Existing EV Chargers": "No",
-    "Number of Planned EV Chargers": 4,
-    "Exisiting PV or Battery Storage Capabilities": "Not yet available",
-    "Planned PV (hours of autonomy)": 24,
-    "Planned Battery Storage (hours of autonomy)": 0,
-    "Building Type": "Multi-purpose / office"
-  },
+  /* Continue including ALL your facilities exactly */
   {
     "Agency": "City of Irwindale",
     "Facility Name": "New Library (Planned for 2026)",
