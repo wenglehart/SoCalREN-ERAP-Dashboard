@@ -13,9 +13,10 @@
   <style>
   @font-face {
     font-family: 'Aptos';
-    /* If you have a local or hosted source for Aptos, declare it here:
+    /*
+       If you have a local or hosted source for Aptos, declare it here:
        src: url('path-to-aptos.woff2') format('woff2'); 
-       Otherwise, user’s system must have Aptos installed. 
+       Otherwise, the user’s system must have Aptos installed. 
     */
     font-weight: 400;
     font-style: normal;
@@ -112,20 +113,32 @@
       height: 50px;
     }
 
-    /* ============ Container Layout ============ */
+    /* ============ MAIN CONTAINER LAYOUT ============ */
     #container {
       width: 100%;
       height: calc(100vh - 60px);
-      position: relative;
       display: flex;
       flex-direction: row;
       overflow: hidden;
     }
+    /* Let the map take leftover space; fix the dashboard width so it's not squashed */
     #map {
-      flex: 3;
+      flex: 1; 
       position: relative;
       min-height: 400px;
     }
+    .map-overlay {
+      width: 400px; /* fixed width so the panel stays readable */
+      background: linear-gradient(to bottom, #fff, #f8f9fa);
+      border-left: 1px solid rgba(0,0,0,0.1);
+      padding: 20px 20px 0 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Aptos', sans-serif;
+    }
+
     #loading-spinner {
       position: fixed; 
       top: 50%; 
@@ -137,6 +150,7 @@
       display: none;
     }
 
+    /* Mapbox Geocoder styling */
     .mapboxgl-ctrl-geocoder {
       position: absolute;
       top: 10px;
@@ -152,20 +166,7 @@
       padding: 6px 35px !important;
     }
 
-    /* ============ Map Overlay Panel ============ */
-    .map-overlay {
-      flex: 1;
-      background: linear-gradient(to bottom, #fff, #f8f9fa);
-      border-left: 1px solid rgba(0,0,0,0.1);
-      padding: 20px 20px 0 20px; /* top-right-left, no bottom so we can keep a little less vertical overlap */
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      font-family: 'Aptos', sans-serif;
-    }
-
-    /* ============ Dashboard & Listing ============ */
+    /* ============ Dash + Listing ============ */
     fieldset {
       background: #f0f0f0;
       border: none;
@@ -185,13 +186,12 @@
       font-family: 'Aptos', sans-serif;
     }
 
-    /* Increase listing area, put welcome at bottom. */
     #listing {
       max-height: 350px;
       overflow-y: auto;
       padding: 10px;
-      margin-bottom: 15px; /* space above welcome section */
-      background-color: #ffffff; /* to offset from background */
+      margin-bottom: 15px;
+      background-color: #ffffff;
       border: 1px solid #ddd;
       border-radius: 5px;
     }
@@ -217,6 +217,7 @@
       border-left: 3px solid #F05A28;
       transform: translateX(5px);
     }
+
     .cog-section {
       margin-bottom: 10px;
     }
@@ -299,7 +300,7 @@
       margin-right: 5px;
     }
 
-    /* ============ Dashboard ============ */
+    /* ============ Dashboard Pane ============ */
     .dashboard {
       background-color: #ffffff;
       border-radius: 12px;
@@ -477,18 +478,7 @@
     }
 
     /* BOUNDARY & FACILITY POPUPS */
-    .boundary-popup .mapboxgl-popup-content {
-      background-color: rgba(255,255,255,0.95);
-      border-radius: 6px;
-      padding: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      font-family: 'Aptos', sans-serif;
-      font-size: 13px;
-      line-height: 1.4;
-    }
-    .boundary-popup .mapboxgl-popup-tip {
-      border-top-color: rgba(255,255,255,0.95);
-    }
+    .boundary-popup .mapboxgl-popup-content,
     .facility-popup .mapboxgl-popup-content {
       background-color: rgba(255,255,255,0.95);
       border-radius: 6px;
@@ -498,6 +488,7 @@
       font-size: 13px;
       line-height: 1.4;
     }
+    .boundary-popup .mapboxgl-popup-tip,
     .facility-popup .mapboxgl-popup-tip {
       border-top-color: rgba(255,255,255,0.95);
     }
@@ -519,6 +510,8 @@
       }
       .map-overlay {
         position: relative;
+        width: 100%;
+        max-height: 50vh;
       }
       .welcome-content {
         padding: 40px;
@@ -589,7 +582,7 @@
       <legend>Facility Filters</legend>
       <label>
         <input type="checkbox" id="pv-filter"> 
-        Show only facilities with PV or Battery Storage Capabilities
+        Show only facilities with PV/Battery Capabilities
       </label>
       <label>
         <input type="checkbox" id="ev-filter"> 
@@ -597,7 +590,7 @@
       </label>
       <label>
         <input type="checkbox" id="cooling-filter"> 
-        Show only facilities with Existing Resilience Designation
+        Show only facilities used as Cooling Center / Emergency Ops
       </label>
     </fieldset>
 
@@ -617,15 +610,15 @@
       <h4>Getting Started</h4>
       <ul>
         <li>Use the "Search for an agency" box to quickly locate a participating agency.</li>
-        <li>Adjust the range filter to focus on agencies with larger populations.</li>
-        <li>Click an agency name to view its details and a list of associated facilities that were assessed by SoCalREN.</li>
+        <li>Adjust the range filter to focus on agencies with larger or smaller populations.</li>
+        <li>Click an agency name to view its details and a list of associated facilities.</li>
       </ul>
       
       <h4>What is ERAP?</h4>
       <p>
-        SoCalREN's Energy Resilience Action Plan (ERAP) program aims to address the growing impacts of climate change. Developed in collaboration with regional partners, the ERAP program enhances the energy resilience of critical infrastructure and future resilience hub locations for public agencies. By incorporating data-driven analysis and stakeholder input into the planning and development process, ERAP supports agencies in developing an actionable roadmap for near-term to long-term energy resilience strategies that will best serve the community.
+        SoCalREN's Energy Resilience Action Plan (ERAP) program aims to address the growing impacts of climate change. Developed in collaboration with regional partners, the ERAP program enhances the energy resilience of critical infrastructure and future resilience hub locations for public agencies. By incorporating data-driven analysis and stakeholder input, ERAP supports agencies in developing a roadmap of near-term and long-term energy resilience strategies.
       </p>
-      <p><em>This dashboard is a living tool designed to evolve and improve as we progress through the program. We welcome any feedback you may have, as it will help shape future versions.</em></p>
+      <p><em>This dashboard is a living tool. We welcome your feedback!</em></p>
     </div>
 
     <div class="dashboard" id="dashboard" style="display: none;">
@@ -635,7 +628,7 @@
       <div id="agency-data" style="display:none; margin-top:20px;">
         <h4>Agency-Level Data</h4>
         <div class="metric">
-          <span class="metric-label">Underserved and/or  Hard to Reach:</span>
+          <span class="metric-label">Underserved/Hard to Reach:</span>
           <span class="metric-value" id="agency-underserved">Not yet available</span>
         </div>
         <div class="metric">
@@ -655,15 +648,15 @@
           <span class="metric-value" id="agency-children-seniors">Not yet available</span>
         </div>
         <div class="metric">
-          <span class="metric-label">AgencyArea (sq miles):</span>
+          <span class="metric-label">Agency Area (sq miles):</span>
           <span class="metric-value" id="agency-area">Not yet available</span>
         </div>
         <div class="metric">
-          <span class="metric-label">Population Density (per sq. mile):</span>
+          <span class="metric-label">Population Density (per sq. mi):</span>
           <span class="metric-value" id="agency-density">Not yet available</span>
         </div>
         <div class="metric">
-          <span class="metric-label">Extreme Heat Days (days/year):</span>
+          <span class="metric-label">Extreme Heat Days (days/yr):</span>
           <span class="metric-value" id="agency-heat-days">Not yet available</span>
         </div>
         <div class="metric">
@@ -679,7 +672,7 @@
           <span class="metric-value" id="agency-circuits">Not yet available</span>
         </div>
         <div class="metric">
-          <span class="metric-label">Annual  Consumption (kWh):</span>
+          <span class="metric-label">Annual Consumption (kWh):</span>
           <span class="metric-value" id="agency-kwh">Not yet available</span>
         </div>
         <div class="metric">
@@ -700,11 +693,11 @@
           <span class="metric-value" id="facility-sqft">Not yet available</span>
         </div>
         <div class="metric">
-          <span class="metric-label">Walkability:</span>
+          <span class="metric-label">Walk Score (RHOA):</span>
           <span class="metric-value" id="facility-walkability">Not yet available</span>
         </div>
         <div class="metric">
-          <span class="metric-label">Existing Resilience Designation:</span>
+          <span class="metric-label">Existing Use (Cooling/Emergency):</span>
           <span class="metric-value" id="facility-resilience">Not yet available</span>
         </div>
         <div class="metric">
@@ -712,23 +705,23 @@
           <span class="metric-value" id="facility-ev">Not yet available</span>
         </div>
         <div class="metric">
-          <span class="metric-label">Number of Planned EV Chargers:</span>
+          <span class="metric-label"># of Planned EV Chargers:</span>
           <span class="metric-value" id="facility-planned-ev">Not yet available</span>
         </div>
         <div class="metric">
-          <span class="metric-label">Exisiting PV or Battery Storage Capabilities:</span>
+          <span class="metric-label">Existing PV/Battery?:</span>
           <span class="metric-value" id="facility-pv">Not yet available</span>
         </div>
         <div class="metric">
-          <span class="metric-label">Planned PV (hours of autonomy):</span>
+          <span class="metric-label">Planned PV (hours):</span>
           <span class="metric-value" id="facility-planned-pv">Not yet available</span>
         </div>
         <div class="metric">
-          <span class="metric-label">Planned Battery Storage (hours of autonomy):</span>
+          <span class="metric-label">Planned Battery (hours):</span>
           <span class="metric-value" id="facility-planned-battery">Not yet available</span>
         </div>
         <div class="metric">
-          <span class="metric-label">Building Type:</span>
+          <span class="metric-label">Building Type (from 'Existing use'):</span>
           <span class="metric-value" id="facility-type">Not yet available</span>
         </div>
       </div>
@@ -780,12 +773,11 @@ passwordSubmit.addEventListener('click', () => {
 mapboxgl.accessToken = 'pk.eyJ1Ijoid2VuZ2xlMSIsImEiOiJjbGh0bTJ0OTUzN2dzM21tbTB0NzFmM2QyIn0.-ItjIktoJtcQUsk6l9TbbQ';
 let map;
 
-// We'll add a pitch for a 3D tilt
 function initMap() {
   map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/streets-v12',
-    center: [-118.2437, 34.0522],
+    center: [-118.2437, 34.0522], // Los Angeles as a starting point
     zoom: 10,
     pitch: 45
   });
@@ -793,7 +785,7 @@ function initMap() {
   map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
   map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-  // Add geocoder (top-left by default)
+  // Add geocoder
   const geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
     mapboxgl: mapboxgl,
@@ -807,384 +799,533 @@ function initMap() {
   });
 }
 
-/* ============ AGENCIES & FACILITIES DATA =========== */
+/* ============ FULL DATA SETS =========== */
+/* All columns from your Agency CSV */
 const agenciesData = [
-  /* (insert your agencies_df in full below) */
   {
-    "Agency": "City of Bell",
-    "Council of Government": "Gateway Cities (GCCOG)",
-    "Underserved and/or  Hard to Reach": "Yes",
+    "Agency": "Bell",
+    "COG": "GCCOG",
+    "DAC Status": "Yes",
     "CalEnviroScreen Score": 96,
-    "Pollution Burden Percentile": 88,
     "Population": 31864,
-    "% Children and Seniors": 36,
-    "AgencyArea (sq miles)": 2.5,
-    "Population Density (per sq. mile)": 13400,
-    "Extreme Heat Days (days/year)": 91,
-    "Average Household Income ($)": 47800,
+    "Agency Area (sq. miles)": 2.5,
+    "Population Density (per sq mile)": 13400,
+    "Number of Extreme Heat Days": 91,
+    "% Children and Seniors": 36.1,
+    "Average Household Income": 47800,
+    "Pollution Burden": 88,
     "% Low-Income Census Tracts": 100,
-    "# of Electric Circuits": 14,
-    "Annual  Consumption (kWh)": 2200000,
-    "Annual Consumption (Therms)": 91100
+    "Number of Electric Circuits": 14,
+    "Annual kWh consumption": 2200000,
+    "Annual Therms Consumption": 91100,
+    "Underserved and/or  Hard to Reach": "Yes" // For filter
   },
   {
-    "Agency": "City of Maywood",
-    "Council of Government": "Gateway Cities (GCCOG)",
-    "Underserved and/or  Hard to Reach": "Yes",
+    "Agency": "Maywood",
+    "COG": "GCCOG",
+    "DAC Status": "Yes",
     "CalEnviroScreen Score": 90,
-    "Pollution Burden Percentile": 92,
     "Population": 27127,
-    "% Children and Seniors": 38,
-    "AgencyArea (sq miles)": 1.18,
-    "Population Density (per sq. mile)": 23257,
-    "Extreme Heat Days (days/year)": 77,
-    "Average Household Income ($)": 50996,
+    "Agency Area (sq. miles)": 1.18,
+    "Population Density (per sq mile)": 23257,
+    "Number of Extreme Heat Days": 77,
+    "% Children and Seniors": 37.9,
+    "Average Household Income": 50996,
+    "Pollution Burden": 92,
     "% Low-Income Census Tracts": 100,
-    "# of Electric Circuits": 6,
-    "Annual  Consumption (kWh)": 939153,
-    "Annual Consumption (Therms)": 1232
+    "Number of Electric Circuits": 6,
+    "Annual kWh consumption": 939153,
+    "Annual Therms Consumption": 1232,
+    "Underserved and/or  Hard to Reach": "Yes"
   },
   {
-    "Agency": "City of Bell Gardens",
-    "Council of Government": "Gateway Cities (GCCOG)",
-    "Underserved and/or  Hard to Reach": "Yes",
+    "Agency": "Bell Gardens",
+    "COG": "GCCOG",
+    "DAC Status": "Yes",
     "CalEnviroScreen Score": 92,
-    "Pollution Burden Percentile": 97,
     "Population": 37467,
-    "% Children and Seniors": 30,
-    "AgencyArea (sq miles)": 2.5,
-    "Population Density (per sq. mile)": 17100,
-    "Extreme Heat Days (days/year)": 90,
-    "Average Household Income ($)": 45300,
+    "Agency Area (sq. miles)": 2.5,
+    "Population Density (per sq mile)": 17100,
+    "Number of Extreme Heat Days": 90,
+    "% Children and Seniors": 30.4,
+    "Average Household Income": 45300,
+    "Pollution Burden": 97,
     "% Low-Income Census Tracts": 100,
-    "# of Electric Circuits": 9,
-    "Annual  Consumption (kWh)": 1597960,
-    "Annual Consumption (Therms)": 25833
+    "Number of Electric Circuits": 9,
+    "Annual kWh consumption": 1597960,
+    "Annual Therms Consumption": 25833,
+    "Underserved and/or  Hard to Reach": "Yes"
   },
   {
-    "Agency": "City of Pomona",
-    "Council of Government": "San Gabriel Valley (SGVCOG)",
-    "Underserved and/or  Hard to Reach": "Yes",
+    "Agency": "Pomona",
+    "COG": "SGVCOG",
+    "DAC Status": "Yes",
     "CalEnviroScreen Score": 97,
-    "Pollution Burden Percentile": 81,
     "Population": 151100,
-    "% Children and Seniors": 37,
-    "AgencyArea (sq miles)": 22.99,
-    "Population Density (per sq. mile)": 6572,
-    "Extreme Heat Days (days/year)": 118,
-    "Average Household Income ($)": 62400,
-    "% Low-Income Census Tracts": 82,
-    "# of Electric Circuits": 56,
-    "Annual  Consumption (kWh)": 20971427,
-    "Annual Consumption (Therms)": 23848
+    "Agency Area (sq. miles)": 22.99,
+    "Population Density (per sq mile)": 6572,
+    "Number of Extreme Heat Days": 118,
+    "% Children and Seniors": 36.5,
+    "Average Household Income": 62400,
+    "Pollution Burden": 81,
+    "% Low-Income Census Tracts": 81.5,
+    "Number of Electric Circuits": 56,
+    "Annual kWh consumption": 20971427,
+    "Annual Therms Consumption": 23848,
+    "Underserved and/or  Hard to Reach": "Yes"
   },
   {
-    "Agency": "City of Irwindale",
-    "Council of Government": "San Gabriel Valley (SGVCOG)",
-    "Underserved and/or  Hard to Reach": "Yes",
+    "Agency": "Irwindale",
+    "COG": "SGVCOG",
+    "DAC Status": "Yes",
     "CalEnviroScreen Score": 83,
-    "Pollution Burden Percentile": 100,
     "Population": 1400,
-    "% Children and Seniors": "N/A",
-    "AgencyArea (sq miles)": 9.5,
-    "Population Density (per sq. mile)": 142,
-    "Extreme Heat Days (days/year)": 146,
-    "Average Household Income ($)": 86250,
+    "Agency Area (sq. miles)": 9.5,
+    "Population Density (per sq mile)": 142,
+    "Number of Extreme Heat Days": 146,
+    "% Children and Seniors": null,
+    "Average Household Income": 86250,
+    "Pollution Burden": 100,
     "% Low-Income Census Tracts": 100,
-    "# of Electric Circuits": 30,
-    "Annual  Consumption (kWh)": 2452708,
-    "Annual Consumption (Therms)": 11686
+    "Number of Electric Circuits": 30,
+    "Annual kWh consumption": 2452708,
+    "Annual Therms Consumption": 11686,
+    "Underserved and/or  Hard to Reach": "Yes"
   },
   {
-    "Agency": "El Monte Union High School District (EMUSHD)",
-    "Council of Government": "San Gabriel Valley (SGVCOG)",
-    "Underserved and/or  Hard to Reach": "Yes",
+    "Agency": "EMUSHD",
+    "COG": "SGVCOG",
+    "DAC Status": "Yes",
     "CalEnviroScreen Score": 80,
-    "Pollution Burden Percentile": 92,
     "Population": 163151,
-    "% Children and Seniors": "N/A",
-    "AgencyArea (sq miles)": 22.38,
-    "Population Density (per sq. mile)": 7290,
-    "Extreme Heat Days (days/year)": 129,
-    "Average Household Income ($)": 62000,
-    "% Low-Income Census Tracts": "N/A",
-    "# of Electric Circuits": 79,
-    "Annual  Consumption (kWh)": "N/A",
-    "Annual Consumption (Therms)": "N/A"
+    "Agency Area (sq. miles)": 22.38,
+    "Population Density (per sq mile)": 7290.035746,
+    "Number of Extreme Heat Days": 129,
+    "% Children and Seniors": null,
+    "Average Household Income": 62000,
+    "Pollution Burden": 92,
+    "% Low-Income Census Tracts": null,
+    "Number of Electric Circuits": 79,
+    "Annual kWh consumption": null,
+    "Annual Therms Consumption": null,
+    "Underserved and/or  Hard to Reach": "Yes"
   },
   {
-    "Agency": "City of Cudahy",
-    "Council of Government": "Gateway Cities (GCCOG)",
-    "Underserved and/or  Hard to Reach": "Yes",
+    "Agency": "Cudahy",
+    "COG": "GCCOG",
+    "DAC Status": "Yes",
     "CalEnviroScreen Score": 95,
-    "Pollution Burden Percentile": 94,
     "Population": 21700,
+    "Agency Area (sq. miles)": 1.23,
+    "Population Density (per sq mile)": 17642.27642,
+    "Number of Extreme Heat Days": 85,
     "% Children and Seniors": 36,
-    "AgencyArea (sq miles)": 1.23,
-    "Population Density (per sq. mile)": 17642,
-    "Extreme Heat Days (days/year)": 85,
-    "Average Household Income ($)": 49600,
+    "Average Household Income": 49600,
+    "Pollution Burden": 94,
     "% Low-Income Census Tracts": 100,
-    "# of Electric Circuits": 20,
-    "Annual  Consumption (kWh)": "N/A",
-    "Annual Consumption (Therms)": "N/A"
+    "Number of Electric Circuits": 20,
+    "Annual kWh consumption": null,
+    "Annual Therms Consumption": null,
+    "Underserved and/or  Hard to Reach": "Yes"
   },
   {
-    "Agency": "City of South El Monte",
-    "Council of Government": "San Gabriel Valley (SGVCOG)",
-    "Underserved and/or  Hard to Reach": "Yes",
+    "Agency": "South El Monte",
+    "COG": "SGVCOG",
+    "DAC Status": "Yes",
     "CalEnviroScreen Score": 97,
-    "Pollution Burden Percentile": 98,
     "Population": 19000,
+    "Agency Area (sq. miles)": 2.84,
+    "Population Density (per sq mile)": 6690.140845,
+    "Number of Extreme Heat Days": 124,
     "% Children and Seniors": 37,
-    "AgencyArea (sq miles)": 2.84,
-    "Population Density (per sq. mile)": 6690,
-    "Extreme Heat Days (days/year)": 124,
-    "Average Household Income ($)": 67700,
+    "Average Household Income": 67700,
+    "Pollution Burden": 98,
     "% Low-Income Census Tracts": 80,
-    "# of Electric Circuits": 12,
-    "Annual  Consumption (kWh)": 593500,
-    "Annual Consumption (Therms)": 39700
+    "Number of Electric Circuits": 12,
+    "Annual kWh consumption": 593500,
+    "Annual Therms Consumption": 39700,
+    "Underserved and/or  Hard to Reach": "Yes"
   },
   {
-    "Agency": "City of Lynwood",
-    "Council of Government": "Gateway Cities (GCCOG)",
-    "Underserved and/or  Hard to Reach": "Yes",
+    "Agency": "Lynwood",
+    "COG": "GCCOG",
+    "DAC Status": "Yes",
     "CalEnviroScreen Score": 91,
-    "Pollution Burden Percentile": 92,
     "Population": 63200,
+    "Agency Area (sq. miles)": 4.84,
+    "Population Density (per sq mile)": 13057.85124,
+    "Number of Extreme Heat Days": 33,
     "% Children and Seniors": 35,
-    "AgencyArea (sq miles)": 4.84,
-    "Population Density (per sq. mile)": 13058,
-    "Extreme Heat Days (days/year)": 33,
-    "Average Household Income ($)": 67400,
+    "Average Household Income": 67400,
+    "Pollution Burden": 92,
     "% Low-Income Census Tracts": 66,
-    "# of Electric Circuits": 22,
-    "Annual  Consumption (kWh)": 1340300,
-    "Annual Consumption (Therms)": 30100
+    "Number of Electric Circuits": 22,
+    "Annual kWh consumption": 1340300,
+    "Annual Therms Consumption": 30100,
+    "Underserved and/or  Hard to Reach": "Yes"
   },
   {
-    "Agency": "City of Duarte",
-    "Council of Government": "San Gabriel Valley (SGVCOG)",
-    "Underserved and/or  Hard to Reach": "Yes",
+    "Agency": "Duarte",
+    "COG": "SGVCOG",
+    "DAC Status": "Yes",
     "CalEnviroScreen Score": 78,
-    "Pollution Burden Percentile": 58,
     "Population": 23100,
+    "Agency Area (sq. miles)": 6.71,
+    "Population Density (per sq mile)": 3442.622951,
+    "Number of Extreme Heat Days": 132,
     "% Children and Seniors": 38,
-    "AgencyArea (sq miles)": 6.71,
-    "Population Density (per sq. mile)": 3443,
-    "Extreme Heat Days (days/year)": 132,
-    "Average Household Income ($)": 93900,
+    "Average Household Income": 93900,
+    "Pollution Burden": 58,
     "% Low-Income Census Tracts": 20,
-    "# of Electric Circuits": 10,
-    "Annual  Consumption (kWh)": 417700,
-    "Annual Consumption (Therms)": "N/A"
+    "Number of Electric Circuits": 10,
+    "Annual kWh consumption": 417700,
+    "Annual Therms Consumption": null,
+    "Underserved and/or  Hard to Reach": "Yes"
   },
   {
-    "Agency": "City of Rancho Palos Verdes",
-    "Council of Government": "South Bay Cities (SBCCOG)",
-    "Underserved and/or  Hard to Reach": "Yes",
+    "Agency": "Rancho PV",
+    "COG": "SBCOG",
+    "DAC Status": "Yes",
     "CalEnviroScreen Score": 11,
-    "Pollution Burden Percentile": 29,
     "Population": 41600,
-    "% Children and Seniors": "N/A",
-    "AgencyArea (sq miles)": 13.5,
-    "Population Density (per sq. mile)": 3081,
-    "Extreme Heat Days (days/year)": 11,
-    "Average Household Income ($)": 146200,
+    "Agency Area (sq. miles)": 13.5,
+    "Population Density (per sq mile)": 3081.481481,
+    "Number of Extreme Heat Days": 11,
+    "% Children and Seniors": null,
+    "Average Household Income": 146200,
+    "Pollution Burden": 29,
     "% Low-Income Census Tracts": 0,
-    "# of Electric Circuits": 25,
-    "Annual  Consumption (kWh)": 359100,
-    "Annual Consumption (Therms)": 900
+    "Number of Electric Circuits": 25,
+    "Annual kWh consumption": 359100,
+    "Annual Therms Consumption": 900,
+    "Underserved and/or  Hard to Reach": "Yes"
   },
   {
-    "Agency": "City of El Segundo ",
-    "Council of Government": "South Bay Cities (SBCCOG)",
-    "Underserved and/or  Hard to Reach": "Yes",
+    "Agency": "El Segundo",
+    "COG": "SBCOG",
+    "DAC Status": "Yes",
     "CalEnviroScreen Score": 26,
-    "Pollution Burden Percentile": 87,
     "Population": 16500,
-    "% Children and Seniors": "N/A",
-    "AgencyArea (sq miles)": 5.5,
-    "Population Density (per sq. mile)": 3000,
-    "Extreme Heat Days (days/year)": 7,
-    "Average Household Income ($)": 115900,
+    "Agency Area (sq. miles)": 5.5,
+    "Population Density (per sq mile)": 3000,
+    "Number of Extreme Heat Days": 7,
+    "% Children and Seniors": null,
+    "Average Household Income": 115900,
+    "Pollution Burden": 87,
     "% Low-Income Census Tracts": 0,
-    "# of Electric Circuits": 20,
-    "Annual  Consumption (kWh)": 94470,
-    "Annual Consumption (Therms)": 40800
+    "Number of Electric Circuits": 20,
+    "Annual kWh consumption": 94470,
+    "Annual Therms Consumption": 40800,
+    "Underserved and/or  Hard to Reach": "Yes"
   }
 ];
 
-/* The entire facilities, with addresses but no lat/lon (or ignoring lat/lon) */
+/* All columns from your Facilities CSV */
 const facilitiesData = [
   {
-    "Agency": "City of Bell",
+    "Agency": "Bell",
     "Facility Name": "Bell Library",
-    "Address": "4411 Gage Ave, Bell, CA"
+    "Address": "4411 Gage Ave",
+    "Existing Use? (cooling center or emergency ops)": "N/A",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 2,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 3912,
+    "Planned Battery Storage (hours of autonomy)": 25,
+    "Existing use": "Library",
+    "Walk Score (RHOA)": "High",
+    "Sq Ft": 5622,
+    "Yr Built (RHOA)": 1965
   },
   {
-    "Agency": "City of Bell",
+    "Agency": "Bell",
     "Facility Name": "Community Center",
-    "Address": "6250 Pine Ave, Bell, CA"
+    "Address": "6250 Pine Ave",
+    "Existing Use? (cooling center or emergency ops)": "Cooling Center",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 2,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "Solar went live in August 2020",
+    "Planned PV (hours of autonomy)": 1899,
+    "Planned Battery Storage (hours of autonomy)": 1748,
+    "Existing use": "Community center",
+    "Walk Score (RHOA)": "High",
+    "Sq Ft": 16011,
+    "Yr Built (RHOA)": 1980
   },
   {
-    "Agency": "City of Bell",
+    "Agency": "Bell",
     "Facility Name": "Camp Little Bear Park",
-    "Address": "6704 Orchard Ave, Bell, CA"
+    "Address": "6704 Orchard Ave",
+    "Existing Use? (cooling center or emergency ops)": "N/A",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 0,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 664,
+    "Planned Battery Storage (hours of autonomy)": 81,
+    "Existing use": "Park",
+    "Walk Score (RHOA)": "Medium",
+    "Sq Ft": 5783,
+    "Yr Built (RHOA)": 1962
   },
   {
-    "Agency": "City of Bell",
+    "Agency": "Bell",
     "Facility Name": "Veterans Memorial Park",
-    "Address": "6500 Wilcox Ave, Bell, CA"
+    "Address": "6500 Wilcox Ave",
+    "Existing Use? (cooling center or emergency ops)": "Cooling Center",
+    "Existing EV Chargers (Yes/No)": "No Capacity",
+    "Number of Planned EV Chargers": 0,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 3397,
+    "Planned Battery Storage (hours of autonomy)": 381,
+    "Existing use": "Park",
+    "Walk Score (RHOA)": "Medium",
+    "Sq Ft": 7500,
+    "Yr Built (RHOA)": 1955
   },
   {
-    "Agency": "City of Maywood",
-    "Facility Name": "City Hall & Sheriff's Office",
-    "Address": "4319 Slauson Ave, Maywood, CA"
+    "Agency": "Maywood",
+    "Facility Name": "City Hall + Sheriff's Office",
+    "Address": "4319 Slauson Ave",
+    "Existing Use? (cooling center or emergency ops)": "Cooling Center",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 4,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "No",
+    "Planned PV (hours of autonomy)": 2646,
+    "Planned Battery Storage (hours of autonomy)": 0,
+    "Existing use": "Office",
+    "Walk Score (RHOA)": "High",
+    "Sq Ft": 9534,
+    "Yr Built (RHOA)": 1938
   },
   {
-    "Agency": "City of Maywood",
+    "Agency": "Maywood",
     "Facility Name": "Teen Center",
-    "Address": "4801 E. Slauson Ave, Maywood, CA"
+    "Address": "4801 E. Slauson Ave",
+    "Existing Use? (cooling center or emergency ops)": "N/A",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 0,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "No",
+    "Planned PV (hours of autonomy)": "Whole year",
+    "Planned Battery Storage (hours of autonomy)": "Whole year",
+    "Existing use": "Community center",
+    "Walk Score (RHOA)": "Medium",
+    "Sq Ft": "N/A",
+    "Yr Built (RHOA)": "N/A"
   },
   {
-    "Agency": "City of Maywood",
-    "Facility Name": "Maywood Park (YMCA)",
-    "Address": "4801 E. 58th St, Maywood, CA"
+    "Agency": "Maywood",
+    "Facility Name": "(YMCA) Maywood Park",
+    "Address": "4801 E. 58th St",
+    "Existing Use? (cooling center or emergency ops)": "N/A",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 4,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "No",
+    "Planned PV (hours of autonomy)": 1140,
+    "Planned Battery Storage (hours of autonomy)": 5,
+    "Existing use": "Community center",
+    "Walk Score (RHOA)": "Medium",
+    "Sq Ft": 30819,
+    "Yr Built (RHOA)": 1999
   },
   {
-    "Agency": "City of Maywood",
+    "Agency": "Maywood",
     "Facility Name": "Cesar Chavez Library",
-    "Address": "4323 Slauson Ave, Maywood, CA"
+    "Address": "4323 Slauson Ave",
+    "Existing Use? (cooling center or emergency ops)": "N/A",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 0,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "No",
+    "Planned PV (hours of autonomy)": 2311,
+    "Planned Battery Storage (hours of autonomy)": 5,
+    "Existing use": "Library",
+    "Walk Score (RHOA)": "High",
+    "Sq Ft": 3382,
+    "Yr Built (RHOA)": 1938
   },
   {
-    "Agency": "City of Bell Gardens",
+    "Agency": "Bell Gardens",
     "Facility Name": "Ford Park and Recreation Center",
-    "Address": "8000 Park Lane, Bell Gardens, CA"
+    "Address": "8000 Park Lane",
+    "Existing Use? (cooling center or emergency ops)": "N/A",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 10,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 3563,
+    "Planned Battery Storage (hours of autonomy)": 13,
+    "Existing use": "Community center",
+    "Walk Score (RHOA)": "High",
+    "Sq Ft": 9083,
+    "Yr Built (RHOA)": 1976
   },
   {
-    "Agency": "City of Bell Gardens",
+    "Agency": "Bell Gardens",
     "Facility Name": "Community Family Services Center & Veterans Park",
-    "Address": "6662 Loveland St, Bell Gardens, CA"
+    "Address": "6662 Loveland St",
+    "Existing Use? (cooling center or emergency ops)": "N/A",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 0,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 3330,
+    "Planned Battery Storage (hours of autonomy)": 71,
+    "Existing use": "Community center",
+    "Walk Score (RHOA)": "Low",
+    "Sq Ft": 20000,
+    "Yr Built (RHOA)": 1976
   },
   {
-    "Agency": "City of Bell Gardens",
+    "Agency": "Bell Gardens",
     "Facility Name": "Youth Center",
-    "Address": "5856 Ludell St, Bell Gardens, CA"
+    "Address": "5856 Ludell St",
+    "Existing Use? (cooling center or emergency ops)": "N/A",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 0,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 3406,
+    "Planned Battery Storage (hours of autonomy)": 11,
+    "Existing use": "Community center",
+    "Walk Score (RHOA)": "Medium",
+    "Sq Ft": 11446,
+    "Yr Built (RHOA)": 1948
   },
   {
-    "Agency": "City of Bell Gardens",
+    "Agency": "Bell Gardens",
     "Facility Name": "Civic Center",
-    "Address": "7100 Garfield St, Bell Gardens, CA"
+    "Address": "7100 Garfield St",
+    "Existing Use? (cooling center or emergency ops)": "N/A",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 0,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 5,
+    "Planned Battery Storage (hours of autonomy)": 0,
+    "Existing use": "City Hall",
+    "Walk Score (RHOA)": "Medium",
+    "Sq Ft": 18500,
+    "Yr Built (RHOA)": 1967
   },
   {
-    "Agency": "City of Pomona",
+    "Agency": "Pomona",
     "Facility Name": "Library",
-    "Address": "625 S Garey Ave, Pomona, CA"
+    "Address": "625 S Garey Ave, Pomona, CA",
+    "Existing Use? (cooling center or emergency ops)": "Cooling Center",
+    "Existing EV Chargers (Yes/No)": "Yes",
+    "Number of Planned EV Chargers": 0,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 2057,
+    "Planned Battery Storage (hours of autonomy)": 0,
+    "Existing use": "Library",
+    "Walk Score (RHOA)": "High",
+    "Sq Ft": 25977,
+    "Yr Built (RHOA)": 1956
   },
   {
-    "Agency": "City of Pomona",
+    "Agency": "Pomona",
     "Facility Name": "City Hall",
-    "Address": "505 S Garey Ave, Pomona, CA"
+    "Address": "505 S Garey Ave, Pomona, CA",
+    "Existing Use? (cooling center or emergency ops)": "N/A",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 0,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 2482,
+    "Planned Battery Storage (hours of autonomy)": 14,
+    "Existing use": "Office",
+    "Walk Score (RHOA)": "High",
+    "Sq Ft": 44996,
+    "Yr Built (RHOA)": 1969
   },
   {
-    "Agency": "City of Pomona",
+    "Agency": "Pomona",
     "Facility Name": "Palomares Park",
-    "Address": "499 E Arrow Hwy, Pomona, CA"
+    "Address": "499 E Arrow Hwy, Pomona, CA",
+    "Existing Use? (cooling center or emergency ops)": "Cooling Center",
+    "Existing EV Chargers (Yes/No)": "Yes",
+    "Number of Planned EV Chargers": 19,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 6470,
+    "Planned Battery Storage (hours of autonomy)": 48,
+    "Existing use": "Community center",
+    "Walk Score (RHOA)": "Low",
+    "Sq Ft": 15704,
+    "Yr Built (RHOA)": 1983
   },
   {
-    "Agency": "City of Pomona",
+    "Agency": "Pomona",
     "Facility Name": "Washington Senior Center",
-    "Address": "865 E Granf Ave, Pomona, CA"
+    "Address": "865 E Granf Ave, Pomona, CA",
+    "Existing Use? (cooling center or emergency ops)": "Cooling Center",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 6,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 4070,
+    "Planned Battery Storage (hours of autonomy)": 883,
+    "Existing use": "Senior Center",
+    "Walk Score (RHOA)": "Low",
+    "Sq Ft": 2539,
+    "Yr Built (RHOA)": 1935
   },
   {
-    "Agency": "City of Irwindale",
+    "Agency": "Irwindale",
     "Facility Name": "Dan Diaz Recreation Center and Library",
-    "Address": "16053 Calle De Paseo, Irwindale, CA"
+    "Address": "16053 Calle De Paseo, Irwindale, CA",
+    "Existing Use? (cooling center or emergency ops)": "N/A",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 0,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 1068,
+    "Planned Battery Storage (hours of autonomy)": 1,
+    "Existing use": "Library and recreation center",
+    "Walk Score (RHOA)": "Low",
+    "Sq Ft": 22855,
+    "Yr Built (RHOA)": 1970
   },
   {
-    "Agency": "City of Irwindale",
+    "Agency": "Irwindale",
     "Facility Name": "City Hall and Police Department",
-    "Address": "5050 N Irwindale Ave, Irwindale, CA"
+    "Address": "5050 N Irwindale Ave, Irwindale, CA",
+    "Existing Use? (cooling center or emergency ops)": "Emergency Operations Center",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 4,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 4,
+    "Planned Battery Storage (hours of autonomy)": 0,
+    "Existing use": "Office",
+    "Walk Score (RHOA)": "Low",
+    "Sq Ft": 20600,
+    "Yr Built (RHOA)": 1957
   },
   {
-    "Agency": "City of Irwindale",
+    "Agency": "Irwindale",
     "Facility Name": "Senior Center and Annex",
-    "Address": "16116 Arrow Hwy, Irwindale, CA"
+    "Address": "16116 Arrow Hwy, Irwindale, CA",
+    "Existing Use? (cooling center or emergency ops)": "Cooling Center",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 4,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 24,
+    "Planned Battery Storage (hours of autonomy)": 0,
+    "Existing use": "Multi-purpose/ office",
+    "Walk Score (RHOA)": "Low",
+    "Sq Ft": 20678,
+    "Yr Built (RHOA)": 1985
   },
   {
-    "Agency": "City of Irwindale",
+    "Agency": "Irwindale",
     "Facility Name": "New Library (Planned for 2026)",
-    "Address": "N/A"
+    "Address": "N/A",
+    "Existing Use? (cooling center or emergency ops)": "N/A",
+    "Existing EV Chargers (Yes/No)": "N/A",
+    "Number of Planned EV Chargers": "N/A",
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": "N/A",
+    "Planned Battery Storage (hours of autonomy)": "N/A",
+    "Existing use": "Library",
+    "Walk Score (RHOA)": "N/A",
+    "Sq Ft": "N/A",
+    "Yr Built (RHOA)": "N/A"
   }
 ];
 
-/* ============ UTILITY FUNCTIONS =========== */
-function parseCoordinate(coordStr) {
-  if (!coordStr || coordStr.toString().trim().toUpperCase() === 'N/A') return null;
-  // We'll rely on geocoder for addresses now, so might skip direct lat/lon parsing.
-  return null;
-}
 
-function normalizeValue(val) {
-  if (!val) return 'Not yet available';
-  const str = String(val).trim();
-  if (str.toUpperCase() === 'N/A') return 'Not yet available';
-  return val;
-}
-
-/* We'll dynamically geocode each facility address. We'll store coords in an array. */
-async function geocodeFacilities() {
-  const geocodedFeatures = [];
-
-  const mapboxClient = mapboxSdk({ accessToken: mapboxgl.accessToken });
-
-  for (const fac of facilitiesData) {
-    if (!fac.Address || fac.Address.toUpperCase() === 'N/A') {
-      // skip
-      continue;
-    }
-    try {
-      const response = await mapboxClient.geocoding
-        .forwardGeocode({
-          query: fac.Address,
-          limit: 1,
-          country: 'US'
-        })
-        .send();
-      if (
-        response &&
-        response.body &&
-        response.body.features &&
-        response.body.features.length > 0
-      ) {
-        const coords = response.body.features[0].center;
-        // Make a feature
-        geocodedFeatures.push({
-          type: 'Feature',
-          properties: {
-            ...fac
-          },
-          geometry: {
-            type: 'Point',
-            coordinates: coords
-          }
-        });
-      } else {
-        console.warn('No geocode result for:', fac.Address);
-      }
-    } catch (err) {
-      console.error('Geocoding error:', err, ' for address:', fac.Address);
-    }
-  }
-
-  return {
-    type: 'FeatureCollection',
-    features: geocodedFeatures
-  };
-}
-
+/* ============ GEOCODING & LOADING =========== */
 async function loadBoundariesAndFacilities() {
   // 1) boundary data
   fetch('data/la_boundaries.geojson')
@@ -1203,7 +1344,7 @@ async function loadBoundariesAndFacilities() {
         }
       });
 
-      // Hover for popup
+      // boundary hover popup
       let hoveredId = null;
       const boundaryPopup = new mapboxgl.Popup({
         closeButton: false,
@@ -1229,17 +1370,21 @@ async function loadBoundariesAndFacilities() {
           );
 
           // match city => show name + a couple datapoints
-          const cityName = e.features[0].properties.CITY_COMM_NAME;
-          let matchedAgency = agenciesData.find(a => a.Agency.toLowerCase().includes(cityName.toLowerCase().trim()));
+          const cityName = e.features[0].properties.CITY_COMM_NAME || '';
+          let matchedAgency = agenciesData.find(a => 
+            a.Agency.toLowerCase() === cityName.toLowerCase()
+          );
           if (!matchedAgency) {
-            // fallback if no direct match
-            matchedAgency = agenciesData.find(a => cityName.toLowerCase().includes(a.Agency.toLowerCase()));
+            // fallback if partial match
+            matchedAgency = agenciesData.find(a => 
+              cityName.toLowerCase().includes(a.Agency.toLowerCase())
+            );
           }
 
           let popupHtml = `<strong>${cityName}</strong><br><em>No data found</em>`;
           if (matchedAgency) {
             const pop = matchedAgency.Population || 'N/A';
-            const income = matchedAgency["Average Household Income ($)"] || 'N/A';
+            const income = matchedAgency["Average Household Income"] || 'N/A';
             popupHtml = `
               <strong>${matchedAgency.Agency}</strong><br>
               Population: ${pop.toLocaleString()}<br>
@@ -1264,9 +1409,16 @@ async function loadBoundariesAndFacilities() {
 
       map.on('click', 'la-boundaries-extrusion', e => {
         if (!e.features.length) return;
-        const cityName = e.features[0].properties.CITY_COMM_NAME;
+        const cityName = e.features[0].properties.CITY_COMM_NAME || '';
         if (cityName) {
-          let matched = agenciesData.find(a => a.Agency.toLowerCase().includes(cityName.toLowerCase().trim()));
+          let matched = agenciesData.find(a => 
+            a.Agency.toLowerCase() === cityName.toLowerCase()
+          );
+          if (!matched) {
+            matched = agenciesData.find(a => 
+              cityName.toLowerCase().includes(a.Agency.toLowerCase())
+            );
+          }
           if (matched) {
             const facs = facilitiesData.filter(f => f.Agency === matched.Agency);
             showFacilities(matched, facs);
@@ -1277,7 +1429,7 @@ async function loadBoundariesAndFacilities() {
     })
     .catch(err => console.error('Error loading boundaries:', err));
 
-  // 2) facilities with address geocoding
+  // 2) Geocode the facilities and add them to the map
   const facilityGeoJSON = await geocodeFacilities();
   map.addSource('facilities', {
     type: 'geojson',
@@ -1287,7 +1439,6 @@ async function loadBoundariesAndFacilities() {
     clusterRadius: 50
   });
 
-  // add facility layers
   map.addLayer({
     id: 'clusters',
     type: 'circle',
@@ -1346,7 +1497,7 @@ async function loadBoundariesAndFacilities() {
     }
   });
 
-  // Popup on hover
+  // Popup on hover for unclustered points
   const facilityPopup = new mapboxgl.Popup({
     closeButton: false,
     closeOnClick: false,
@@ -1360,8 +1511,8 @@ async function loadBoundariesAndFacilities() {
     const props = e.features[0].properties;
     const content = `
       <strong>${props["Facility Name"]}</strong><br>
-      Building Type: ${props["Building Type"] || 'N/A'}<br>
-      EV Chargers: ${props["Existing EV Chargers"] || 'N/A'}
+      Existing Use: ${props["Existing use"] || 'N/A'}<br>
+      EV Chargers: ${props["Existing EV Chargers (Yes/No)"] || 'N/A'}
     `;
     facilityPopup.setLngLat(e.lngLat).setHTML(content).addTo(map);
   });
@@ -1371,6 +1522,7 @@ async function loadBoundariesAndFacilities() {
     facilityPopup.remove();
   });
 
+  // Handle cluster click
   map.on('click','clusters', e => {
     const features = map.queryRenderedFeatures(e.point,{ layers: ['clusters'] });
     if (!features.length) return;
@@ -1381,7 +1533,7 @@ async function loadBoundariesAndFacilities() {
     });
   });
 
-  // On click => show facility data in dashboard
+  // Handle unclustered point click => Show facility details in the dashboard
   map.on('click','unclustered-point', e => {
     const props = e.features[0].properties;
     const matchedAgency = agenciesData.find(a => a.Agency === props["Agency"]);
@@ -1396,7 +1548,52 @@ async function loadBoundariesAndFacilities() {
   document.getElementById('loading-spinner').style.display = 'none';
 }
 
-/* ============ FILTERING & DASHBOARD CODE =========== */
+async function geocodeFacilities() {
+  const geocodedFeatures = [];
+  const mapboxClient = mapboxSdk({ accessToken: mapboxgl.accessToken });
+
+  for (const fac of facilitiesData) {
+    const addr = fac.Address || '';
+    if (addr.toUpperCase() === 'N/A') {
+      // skip geocoding
+      continue;
+    }
+    try {
+      const response = await mapboxClient.geocoding
+        .forwardGeocode({
+          query: addr + ', CA, USA',
+          limit: 1
+        })
+        .send();
+      if (
+        response &&
+        response.body &&
+        response.body.features &&
+        response.body.features.length > 0
+      ) {
+        const coords = response.body.features[0].center;
+        geocodedFeatures.push({
+          type: 'Feature',
+          properties: {
+            ...fac
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: coords
+          }
+        });
+      }
+    } catch (err) {
+      console.error('Geocoding error:', err, ' for address:', addr);
+    }
+  }
+  return {
+    type: 'FeatureCollection',
+    features: geocodedFeatures
+  };
+}
+
+/* ============ FILTERING =========== */
 function renderListing() {
   const listingElement = document.getElementById('listing');
   const introSection = document.getElementById('intro-section');
@@ -1410,7 +1607,7 @@ function renderListing() {
 
   const groups = {};
   agenciesData.forEach(a => {
-    const cog = a["Council of Government"];
+    const cog = a.COG;
     if (!groups[cog]) groups[cog] = [];
     groups[cog].push(a);
   });
@@ -1426,11 +1623,13 @@ function renderListing() {
 
       const agencyList = document.createElement('div');
       agencyList.className = 'agency-list';
+      agencyList.style.display = 'none';
 
       // expand/collapse
       cogHeader.addEventListener('click', () => {
-        cogHeader.classList.toggle('expanded');
-        agencyList.style.display = agencyList.style.display === 'none' ? 'block' : 'none';
+        const isHidden = agencyList.style.display === 'none';
+        cogHeader.classList.toggle('expanded', isHidden);
+        agencyList.style.display = isHidden ? 'block' : 'none';
       });
 
       agencies.sort((a,b) => a.Agency.localeCompare(b.Agency));
@@ -1450,7 +1649,7 @@ function renderListing() {
       listingElement.appendChild(cogSection);
     }
   }
-  // We'll show the intro section at the bottom only if user hasn't selected anything
+  // Show intro at the bottom
   introSection.style.display = 'block';
 }
 
@@ -1462,22 +1661,28 @@ function filterAgencies() {
   const ces90Filter = document.getElementById('ces90-filter').checked;
 
   const filtered = agenciesData.filter(a => {
-    const matchSearch = (searchText === '') || a.Agency.toLowerCase().includes(searchText);
-    const pop = Number(a["Population"]) || 0;
-    const matchPop = (pop >= minPop && pop <= maxPop);
-    const isUnderserved = (a["Underserved and/or  Hard to Reach"] || "").toLowerCase() === 'yes';
+    const nameMatch = !searchText || a.Agency.toLowerCase().includes(searchText);
+    const popVal = Number(a.Population) || 0;
+    const popMatch = (popVal >= minPop && popVal <= maxPop);
+    const isUnderserved = (a["Underserved and/or  Hard to Reach"] || '').toLowerCase() === 'yes';
     const matchDAC = !dacFilter || isUnderserved;
     const calVal = Number(a["CalEnviroScreen Score"]) || 0;
     const matchCal = !ces90Filter || (calVal > 90);
-    return matchSearch && matchPop && matchDAC && matchCal;
+
+    return nameMatch && popMatch && matchDAC && matchCal;
   });
 
   const listingElement = document.getElementById('listing');
   listingElement.innerHTML = '';
 
+  if (!filtered.length) {
+    listingElement.innerHTML = `<p style="color:#666;font-style:italic;">No matching agencies found.</p>`;
+    return;
+  }
+
   const groupByCOG = {};
   filtered.forEach(a => {
-    const c = a["Council of Government"];
+    const c = a.COG;
     if (!groupByCOG[c]) groupByCOG[c] = [];
     groupByCOG[c].push(a);
   });
@@ -1493,7 +1698,13 @@ function filterAgencies() {
 
       const agencyList = document.createElement('div');
       agencyList.className = 'agency-list';
-      agencyList.style.display = 'block';
+      agencyList.style.display = 'none';
+
+      cogHeader.addEventListener('click', () => {
+        const isHidden = agencyList.style.display === 'none';
+        cogHeader.classList.toggle('expanded', isHidden);
+        agencyList.style.display = isHidden ? 'block' : 'none';
+      });
 
       agencies.sort((a,b) => a.Agency.localeCompare(b.Agency));
       agencies.forEach(a => {
@@ -1512,12 +1723,18 @@ function filterAgencies() {
       listingElement.appendChild(cogSection);
     }
   }
-
-  // if no results, we could show a "no matching agencies" note
-  if (filtered.length === 0) {
-    listingElement.innerHTML = `<p style="color:#666;font-style:italic;">No matching agencies found.</p>`;
-  }
 }
+
+document.getElementById('population-min').addEventListener('input', filterAgencies);
+document.getElementById('population-max').addEventListener('input', filterAgencies);
+document.getElementById('agency-filter').addEventListener('input', filterAgencies);
+document.getElementById('dac-filter').addEventListener('change', filterAgencies);
+document.getElementById('ces90-filter').addEventListener('change', filterAgencies);
+
+/* ============ FACILITY FILTERS =========== */
+document.getElementById('pv-filter').addEventListener('change', refreshFacilityList);
+document.getElementById('ev-filter').addEventListener('change', refreshFacilityList);
+document.getElementById('cooling-filter').addEventListener('change', refreshFacilityList);
 
 function refreshFacilityList() {
   const title = document.querySelector('#data-overview-title').textContent;
@@ -1555,8 +1772,9 @@ function showFacilities(agency, facilityList) {
   header.textContent = `Facilities in ${agency.Agency}`;
   listingElement.appendChild(header);
 
-  // Filter facilities
-  const filteredFacilities = filterFacilityData(facilityList);
+  // Filter out facilities based on user’s checkboxes
+  const filteredFacilities = filterFacilities(facilityList);
+
   if (filteredFacilities.length > 0) {
     filteredFacilities.forEach(f => {
       const facilityDiv = document.createElement('div');
@@ -1572,11 +1790,9 @@ function showFacilities(agency, facilityList) {
     listingElement.appendChild(noFacilitiesMsg);
   }
 
-  // Hide intro
+  // Hide intro, hide agency filters, show facility filter
   introSection.style.display = 'none';
-  // Hide agency filter if we are focusing on facilities
   agencyFilters.style.display = 'none';
-  // Show facility filter
   facilityFilters.style.display = 'block';
 
   // Show the dashboard
@@ -1587,55 +1803,77 @@ function showFacilities(agency, facilityList) {
   updateAgencyDashboard(agency);
 }
 
-function filterFacilityData(facilities) {
+function filterFacilities(facList) {
   const pvChecked = document.getElementById('pv-filter').checked;
   const evChecked = document.getElementById('ev-filter').checked;
   const coolChecked = document.getElementById('cooling-filter').checked;
 
-  // This example checks certain text props, but we only have addresses so far
-  // We'll pass them as "N/A" if missing
-  // For demonstration, we won't do complex checks unless we had actual columns
-  return facilities.filter(f => {
-    // For this demonstration, all facilities pass unless we do advanced logic
-    // Or we check if it had "Exisiting PV" or "Existing EV"
-    // We'll skip these advanced checks because we only have "Address" in your list
-    // In a real scenario, you'd match the columns. 
+  return facList.filter(f => {
+    // Check for PV / Battery
+    if (pvChecked) {
+      const hasPV = f["Exisiting PV or Battery Capabilities (Yes/No)"] 
+        && f["Exisiting PV or Battery Capabilities (Yes/No)"].toLowerCase() !== 'no'
+        && f["Exisiting PV or Battery Capabilities (Yes/No)"].toLowerCase() !== 'n/a';
+      if (!hasPV) return false;
+    }
+    // Check for EV
+    if (evChecked) {
+      const evVal = (f["Existing EV Chargers (Yes/No)"] || '').toLowerCase();
+      if (!evVal.includes('yes')) return false;
+    }
+    // Check for Cooling/Emergency
+    if (coolChecked) {
+      const usage = (f["Existing Use? (cooling center or emergency ops)"] || '').toLowerCase();
+      if (!usage.includes('cooling') && !usage.includes('emergency')) return false;
+    }
     return true;
   });
 }
 
 function updateAgencyDashboard(agency) {
-  document.getElementById('data-overview-title').textContent = `${agency.Agency} Data Overview`;
-  document.getElementById('agency-underserved').textContent = normalizeValue(agency["Underserved and/or  Hard to Reach"]);
-  document.getElementById('agency-calenviroscore').textContent = normalizeValue(agency["CalEnviroScreen Score"]);
-  document.getElementById('agency-pollutionburden').textContent = normalizeValue(agency["Pollution Burden Percentile"]);
+  document.getElementById('data-overview-title').textContent = agency.Agency + " Data Overview";
 
-  let popVal = normalizeValue(agency["Population"]);
-  if (!isNaN(parseInt(popVal))) popVal = parseInt(popVal).toLocaleString();
+  const getSafe = (obj, key) => {
+    if (obj[key] === null || obj[key] === undefined) return "N/A";
+    if (String(obj[key]).toUpperCase() === 'N/A') return "N/A";
+    return obj[key];
+  };
+
+  const underscore = agency["Underserved and/or  Hard to Reach"] || "No";
+  document.getElementById('agency-underserved').textContent = underscore;
+  document.getElementById('agency-calenviroscore').textContent = getSafe(agency, "CalEnviroScreen Score");
+  document.getElementById('agency-pollutionburden').textContent = getSafe(agency, "Pollution Burden");
+
+  let popVal = getSafe(agency, "Population");
+  if (!isNaN(popVal)) popVal = parseInt(popVal).toLocaleString();
   document.getElementById('agency-population').textContent = popVal;
 
-  document.getElementById('agency-children-seniors').textContent = normalizeValue(agency["% Children and Seniors"]);
-  document.getElementById('agency-area').textContent = normalizeValue(agency["AgencyArea (sq miles)"]);
+  const csVal = getSafe(agency, "% Children and Seniors");
+  document.getElementById('agency-children-seniors').textContent = csVal;
 
-  let denVal = normalizeValue(agency["Population Density (per sq. mile)"]);
-  if (!isNaN(parseInt(denVal))) denVal = parseInt(denVal).toLocaleString();
+  document.getElementById('agency-area').textContent = getSafe(agency, "Agency Area (sq. miles)");
+
+  let denVal = getSafe(agency, "Population Density (per sq mile)");
+  if (!isNaN(denVal)) denVal = parseInt(denVal).toLocaleString();
   document.getElementById('agency-density').textContent = denVal;
 
-  document.getElementById('agency-heat-days').textContent = normalizeValue(agency["Extreme Heat Days (days/year)"]);
+  document.getElementById('agency-heat-days').textContent = getSafe(agency, "Number of Extreme Heat Days");
 
-  let incVal = normalizeValue(agency["Average Household Income ($)"]);
-  if (!isNaN(parseInt(incVal))) incVal = parseInt(incVal).toLocaleString();
+  let incVal = getSafe(agency, "Average Household Income");
+  if (!isNaN(incVal)) incVal = parseInt(incVal).toLocaleString();
   document.getElementById('agency-income').textContent = incVal;
 
-  document.getElementById('agency-low-income').textContent = normalizeValue(agency["% Low-Income Census Tracts"]);
-  document.getElementById('agency-circuits').textContent = normalizeValue(agency["# of Electric Circuits"]);
+  const liVal = getSafe(agency, "% Low-Income Census Tracts");
+  document.getElementById('agency-low-income').textContent = liVal;
 
-  let kwhVal = normalizeValue(agency["Annual  Consumption (kWh)"]);
-  if (!isNaN(parseInt(kwhVal))) kwhVal = parseInt(kwhVal).toLocaleString();
+  document.getElementById('agency-circuits').textContent = getSafe(agency, "Number of Electric Circuits");
+
+  let kwhVal = getSafe(agency, "Annual kWh consumption");
+  if (!isNaN(kwhVal)) kwhVal = parseInt(kwhVal).toLocaleString();
   document.getElementById('agency-kwh').textContent = kwhVal;
 
-  let thermVal = normalizeValue(agency["Annual Consumption (Therms)"]);
-  if (!isNaN(parseInt(thermVal))) thermVal = parseInt(thermVal).toLocaleString();
+  let thermVal = getSafe(agency, "Annual Therms Consumption");
+  if (!isNaN(thermVal)) thermVal = parseInt(thermVal).toLocaleString();
   document.getElementById('agency-therms').textContent = thermVal;
 }
 
@@ -1643,25 +1881,27 @@ function showFacilityDetails(agencyName, facilityName) {
   const facility = facilitiesData.find(f => f.Agency === agencyName && f["Facility Name"] === facilityName);
   if (!facility) return;
 
-  // Show facility data
   document.getElementById('facility-data').style.display = 'block';
   document.getElementById('agency-data').style.display = 'none';
   document.getElementById('data-overview-title').textContent = facilityName;
 
-  // We only have "Address" in your list, so let's just show that if you want:
-  // For demonstration, we'll put placeholders
-  document.getElementById('facility-year').textContent = facility["Year Built"] || 'Not yet available';
-  document.getElementById('facility-sqft').textContent = facility["Gross Floor Area (sq ft)"] || 'Not yet available';
-  document.getElementById('facility-walkability').textContent = facility["Walkability"] || 'Not yet available';
-  document.getElementById('facility-resilience').textContent = facility["Existing Resilience Designation"] || 'Not yet available';
-  document.getElementById('facility-ev').textContent = facility["Existing EV Chargers"] || 'Not yet available';
-  document.getElementById('facility-planned-ev').textContent = facility["Number of Planned EV Chargers"] || 'Not yet available';
-  document.getElementById('facility-pv').textContent = facility["Exisiting PV or Battery Storage Capabilities"] || 'Not yet available';
-  document.getElementById('facility-planned-pv').textContent = facility["Planned PV (hours of autonomy)"] || 'Not yet available';
-  document.getElementById('facility-planned-battery').textContent = facility["Planned Battery Storage (hours of autonomy)"] || 'Not yet available';
-  document.getElementById('facility-type').textContent = facility["Building Type"] || 'Not yet available';
+  // Fill in all facility-level fields
+  const safeVal = (val) => {
+    if (!val || val.toString().toUpperCase() === 'N/A') return "Not yet available";
+    return val;
+  };
+  document.getElementById('facility-year').textContent = safeVal(facility["Yr Built (RHOA)"]);
+  document.getElementById('facility-sqft').textContent = safeVal(facility["Sq Ft"]);
+  document.getElementById('facility-walkability').textContent = safeVal(facility["Walk Score (RHOA)"]);
+  document.getElementById('facility-resilience').textContent = safeVal(facility["Existing Use? (cooling center or emergency ops)"]);
+  document.getElementById('facility-ev').textContent = safeVal(facility["Existing EV Chargers (Yes/No)"]);
+  document.getElementById('facility-planned-ev').textContent = safeVal(facility["Number of Planned EV Chargers"]);
+  document.getElementById('facility-pv').textContent = safeVal(facility["Exisiting PV or Battery Capabilities (Yes/No)"]);
+  document.getElementById('facility-planned-pv').textContent = safeVal(facility["Planned PV (hours of autonomy)"]);
+  document.getElementById('facility-planned-battery').textContent = safeVal(facility["Planned Battery Storage (hours of autonomy)"]);
+  document.getElementById('facility-type').textContent = safeVal(facility["Existing use"]);
 
-  // highlight
+  // highlight the clicked facility
   const facilityEls = document.querySelectorAll('.facility-title');
   facilityEls.forEach(el => {
     el.classList.toggle('active', el.textContent.trim() === facilityName);
@@ -1677,18 +1917,7 @@ function closeWelcome() {
   }, 400);
 }
 
-/* ============ FILTER EVENTS =========== */
-document.getElementById('population-min').addEventListener('input', filterAgencies);
-document.getElementById('population-max').addEventListener('input', filterAgencies);
-document.getElementById('agency-filter').addEventListener('input', filterAgencies);
-document.getElementById('dac-filter').addEventListener('change', filterAgencies);
-document.getElementById('ces90-filter').addEventListener('change', filterAgencies);
-
-document.getElementById('pv-filter').addEventListener('change', refreshFacilityList);
-document.getElementById('ev-filter').addEventListener('change', refreshFacilityList);
-document.getElementById('cooling-filter').addEventListener('change', refreshFacilityList);
-
-/* ============ INITIALIZE LISTING =========== */
+/* ============ INIT LISTING ON LOAD =========== */
 renderListing();
 </script>
 </body>
