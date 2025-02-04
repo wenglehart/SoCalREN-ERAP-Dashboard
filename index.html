@@ -20,16 +20,19 @@
   }
   </style>
 
-  <!-- Mapbox Geocoder -->
+  <!-- Mapbox Geocoder (for searching the map in general) -->
   <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.min.js"></script>
   <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.css" type="text/css">
 
+  <!-- Mapbox SDK for potential usage (no geocoding needed now, but we leave it if you want to keep it) -->
   <script src="https://unpkg.com/@mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
+
+  <!-- FontAwesome for icons -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 
   <style>
     html, body {
-      margin: 0; 
+      margin: 0;
       padding: 0;
       height: 100%;
       font-family: 'Aptos', sans-serif;
@@ -41,12 +44,12 @@
     #password-modal {
       position: fixed;
       z-index: 99999;
-      top: 0; 
+      top: 0;
       left: 0;
-      width: 100vw; 
+      width: 100vw;
       height: 100vh;
-      display: flex; 
-      align-items: center; 
+      display: flex;
+      align-items: center;
       justify-content: center;
       background-color: rgba(0,0,0,0.4);
       backdrop-filter: blur(10px);
@@ -110,7 +113,7 @@
       height: 50px;
     }
 
-    /* ============ MAIN CONTAINER LAYOUT ============ */
+    /* ============ MAIN CONTAINER ============ */
     #container {
       width: 100%;
       height: calc(100vh - 60px);
@@ -119,56 +122,46 @@
       overflow: hidden;
     }
     #map {
-      flex: 1; 
+      flex: 1;
       position: relative;
       min-height: 400px;
     }
 
+    /* ============ SIDEBAR WITH 3 SUB-SECTIONS (TOP, MIDDLE, BOTTOM) ============ */
     .map-overlay {
-      width: 400px; /* Fixed width so the panel stays readable */
+      width: 400px; /* fixed width so the panel is readable */
       background: #ffffff;
       border-left: 1px solid rgba(0,0,0,0.1);
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       display: flex;
-      flex-direction: column; 
-      /* to stack the top, middle, and bottom areas vertically */
-      height: 100%; 
+      flex-direction: column;
+      height: 100%;
       overflow: hidden;
       font-family: 'Aptos', sans-serif;
     }
 
-    /* ============ Sub-containers in the panel ============ */
     #top-area,
     #middle-area,
     #bottom-area {
       overflow-y: auto;
-      padding: 10px 20px 0 20px; 
-      /* spacing around content; adjust as desired */
+      padding: 10px 20px 0 20px;
     }
-    /* Force them to approximate 1/3 each. 
-       You can tweak the last one if needed to fill leftover space. */
-    #top-area {
-      flex: 0 0 33%;
-    }
-    #middle-area {
-      flex: 0 0 33%;
-    }
-    #bottom-area {
-      flex: 0 0 34%;
-    }
+    #top-area { flex: 0 0 33%; }
+    #middle-area { flex: 0 0 33%; }
+    #bottom-area { flex: 0 0 34%; }
 
     #loading-spinner {
-      position: fixed; 
-      top: 50%; 
+      position: fixed;
+      top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 20px; 
-      color: #2c3e50; 
+      font-size: 20px;
+      color: #2c3e50;
       z-index: 999;
       display: none;
     }
 
-    /* Mapbox Geocoder styling */
+    /* MAPBOX GEOCODER */
     .mapboxgl-ctrl-geocoder {
       position: absolute;
       top: 10px;
@@ -184,7 +177,7 @@
       padding: 6px 35px !important;
     }
 
-    /* ============ Fieldset styling ============ */
+    /* SEARCH & FILTERS */
     fieldset {
       background: #f0f0f0;
       border: none;
@@ -203,8 +196,24 @@
       width: 100%;
       font-family: 'Aptos', sans-serif;
     }
+    .filters {
+      background: #f0f0f0;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      font-family: 'Aptos', sans-serif;
+    }
+    .filters label {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    .filters input[type=checkbox] {
+      margin-right: 5px;
+    }
 
-    /* ============ Listing & Dashboard ============ */
+    /* ============ LISTING AND DASHBOARD ============ */
     #listing {
       max-height: 200px;
       overflow-y: auto;
@@ -236,9 +245,7 @@
       transform: translateX(5px);
     }
 
-    .cog-section {
-      margin-bottom: 10px;
-    }
+    .cog-section { margin-bottom: 10px; }
     .cog-header {
       background: #2D3E4F;
       padding: 12px 15px;
@@ -261,12 +268,8 @@
       margin-left: 10px;
       opacity: 0.9;
     }
-    .cog-header.expanded::after {
-      transform: rotate(180deg);
-    }
-    .cog-header:hover {
-      background: #455463;
-    }
+    .cog-header.expanded::after { transform: rotate(180deg); }
+    .cog-header:hover { background: #455463; }
     .agency-list {
       margin-top: 5px;
       margin-bottom: 15px;
@@ -301,24 +304,7 @@
       font-family: 'Aptos', sans-serif;
     }
 
-    .filters {
-      background: #f0f0f0;
-      margin-bottom: 10px;
-      padding: 10px;
-      border-radius: 5px;
-      font-size: 14px;
-      font-family: 'Aptos', sans-serif;
-    }
-    .filters label {
-      display: flex;
-      align-items: center;
-      margin-bottom: 5px;
-    }
-    .filters input[type=checkbox] {
-      margin-right: 5px;
-    }
-
-    /* ============ Dashboard Pane ============ */
+    /* ============ DASHBOARD (AGENCY/FACILITY DETAILS) ============ */
     .dashboard {
       background-color: #ffffff;
       border-radius: 12px;
@@ -354,14 +340,8 @@
       justify-content: space-between;
       align-items: center;
     }
-    .metric .metric-label {
-      margin-right: 15px;
-      flex: 0 0 auto;
-    }
-    .metric .metric-value {
-      flex: 1;
-      text-align: right;
-    }
+    .metric .metric-label { margin-right: 15px; flex: 0 0 auto; }
+    .metric .metric-value { flex: 1; text-align: right; }
 
     #agency-data, #facility-data {
       margin-top: 20px;
@@ -383,15 +363,13 @@
       margin-bottom: 15px;
       transition: background-color 0.2s ease;
     }
-    #back-button:hover {
-      background-color: #455463;
-    }
+    #back-button:hover { background-color: #455463; }
     #back-button::before {
       content: "←";
       font-size: 16px;
     }
 
-    /* ============ Intro Section always at bottom-area ============ */
+    /* ============ INTRO / WELCOME AT BOTTOM ============ */
     #intro-section {
       font-family: 'Aptos', sans-serif;
       background-color: #ffffff;
@@ -412,7 +390,7 @@
       margin-bottom: 10px;
     }
 
-    /* ============ Welcome Popup ============ */
+    /* ============ WELCOME POPUP ============ */
     #welcome-popup {
       position: fixed;
       top: 0; left: 0;
@@ -493,7 +471,7 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    /* BOUNDARY & FACILITY POPUPS */
+    /* POPUPS FOR BOUNDARIES & FACILITIES */
     .boundary-popup .mapboxgl-popup-content,
     .facility-popup .mapboxgl-popup-content {
       background-color: rgba(255,255,255,0.95);
@@ -527,7 +505,7 @@
       .map-overlay {
         position: relative;
         width: 100%;
-        height: auto; /* let it expand */
+        height: auto;
         max-height: 50vh;
       }
       #top-area,
@@ -541,7 +519,7 @@
         width: 85%;
       }
       #listing {
-        max-height: 120px; /* smaller on phone */
+        max-height: 120px;
       }
     }
   </style>
@@ -574,23 +552,20 @@
   <div id="map"></div>
 
   <div class="map-overlay" id="dashboard-panel">
-
-    <!-- ~~~ TOP AREA: Search & Filters ~~~ -->
+    <!-- Top area: Agency/Facility filters -->
     <div id="top-area">
-      <!-- Agency Search Fieldset -->
       <fieldset>
         <input id="agency-filter" type="text" placeholder="Search for an agency">
       </fieldset>
 
-      <!-- Agency Filters -->
       <fieldset class="filters" id="agency-filters">
         <legend>Agency Filters</legend>
         <label>
-          <input type="checkbox" id="dac-filter"> 
+          <input type="checkbox" id="dac-filter">
           Show only Underserved and/or Hard to Reach
         </label>
         <label>
-          <input type="checkbox" id="ces90-filter"> 
+          <input type="checkbox" id="ces90-filter">
           Show only agencies with CalEnviroScreen Score > 90
         </label>
         <div style="margin-top:10px;">
@@ -603,30 +578,27 @@
         </div>
       </fieldset>
 
-      <!-- Facility Filters -->
       <fieldset class="filters" id="facility-filters" style="display:none;">
         <legend>Facility Filters</legend>
         <label>
-          <input type="checkbox" id="pv-filter"> 
+          <input type="checkbox" id="pv-filter">
           Show only facilities with PV/Battery
         </label>
         <label>
-          <input type="checkbox" id="ev-filter"> 
+          <input type="checkbox" id="ev-filter">
           Show only facilities with EV chargers
         </label>
         <label>
-          <input type="checkbox" id="cooling-filter"> 
+          <input type="checkbox" id="cooling-filter">
           Show only Cooling Center/Emergency Ops
         </label>
       </fieldset>
     </div>
 
-    <!-- ~~~ MIDDLE AREA: Listing & Dashboard ~~~ -->
+    <!-- Middle area: listing & data overview -->
     <div id="middle-area">
-      <!-- Listing of Agencies/Facilities -->
       <div id="listing"></div>
 
-      <!-- Dashboard (Agency or Facility Data) -->
       <div class="dashboard" id="dashboard" style="display: none;">
         <h3 id="data-overview-title">Data Overview</h3>
 
@@ -734,7 +706,7 @@
       </div>
     </div>
 
-    <!-- ~~~ BOTTOM AREA: Intro/Welcome ~~~ -->
+    <!-- Bottom area: Intro/welcome block -->
     <div id="bottom-area">
       <div id="intro-section">
         <h4>Welcome to SoCalREN's ERAP Dashboard</h4>
@@ -744,14 +716,14 @@
         <p>
           The data displayed here includes key metrics collected throughout an agency's involvement in the ERAP program. The dashboard can help you understand community needs, identify facilities equipped with Electric Vehicle chargers, Solar or Battery Storage, and plans for resilience improvements.
         </p>
-        
+
         <h4>Getting Started</h4>
         <ul>
           <li>Use the "Search for an agency" box to quickly locate a participating agency.</li>
           <li>Adjust the range filter to focus on agencies with larger or smaller populations.</li>
           <li>Click an agency name to view its details and a list of associated facilities.</li>
         </ul>
-        
+
         <h4>What is ERAP?</h4>
         <p>
           SoCalREN's Energy Resilience Action Plan (ERAP) program aims to address the growing impacts of climate change. Developed in collaboration with regional partners, the ERAP program enhances the energy resilience of critical infrastructure and future resilience hub locations for public agencies. By incorporating data-driven analysis and stakeholder input, ERAP supports agencies in developing a roadmap of near-term and long-term energy resilience strategies.
@@ -762,7 +734,7 @@
   </div>
 </div>
 
-<!-- WELCOME POPUP -->
+<!-- ============ WELCOME POPUP ============ -->
 <div id="welcome-popup">
   <div class="welcome-content">
     <img src="images/SoCalREN_Logo_2017_PRIMARY.png" alt="SoCalREN Logo" style="width: 500px; margin-bottom: 20px;">
@@ -818,7 +790,7 @@ function initMap() {
   map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
   map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-  // Add geocoder
+  // Add geocoder for general location search
   const geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
     mapboxgl: mapboxgl,
@@ -828,49 +800,44 @@ function initMap() {
 
   map.on('load', () => {
     document.getElementById('loading-spinner').style.display = 'block';
-    loadBoundariesAndFacilities(); 
+    loadBoundariesAndFacilities();
   });
 }
 
-/* ============ FULL DATA SETS =========== */
-/* (Same Agency & Facility data you already provided) */
+/* ============ DATA SETS ============ */
+
+/* Example agencies data (truncated). Replace with your full data if needed. */
 const agenciesData = [
-  /* ... your entire agencies array here ... */
+  /* Example:
   {
     "Agency": "Bell",
     "COG": "GCCOG",
     "DAC Status": "Yes",
     "CalEnviroScreen Score": 96,
     "Population": 31864,
-    "Agency Area (sq. miles)": 2.5,
-    "Population Density (per sq mile)": 13400,
-    "Number of Extreme Heat Days": 91,
-    "% Children and Seniors": 36.1,
-    "Average Household Income": 47800,
-    "Pollution Burden": 88,
-    "% Low-Income Census Tracts": 100,
-    "Number of Electric Circuits": 14,
-    "Annual kWh consumption": 2200000,
-    "Annual Therms Consumption": 91100,
-    "Underserved and/or  Hard to Reach": "Yes"
+    ...
   },
-  /* ... etc for Maywood, Bell Gardens, Pomona, etc. ... */
+  ...
+  */
 ];
 
+/* Facilities data now includes Latitude and Longitude. Replace with your final table. */
 const facilitiesData = [
-  /* ... your entire facilities array here ... */
+  /* Example:
   {
     "Agency": "Bell",
     "Facility Name": "Bell Library",
-    "Address": "4411 Gage Ave",
+    "Address": "4411 Gage Ave, Bell, CA",
+    "Latitude": 33.97842,
+    "Longitude": -118.188728,
+    "Existing Use? (cooling center or emergency ops)": "N/A",
     ...
   },
-  /* ... etc for all facilities ... */
+  ...
+  */
 ];
 
-/* ============ GEOCODING & LOADING =========== */
-/* (Same geocode logic as before) */
-
+/* ============ LOADING BOUNDARIES + MAKING FACILITY MARKERS =========== */
 async function loadBoundariesAndFacilities() {
   // 1) boundary data
   fetch('data/la_boundaries.geojson')
@@ -914,7 +881,7 @@ async function loadBoundariesAndFacilities() {
             { hover: true }
           );
 
-          // match city => show name + some data
+          // match city => show name + quick data
           const cityName = e.features[0].properties.CITY_COMM_NAME || '';
           let matchedAgency = agenciesData.find(a => 
             a.Agency.toLowerCase() === cityName.toLowerCase()
@@ -951,6 +918,7 @@ async function loadBoundariesAndFacilities() {
         hoveredId = null;
       });
 
+      // on click => show that agency
       map.on('click', 'la-boundaries-extrusion', e => {
         if (!e.features.length) return;
         const cityName = e.features[0].properties.CITY_COMM_NAME || '';
@@ -972,8 +940,32 @@ async function loadBoundariesAndFacilities() {
     })
     .catch(err => console.error('Error loading boundaries:', err));
 
-  // 2) facilities geocoding
-  const facilityGeoJSON = await geocodeFacilities();
+  // 2) Build a FeatureCollection from your lat/lon data
+  const facilityFeatures = [];
+  facilitiesData.forEach(fac => {
+    const lat = parseFloat(fac.Latitude);
+    const lng = parseFloat(fac.Longitude);
+    // skip if not valid lat/lon
+    if (isNaN(lat) || isNaN(lng)) return;
+
+    facilityFeatures.push({
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [lng, lat] // note the order: [LONG, LAT]
+      },
+      properties: {
+        ...fac
+      }
+    });
+  });
+
+  const facilityGeoJSON = {
+    type: 'FeatureCollection',
+    features: facilityFeatures
+  };
+
+  // add facility data as a source, with clustering
   map.addSource('facilities', {
     type: 'geojson',
     data: facilityGeoJSON,
@@ -982,6 +974,7 @@ async function loadBoundariesAndFacilities() {
     clusterRadius: 50
   });
 
+  // add cluster layers
   map.addLayer({
     id: 'clusters',
     type: 'circle',
@@ -1025,6 +1018,7 @@ async function loadBoundariesAndFacilities() {
     }
   });
 
+  // unclustered circle
   map.addLayer({
     id: 'unclustered-point',
     type: 'circle',
@@ -1040,6 +1034,7 @@ async function loadBoundariesAndFacilities() {
     }
   });
 
+  // popup on hover
   const facilityPopup = new mapboxgl.Popup({
     closeButton: false,
     closeOnClick: false,
@@ -1052,9 +1047,9 @@ async function loadBoundariesAndFacilities() {
     map.getCanvas().style.cursor = 'pointer';
     const props = e.features[0].properties;
     const content = `
-      <strong>${props["Facility Name"]}</strong><br>
-      Existing Use: ${props["Existing use"] || 'N/A'}<br>
-      EV Chargers: ${props["Existing EV Chargers (Yes/No)"] || 'N/A'}
+      <strong>${props["Facility Name"] || "Unknown Facility"}</strong><br>
+      Existing Use: ${props["Existing use"] || "N/A"}<br>
+      EV Chargers: ${props["Existing EV Chargers (Yes/No)"] || "N/A"}
     `;
     facilityPopup.setLngLat(e.lngLat).setHTML(content).addTo(map);
   });
@@ -1064,8 +1059,9 @@ async function loadBoundariesAndFacilities() {
     facilityPopup.remove();
   });
 
+  // handle cluster click => zoom in
   map.on('click','clusters', e => {
-    const features = map.queryRenderedFeatures(e.point,{ layers: ['clusters'] });
+    const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
     if (!features.length) return;
     const clusterId = features[0].properties.cluster_id;
     map.getSource('facilities').getClusterExpansionZoom(clusterId, (err, zoom) => {
@@ -1074,8 +1070,10 @@ async function loadBoundariesAndFacilities() {
     });
   });
 
+  // handle unclustered point click => show facility details
   map.on('click','unclustered-point', e => {
     const props = e.features[0].properties;
+    // find the matching agency, then show the facility
     const matchedAgency = agenciesData.find(a => a.Agency === props["Agency"]);
     if (matchedAgency) {
       const facs = facilitiesData.filter(f => f.Agency === matchedAgency.Agency);
@@ -1087,52 +1085,7 @@ async function loadBoundariesAndFacilities() {
   document.getElementById('loading-spinner').style.display = 'none';
 }
 
-async function geocodeFacilities() {
-  const geocodedFeatures = [];
-  const mapboxClient = mapboxSdk({ accessToken: mapboxgl.accessToken });
-
-  for (const fac of facilitiesData) {
-    const addr = fac.Address || '';
-    if (addr.toUpperCase() === 'N/A') {
-      // skip
-      continue;
-    }
-    try {
-      const response = await mapboxClient.geocoding
-        .forwardGeocode({
-          query: addr + ', CA, USA',
-          limit: 1
-        })
-        .send();
-      if (
-        response &&
-        response.body &&
-        response.body.features &&
-        response.body.features.length > 0
-      ) {
-        const coords = response.body.features[0].center;
-        geocodedFeatures.push({
-          type: 'Feature',
-          properties: {
-            ...fac
-          },
-          geometry: {
-            type: 'Point',
-            coordinates: coords
-          }
-        });
-      }
-    } catch (err) {
-      console.error('Geocoding error:', err, ' for address:', addr);
-    }
-  }
-  return {
-    type: 'FeatureCollection',
-    features: geocodedFeatures
-  };
-}
-
-/* ============ FILTERS & LISTING =========== */
+/* ============ LISTING AND FILTERING LOGIC =========== */
 function renderListing() {
   const listingElement = document.getElementById('listing');
   const agencyFilters = document.getElementById('agency-filters');
@@ -1142,7 +1095,7 @@ function renderListing() {
   agencyFilters.style.display = 'block';
   facilityFilters.style.display = 'none';
 
-  // Group agencies by COG
+  // group agencies by COG
   const groups = {};
   agenciesData.forEach(a => {
     const cog = a.COG;
@@ -1163,7 +1116,6 @@ function renderListing() {
       agencyList.className = 'agency-list';
       agencyList.style.display = 'none';
 
-      // expand/collapse
       cogHeader.addEventListener('click', () => {
         const isHidden = agencyList.style.display === 'none';
         cogHeader.classList.toggle('expanded', isHidden);
@@ -1261,19 +1213,19 @@ function filterAgencies() {
   }
 }
 
+// event listeners for agency filters
 document.getElementById('population-min').addEventListener('input', filterAgencies);
 document.getElementById('population-max').addEventListener('input', filterAgencies);
 document.getElementById('agency-filter').addEventListener('input', filterAgencies);
 document.getElementById('dac-filter').addEventListener('change', filterAgencies);
 document.getElementById('ces90-filter').addEventListener('change', filterAgencies);
 
-/* Facility filters */
+// facility filters
 document.getElementById('pv-filter').addEventListener('change', refreshFacilityList);
 document.getElementById('ev-filter').addEventListener('change', refreshFacilityList);
 document.getElementById('cooling-filter').addEventListener('change', refreshFacilityList);
 
 function refreshFacilityList() {
-  // If the data-overview-title references an agency, refresh the listing
   const title = document.querySelector('#data-overview-title').textContent;
   const foundAgency = agenciesData.find(a => title.includes(a.Agency));
   if (foundAgency) {
@@ -1308,11 +1260,11 @@ function showFacilities(agency, facilityList) {
   header.textContent = `Facilities in ${agency.Agency}`;
   listingElement.appendChild(header);
 
-  // Show facility filters, hide agency filters
+  // Hide agency filters, show facility filters
   agencyFilters.style.display = 'none';
   facilityFilters.style.display = 'block';
 
-  // Filter out facilities based on user’s checkboxes
+  // apply facility filter checkboxes
   const filteredFacilities = filterFacilities(facilityList);
 
   if (filteredFacilities.length > 0) {
@@ -1330,7 +1282,7 @@ function showFacilities(agency, facilityList) {
     listingElement.appendChild(noFacilitiesMsg);
   }
 
-  // Show the dashboard, agency data by default
+  // Show the dashboard
   dashboardElement.style.display = 'block';
   agencyDataElement.style.display = 'block';
   facilityDataElement.style.display = 'none';
@@ -1398,9 +1350,7 @@ function updateAgencyDashboard(agency) {
   if (!isNaN(incVal)) incVal = parseInt(incVal).toLocaleString();
   document.getElementById('agency-income').textContent = incVal;
 
-  const liVal = getSafe(agency, "% Low-Income Census Tracts");
-  document.getElementById('agency-low-income').textContent = liVal;
-
+  document.getElementById('agency-low-income').textContent = getSafe(agency, "% Low-Income Census Tracts");
   document.getElementById('agency-circuits').textContent = getSafe(agency, "Number of Electric Circuits");
 
   let kwhVal = getSafe(agency, "Annual kWh consumption");
@@ -1424,6 +1374,7 @@ function showFacilityDetails(agencyName, facilityName) {
     if (!val || val.toString().toUpperCase() === 'N/A') return "Not yet available";
     return val;
   };
+
   document.getElementById('facility-year').textContent = safeVal(facility["Yr Built (RHOA)"]);
   document.getElementById('facility-sqft').textContent = safeVal(facility["Sq Ft"]);
   document.getElementById('facility-walkability').textContent = safeVal(facility["Walk Score (RHOA)"]);
@@ -1451,7 +1402,7 @@ function closeWelcome() {
   }, 400);
 }
 
-/* ============ INITIALIZE LISTING =========== */
+/* ============ INITIALIZE LISTING ON LOAD =========== */
 renderListing();
 </script>
 </body>
