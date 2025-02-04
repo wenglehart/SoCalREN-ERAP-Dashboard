@@ -39,7 +39,7 @@
     #password-modal {
       position: fixed;
       z-index: 99999;
-      top: 0; 
+      top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
@@ -124,7 +124,7 @@
 
     /* ============ SIDEBAR WITH THREE SUB-PANES ============ */
     .map-overlay {
-      width: 400px; 
+      width: 400px;
       background: #ffffff;
       border-left: 1px solid rgba(0,0,0,0.1);
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -140,13 +140,13 @@
       overflow-y: auto;
       padding: 10px 20px 0 20px;
     }
-    /*
-      Adjust the flex percentages to give more vertical space
-      to #middle-area if desired. For example:
+    /* 
+       Adjust flex percentages if you want to tweak 
+       how much vertical space each area gets.
     */
-    #top-area { flex: 0 0 30%; }     /* previously was 33% */
-    #middle-area { flex: 0 0 40%; } /* previously was 33% */
-    #bottom-area { flex: 0 0 30%; } /* previously was 34% */
+    #top-area { flex: 0 0 30%; }
+    #middle-area { flex: 0 0 40%; }
+    #bottom-area { flex: 0 0 30%; }
 
     #loading-spinner {
       position: fixed;
@@ -212,12 +212,8 @@
     }
 
     /* ============ LISTING & DASHBOARD ============ */
-    /*
-      Increased from 200px to 350px for a taller listing area.
-      Adjust as needed to fill more vertical space.
-    */
     #listing {
-      max-height: 350px;
+      max-height: 350px;  /* taller listing block */
       overflow-y: auto;
       padding: 10px;
       margin-bottom: 15px;
@@ -760,17 +756,16 @@ const passwordInput = document.getElementById('password-input');
 const passwordSubmit = document.getElementById('password-submit');
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Show the password modal immediately on page load
+  // Show the password modal on page load
   passwordModal.style.display = 'flex';
 });
 
 passwordSubmit.addEventListener('click', () => {
-  // Simple password check => "test"
   if (passwordInput.value === 'test') {
     passwordModal.style.display = 'none';
     initMap();
   } else {
-    location.reload(); // If wrong, reload
+    location.reload(); // Wrong => reload
   }
 });
 
@@ -1370,7 +1365,7 @@ const facilitiesData = [
 
 /* ============ LOADING BOUNDARIES + MAKING FACILITY MARKERS =========== */
 async function loadBoundariesAndFacilities() {
-  // 1) Load boundary data
+  // 1) boundary data
   fetch('data/la_boundaries.geojson')
     .then(resp => resp.json())
     .then(geojson => {
@@ -1417,7 +1412,6 @@ async function loadBoundariesAndFacilities() {
           const cityName = e.features[0].properties.CITY_COMM_NAME || '';
           let matchedAgency = agenciesData.find(a => a.Agency.toLowerCase() === cityName.toLowerCase());
           if (!matchedAgency) {
-            // fallback check if cityName includes agency name
             matchedAgency = agenciesData.find(a => cityName.toLowerCase().includes(a.Agency.toLowerCase()));
           }
 
@@ -1447,7 +1441,7 @@ async function loadBoundariesAndFacilities() {
         hoveredId = null;
       });
 
-      // On click => open that agency's data
+      // On click => show that agency's data
       map.on('click', 'la-boundaries-extrusion', e => {
         if (!e.features.length) return;
         const cityName = e.features[0].properties.CITY_COMM_NAME || '';
@@ -1465,7 +1459,7 @@ async function loadBoundariesAndFacilities() {
     })
     .catch(err => console.error('Error loading boundaries:', err));
 
-  // 2) Build a FeatureCollection for facilities
+  // 2) create facility FeatureCollection
   const facilityFeatures = [];
   facilitiesData.forEach(fac => {
     const lat = parseFloat(fac.Latitude);
@@ -1484,7 +1478,6 @@ async function loadBoundariesAndFacilities() {
     features: facilityFeatures
   };
 
-  // Add facility data with clustering
   map.addSource('facilities', {
     type: 'geojson',
     data: facilityGeoJSON,
@@ -1515,7 +1508,10 @@ async function loadBoundariesAndFacilities() {
       'circle-opacity': 0.9,
       'circle-stroke-width': 2,
       'circle-stroke-color': '#ffffff',
-      'circle-stroke-opacity': 0.9
+      'circle-stroke-opacity': 0.9,
+      /* Forces the circle to always face the user’s view */
+      'circle-pitch-scale': 'viewport',
+      'circle-pitch-alignment': 'map'
     }
   });
 
@@ -1528,7 +1524,10 @@ async function loadBoundariesAndFacilities() {
       'text-field': '{point_count_abbreviated}',
       'text-font': ['DIN Offc Pro Bold','Arial Unicode MS Bold'],
       'text-size': 16,
-      'text-allow-overlap': true
+      'text-allow-overlap': true,
+      // keep text upright and facing the viewport
+      'text-pitch-alignment': 'viewport',
+      'text-rotation-alignment': 'viewport'
     },
     paint: {
       'text-color': '#ffffff',
@@ -1549,16 +1548,18 @@ async function loadBoundariesAndFacilities() {
       'circle-stroke-width': 2,
       'circle-stroke-color': '#ffffff',
       'circle-opacity': 0.9,
-      'circle-stroke-opacity': 0.9
+      'circle-stroke-opacity': 0.9,
+      'circle-pitch-scale': 'viewport',
+      'circle-pitch-alignment': 'map'
     }
   });
 
-  // Move facility layers on top of extrusions
+  // reorder so circle layers are above extrusions 
   map.moveLayer('clusters');
   map.moveLayer('cluster-count');
   map.moveLayer('unclustered-point');
 
-  // Popup on hover for unclustered facilities
+  // facility popup on hover
   const facilityPopup = new mapboxgl.Popup({
     closeButton: false,
     closeOnClick: false,
@@ -1583,7 +1584,7 @@ async function loadBoundariesAndFacilities() {
     facilityPopup.remove();
   });
 
-  // cluster click => zoom in
+  // cluster click => zoom
   map.on('click','clusters', e => {
     const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
     if (!features.length) return;
@@ -1594,7 +1595,7 @@ async function loadBoundariesAndFacilities() {
     });
   });
 
-  // unclustered point => show facility details
+  // unclustered point => facility details
   map.on('click','unclustered-point', e => {
     const props = e.features[0].properties;
     const matchedAgency = agenciesData.find(a => a.Agency === props["Agency"]);
@@ -1646,7 +1647,7 @@ function renderListing() {
         agencyList.style.display = isHidden ? 'block' : 'none';
       });
 
-      // sort by agency name
+      // sort by name
       agencies.sort((a,b) => a.Agency.localeCompare(b.Agency));
       agencies.forEach(a => {
         const div = document.createElement('div');
@@ -1666,7 +1667,7 @@ function renderListing() {
   }
 }
 
-// Agency filters
+// Filter agencies
 function filterAgencies() {
   const minPop = parseInt(document.getElementById('population-min').value) || 0;
   const maxPop = parseInt(document.getElementById('population-max').value) || Infinity;
@@ -1739,7 +1740,6 @@ function filterAgencies() {
   }
 }
 
-// Wire up agency filters
 document.getElementById('population-min').addEventListener('input', filterAgencies);
 document.getElementById('population-max').addEventListener('input', filterAgencies);
 document.getElementById('agency-filter').addEventListener('input', filterAgencies);
@@ -1771,7 +1771,6 @@ function showFacilities(agency, facilityList) {
 
   listingElement.innerHTML = '';
 
-  // create back button
   const backButton = document.createElement('button');
   backButton.id = 'back-button';
   backButton.textContent = 'Back to Agencies';
@@ -1781,16 +1780,13 @@ function showFacilities(agency, facilityList) {
   };
   listingElement.appendChild(backButton);
 
-  // facilities header
   const header = document.createElement('h4');
   header.textContent = `Facilities in ${agency.Agency}`;
   listingElement.appendChild(header);
 
-  // Hide agency filters, show facility filters
   agencyFilters.style.display = 'none';
   facilityFilters.style.display = 'block';
 
-  // apply facility checkboxes
   const filteredFacilities = filterFacilities(facilityList);
 
   if (filteredFacilities.length > 0) {
@@ -1808,7 +1804,6 @@ function showFacilities(agency, facilityList) {
     listingElement.appendChild(noFacilitiesMsg);
   }
 
-  // show dashboard
   dashboardElement.style.display = 'block';
   agencyDataElement.style.display = 'block';
   facilityDataElement.style.display = 'none';
@@ -1816,26 +1811,22 @@ function showFacilities(agency, facilityList) {
   updateAgencyDashboard(agency);
 }
 
-// Filter by PV, EV, and Cooling/Emergency
 function filterFacilities(facList) {
   const pvChecked = document.getElementById('pv-filter').checked;
   const evChecked = document.getElementById('ev-filter').checked;
   const coolChecked = document.getElementById('cooling-filter').checked;
 
   return facList.filter(f => {
-    // PV
     if (pvChecked) {
       const hasPV = f["Exisiting PV or Battery Capabilities (Yes/No)"] &&
         f["Exisiting PV or Battery Capabilities (Yes/No)"].toLowerCase() !== 'no' &&
         f["Exisiting PV or Battery Capabilities (Yes/No)"].toLowerCase() !== 'n/a';
       if (!hasPV) return false;
     }
-    // EV
     if (evChecked) {
       const evVal = (f["Existing EV Chargers (Yes/No)"] || '').toLowerCase();
       if (!evVal.includes('yes')) return false;
     }
-    // Cooling/Emergency
     if (coolChecked) {
       const usage = (f["Existing Use? (cooling center or emergency ops)"] || '').toLowerCase();
       if (!usage.includes('cooling') && !usage.includes('emergency')) return false;
@@ -1844,7 +1835,7 @@ function filterFacilities(facList) {
   });
 }
 
-// Update the agency dashboard
+// Fill the agency dashboard
 function updateAgencyDashboard(agency) {
   document.getElementById('data-overview-title').textContent = agency.Agency + " Data Overview";
 
@@ -1890,7 +1881,7 @@ function updateAgencyDashboard(agency) {
   document.getElementById('agency-therms').textContent = thermVal;
 }
 
-// Show facility details
+// Show facility details in the dashboard
 function showFacilityDetails(agencyName, facilityName) {
   const facility = facilitiesData.find(f => f.Agency === agencyName && f["Facility Name"] === facilityName);
   if (!facility) return;
@@ -1915,7 +1906,7 @@ function showFacilityDetails(agencyName, facilityName) {
   document.getElementById('facility-planned-battery').textContent = safeVal(facility["Planned Battery Storage (hours of autonomy)"]);
   document.getElementById('facility-type').textContent = safeVal(facility["Existing use"]);
 
-  // Highlight the selected facility in the listing
+  // highlight the clicked facility in the listing
   const facilityEls = document.querySelectorAll('.facility-title');
   facilityEls.forEach(el => {
     el.classList.toggle('active', el.textContent.trim() === facilityName);
@@ -1931,7 +1922,7 @@ function closeWelcome() {
   }, 400);
 }
 
-/* Initialize the listing upon page load */
+/* INITIALIZE THE AGENCY LIST RIGHT AWAY */
 renderListing();
 </script>
 </body>
