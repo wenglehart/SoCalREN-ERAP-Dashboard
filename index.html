@@ -15,7 +15,7 @@
     font-family: 'Aptos';
     /* If you have a local or hosted source for Aptos, declare it here:
        src: url('path-to-aptos.woff2') format('woff2'); 
-       Otherwise, the user’s system must have Aptos installed. 
+       Otherwise, user’s system must have Aptos installed. 
     */
     font-weight: 400;
     font-style: normal;
@@ -39,25 +39,26 @@
       overflow: hidden; /* Hide scrollbars */
     }
 
-    /* ============ Password Modal ============ */
+    /* ============ PASSWORD MODAL ============ */
     #password-modal {
       position: fixed;
       z-index: 99999;
-      top: 0; left: 0;
+      top: 0; 
+      left: 0;
       width: 100vw; 
       height: 100vh;
       display: flex; 
       align-items: center; 
       justify-content: center;
       background-color: rgba(0,0,0,0.4);
-      backdrop-filter: blur(10px); /* blurrier background */
+      backdrop-filter: blur(10px);
     }
     #password-modal-content {
       background: #ffffff;
       padding: 30px;
-      border-radius: 10px; /* more square but still slightly rounded */
+      border-radius: 10px;
       box-shadow: 0 2px 20px rgba(0,0,0,0.2);
-      width: 400px; /* fixed width for a more boxy look */
+      width: 400px;
       text-align: center;
     }
     #password-modal-content h2 {
@@ -89,7 +90,7 @@
       background: linear-gradient(to right, #4a5c6b, #2D3E4F);
     }
 
-    /* ============ Header ============ */
+    /* ============ HEADER ============ */
     header {
       width: 100%;
       background: linear-gradient(to right, #2D3E4F, #202f3e);
@@ -109,7 +110,6 @@
     }
     .header-left img {
       height: 50px;
-      /* Removed hover animation => no transform/transition */
     }
 
     /* ============ Container Layout ============ */
@@ -137,7 +137,6 @@
       display: none;
     }
 
-    /* place geocoder in top-left corner */
     .mapboxgl-ctrl-geocoder {
       position: absolute;
       top: 10px;
@@ -151,7 +150,6 @@
     .mapboxgl-ctrl-geocoder--input {
       height: 36px !important;
       padding: 6px 35px !important;
-      font-family: 'Aptos', sans-serif !important;
     }
 
     /* ============ Map Overlay Panel ============ */
@@ -159,7 +157,7 @@
       flex: 1;
       background: linear-gradient(to bottom, #fff, #f8f9fa);
       border-left: 1px solid rgba(0,0,0,0.1);
-      padding: 25px;
+      padding: 20px 20px 0 20px; /* top-right-left, no bottom so we can keep a little less vertical overlap */
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       overflow-y: auto;
       display: flex;
@@ -187,12 +185,15 @@
       font-family: 'Aptos', sans-serif;
     }
 
-    /* Make the listing area taller, pushing intro text further down */
+    /* Increase listing area, put welcome at bottom. */
     #listing {
-      max-height: 600px; /* increased from 400px */
+      max-height: 350px;
       overflow-y: auto;
       padding: 10px;
-      margin-top: 10px;
+      margin-bottom: 15px; /* space above welcome section */
+      background-color: #ffffff; /* to offset from background */
+      border: 1px solid #ddd;
+      border-radius: 5px;
     }
 
     .facility-title {
@@ -303,29 +304,29 @@
       background-color: #ffffff;
       border-radius: 12px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      padding: 30px;
+      padding: 20px;
       font-size: 14px;
-      margin-top: 20px;
+      margin-top: 10px;
       font-family: 'Aptos', sans-serif;
     }
     .dashboard h3 {
       font-size: 20px;
       margin-top: 0;
       padding-bottom: 15px;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
       border-bottom: 2px solid #ecf0f1;
       font-weight: bold;
       color: #2c3e50;
     }
     .dashboard h4 {
-      margin-top: 30px;
-      margin-bottom: 20px;
+      margin-top: 20px;
+      margin-bottom: 15px;
       font-size: 16px;
       color: #34495e;
       font-family: 'Aptos', sans-serif;
     }
     .metric {
-      margin-bottom: 16px; /* slightly narrower spacing */
+      margin-bottom: 14px;
       background-color: #f8f9fa;
       padding: 15px;
       border-radius: 8px;
@@ -344,8 +345,8 @@
     }
 
     #agency-data, #facility-data {
-      margin-top: 40px;
-      padding-top: 20px;
+      margin-top: 20px;
+      padding-top: 15px;
       border-top: 1px solid #ecf0f1;
     }
     #back-button {
@@ -371,11 +372,16 @@
       font-size: 16px;
     }
 
-    /* ============ Intro Section ============ */
+    /* ============ Intro Section at bottom ============ */
     #intro-section {
       display: none;
       font-family: 'Aptos', sans-serif;
-      margin-top: 20px; /* place it lower below the listing */
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+      margin-top: 15px;
+      margin-bottom: 15px;
     }
     #intro-section h4 {
       font-size: 16px;
@@ -386,6 +392,7 @@
       font-size: 14px;
       color: #34495e;
       line-height: 1.6;
+      margin-bottom: 10px;
     }
 
     /* ============ Welcome Popup ============ */
@@ -518,7 +525,7 @@
         width: 85%;
       }
       #listing {
-        max-height: 300px; /* reduce if smaller screens */
+        max-height: 200px;
       }
     }
   </style>
@@ -528,7 +535,6 @@
 <!-- ============ PASSWORD MODAL ============ -->
 <div id="password-modal">
   <div id="password-modal-content">
-    <!-- Two lines of text as requested -->
     <h2>
       To access SoCalREN’s ERAP Dashboard <br>
       please enter your provided access code
@@ -552,6 +558,7 @@
   <div id="map"></div>
 
   <div class="map-overlay" id="dashboard-panel">
+    <!-- Search & Agency Filters -->
     <fieldset>
       <input id="agency-filter" type="text" placeholder="Search for an agency">
     </fieldset>
@@ -577,6 +584,7 @@
       </div>
     </fieldset>
 
+    <!-- Facility Filters -->
     <fieldset class="filters" id="facility-filters" style="display:none;">
       <legend>Facility Filters</legend>
       <label>
@@ -593,9 +601,10 @@
       </label>
     </fieldset>
 
+    <!-- Listing for Agencies & Facilities -->
     <div id="listing"></div>
 
-    <!-- INTRO SECTION -->
+    <!-- Additional sections at the bottom: Intro & Dashboard -->
     <div id="intro-section">
       <h4>Welcome to SoCalREN's ERAP Dashboard</h4>
       <p>
@@ -771,21 +780,20 @@ passwordSubmit.addEventListener('click', () => {
 mapboxgl.accessToken = 'pk.eyJ1Ijoid2VuZ2xlMSIsImEiOiJjbGh0bTJ0OTUzN2dzM21tbTB0NzFmM2QyIn0.-ItjIktoJtcQUsk6l9TbbQ';
 let map;
 
-// We'll add a pitch of 45° for a more tilted view
+// We'll add a pitch for a 3D tilt
 function initMap() {
   map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/streets-v12',
     center: [-118.2437, 34.0522],
     zoom: 10,
-    pitch: 45  // tilt
+    pitch: 45
   });
 
-  // Add Nav/Fullscreen
   map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
   map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-  // Add geocoder (placed top-left by default with this approach)
+  // Add geocoder (top-left by default)
   const geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
     mapboxgl: mapboxgl,
@@ -795,56 +803,416 @@ function initMap() {
 
   map.on('load', () => {
     document.getElementById('loading-spinner').style.display = 'block';
-    loadBoundariesAndFacilities();
-    document.getElementById('loading-spinner').style.display = 'none';
+    loadBoundariesAndFacilities(); 
   });
 }
 
-/* ============ LOAD BOUNDARIES & FACILITIES ============ */
-function loadBoundariesAndFacilities() {
-  // 1) LA Boundaries with fill-extrusion & hover
+/* ============ AGENCIES & FACILITIES DATA =========== */
+const agenciesData = [
+  /* (insert your agencies_df in full below) */
+  {
+    "Agency": "City of Bell",
+    "Council of Government": "Gateway Cities (GCCOG)",
+    "Underserved and/or  Hard to Reach": "Yes",
+    "CalEnviroScreen Score": 96,
+    "Pollution Burden Percentile": 88,
+    "Population": 31864,
+    "% Children and Seniors": 36,
+    "AgencyArea (sq miles)": 2.5,
+    "Population Density (per sq. mile)": 13400,
+    "Extreme Heat Days (days/year)": 91,
+    "Average Household Income ($)": 47800,
+    "% Low-Income Census Tracts": 100,
+    "# of Electric Circuits": 14,
+    "Annual  Consumption (kWh)": 2200000,
+    "Annual Consumption (Therms)": 91100
+  },
+  {
+    "Agency": "City of Maywood",
+    "Council of Government": "Gateway Cities (GCCOG)",
+    "Underserved and/or  Hard to Reach": "Yes",
+    "CalEnviroScreen Score": 90,
+    "Pollution Burden Percentile": 92,
+    "Population": 27127,
+    "% Children and Seniors": 38,
+    "AgencyArea (sq miles)": 1.18,
+    "Population Density (per sq. mile)": 23257,
+    "Extreme Heat Days (days/year)": 77,
+    "Average Household Income ($)": 50996,
+    "% Low-Income Census Tracts": 100,
+    "# of Electric Circuits": 6,
+    "Annual  Consumption (kWh)": 939153,
+    "Annual Consumption (Therms)": 1232
+  },
+  {
+    "Agency": "City of Bell Gardens",
+    "Council of Government": "Gateway Cities (GCCOG)",
+    "Underserved and/or  Hard to Reach": "Yes",
+    "CalEnviroScreen Score": 92,
+    "Pollution Burden Percentile": 97,
+    "Population": 37467,
+    "% Children and Seniors": 30,
+    "AgencyArea (sq miles)": 2.5,
+    "Population Density (per sq. mile)": 17100,
+    "Extreme Heat Days (days/year)": 90,
+    "Average Household Income ($)": 45300,
+    "% Low-Income Census Tracts": 100,
+    "# of Electric Circuits": 9,
+    "Annual  Consumption (kWh)": 1597960,
+    "Annual Consumption (Therms)": 25833
+  },
+  {
+    "Agency": "City of Pomona",
+    "Council of Government": "San Gabriel Valley (SGVCOG)",
+    "Underserved and/or  Hard to Reach": "Yes",
+    "CalEnviroScreen Score": 97,
+    "Pollution Burden Percentile": 81,
+    "Population": 151100,
+    "% Children and Seniors": 37,
+    "AgencyArea (sq miles)": 22.99,
+    "Population Density (per sq. mile)": 6572,
+    "Extreme Heat Days (days/year)": 118,
+    "Average Household Income ($)": 62400,
+    "% Low-Income Census Tracts": 82,
+    "# of Electric Circuits": 56,
+    "Annual  Consumption (kWh)": 20971427,
+    "Annual Consumption (Therms)": 23848
+  },
+  {
+    "Agency": "City of Irwindale",
+    "Council of Government": "San Gabriel Valley (SGVCOG)",
+    "Underserved and/or  Hard to Reach": "Yes",
+    "CalEnviroScreen Score": 83,
+    "Pollution Burden Percentile": 100,
+    "Population": 1400,
+    "% Children and Seniors": "N/A",
+    "AgencyArea (sq miles)": 9.5,
+    "Population Density (per sq. mile)": 142,
+    "Extreme Heat Days (days/year)": 146,
+    "Average Household Income ($)": 86250,
+    "% Low-Income Census Tracts": 100,
+    "# of Electric Circuits": 30,
+    "Annual  Consumption (kWh)": 2452708,
+    "Annual Consumption (Therms)": 11686
+  },
+  {
+    "Agency": "El Monte Union High School District (EMUSHD)",
+    "Council of Government": "San Gabriel Valley (SGVCOG)",
+    "Underserved and/or  Hard to Reach": "Yes",
+    "CalEnviroScreen Score": 80,
+    "Pollution Burden Percentile": 92,
+    "Population": 163151,
+    "% Children and Seniors": "N/A",
+    "AgencyArea (sq miles)": 22.38,
+    "Population Density (per sq. mile)": 7290,
+    "Extreme Heat Days (days/year)": 129,
+    "Average Household Income ($)": 62000,
+    "% Low-Income Census Tracts": "N/A",
+    "# of Electric Circuits": 79,
+    "Annual  Consumption (kWh)": "N/A",
+    "Annual Consumption (Therms)": "N/A"
+  },
+  {
+    "Agency": "City of Cudahy",
+    "Council of Government": "Gateway Cities (GCCOG)",
+    "Underserved and/or  Hard to Reach": "Yes",
+    "CalEnviroScreen Score": 95,
+    "Pollution Burden Percentile": 94,
+    "Population": 21700,
+    "% Children and Seniors": 36,
+    "AgencyArea (sq miles)": 1.23,
+    "Population Density (per sq. mile)": 17642,
+    "Extreme Heat Days (days/year)": 85,
+    "Average Household Income ($)": 49600,
+    "% Low-Income Census Tracts": 100,
+    "# of Electric Circuits": 20,
+    "Annual  Consumption (kWh)": "N/A",
+    "Annual Consumption (Therms)": "N/A"
+  },
+  {
+    "Agency": "City of South El Monte",
+    "Council of Government": "San Gabriel Valley (SGVCOG)",
+    "Underserved and/or  Hard to Reach": "Yes",
+    "CalEnviroScreen Score": 97,
+    "Pollution Burden Percentile": 98,
+    "Population": 19000,
+    "% Children and Seniors": 37,
+    "AgencyArea (sq miles)": 2.84,
+    "Population Density (per sq. mile)": 6690,
+    "Extreme Heat Days (days/year)": 124,
+    "Average Household Income ($)": 67700,
+    "% Low-Income Census Tracts": 80,
+    "# of Electric Circuits": 12,
+    "Annual  Consumption (kWh)": 593500,
+    "Annual Consumption (Therms)": 39700
+  },
+  {
+    "Agency": "City of Lynwood",
+    "Council of Government": "Gateway Cities (GCCOG)",
+    "Underserved and/or  Hard to Reach": "Yes",
+    "CalEnviroScreen Score": 91,
+    "Pollution Burden Percentile": 92,
+    "Population": 63200,
+    "% Children and Seniors": 35,
+    "AgencyArea (sq miles)": 4.84,
+    "Population Density (per sq. mile)": 13058,
+    "Extreme Heat Days (days/year)": 33,
+    "Average Household Income ($)": 67400,
+    "% Low-Income Census Tracts": 66,
+    "# of Electric Circuits": 22,
+    "Annual  Consumption (kWh)": 1340300,
+    "Annual Consumption (Therms)": 30100
+  },
+  {
+    "Agency": "City of Duarte",
+    "Council of Government": "San Gabriel Valley (SGVCOG)",
+    "Underserved and/or  Hard to Reach": "Yes",
+    "CalEnviroScreen Score": 78,
+    "Pollution Burden Percentile": 58,
+    "Population": 23100,
+    "% Children and Seniors": 38,
+    "AgencyArea (sq miles)": 6.71,
+    "Population Density (per sq. mile)": 3443,
+    "Extreme Heat Days (days/year)": 132,
+    "Average Household Income ($)": 93900,
+    "% Low-Income Census Tracts": 20,
+    "# of Electric Circuits": 10,
+    "Annual  Consumption (kWh)": 417700,
+    "Annual Consumption (Therms)": "N/A"
+  },
+  {
+    "Agency": "City of Rancho Palos Verdes",
+    "Council of Government": "South Bay Cities (SBCCOG)",
+    "Underserved and/or  Hard to Reach": "Yes",
+    "CalEnviroScreen Score": 11,
+    "Pollution Burden Percentile": 29,
+    "Population": 41600,
+    "% Children and Seniors": "N/A",
+    "AgencyArea (sq miles)": 13.5,
+    "Population Density (per sq. mile)": 3081,
+    "Extreme Heat Days (days/year)": 11,
+    "Average Household Income ($)": 146200,
+    "% Low-Income Census Tracts": 0,
+    "# of Electric Circuits": 25,
+    "Annual  Consumption (kWh)": 359100,
+    "Annual Consumption (Therms)": 900
+  },
+  {
+    "Agency": "City of El Segundo ",
+    "Council of Government": "South Bay Cities (SBCCOG)",
+    "Underserved and/or  Hard to Reach": "Yes",
+    "CalEnviroScreen Score": 26,
+    "Pollution Burden Percentile": 87,
+    "Population": 16500,
+    "% Children and Seniors": "N/A",
+    "AgencyArea (sq miles)": 5.5,
+    "Population Density (per sq. mile)": 3000,
+    "Extreme Heat Days (days/year)": 7,
+    "Average Household Income ($)": 115900,
+    "% Low-Income Census Tracts": 0,
+    "# of Electric Circuits": 20,
+    "Annual  Consumption (kWh)": 94470,
+    "Annual Consumption (Therms)": 40800
+  }
+];
+
+/* The entire facilities, with addresses but no lat/lon (or ignoring lat/lon) */
+const facilitiesData = [
+  {
+    "Agency": "City of Bell",
+    "Facility Name": "Bell Library",
+    "Address": "4411 Gage Ave, Bell, CA"
+  },
+  {
+    "Agency": "City of Bell",
+    "Facility Name": "Community Center",
+    "Address": "6250 Pine Ave, Bell, CA"
+  },
+  {
+    "Agency": "City of Bell",
+    "Facility Name": "Camp Little Bear Park",
+    "Address": "6704 Orchard Ave, Bell, CA"
+  },
+  {
+    "Agency": "City of Bell",
+    "Facility Name": "Veterans Memorial Park",
+    "Address": "6500 Wilcox Ave, Bell, CA"
+  },
+  {
+    "Agency": "City of Maywood",
+    "Facility Name": "City Hall & Sheriff's Office",
+    "Address": "4319 Slauson Ave, Maywood, CA"
+  },
+  {
+    "Agency": "City of Maywood",
+    "Facility Name": "Teen Center",
+    "Address": "4801 E. Slauson Ave, Maywood, CA"
+  },
+  {
+    "Agency": "City of Maywood",
+    "Facility Name": "Maywood Park (YMCA)",
+    "Address": "4801 E. 58th St, Maywood, CA"
+  },
+  {
+    "Agency": "City of Maywood",
+    "Facility Name": "Cesar Chavez Library",
+    "Address": "4323 Slauson Ave, Maywood, CA"
+  },
+  {
+    "Agency": "City of Bell Gardens",
+    "Facility Name": "Ford Park and Recreation Center",
+    "Address": "8000 Park Lane, Bell Gardens, CA"
+  },
+  {
+    "Agency": "City of Bell Gardens",
+    "Facility Name": "Community Family Services Center & Veterans Park",
+    "Address": "6662 Loveland St, Bell Gardens, CA"
+  },
+  {
+    "Agency": "City of Bell Gardens",
+    "Facility Name": "Youth Center",
+    "Address": "5856 Ludell St, Bell Gardens, CA"
+  },
+  {
+    "Agency": "City of Bell Gardens",
+    "Facility Name": "Civic Center",
+    "Address": "7100 Garfield St, Bell Gardens, CA"
+  },
+  {
+    "Agency": "City of Pomona",
+    "Facility Name": "Library",
+    "Address": "625 S Garey Ave, Pomona, CA"
+  },
+  {
+    "Agency": "City of Pomona",
+    "Facility Name": "City Hall",
+    "Address": "505 S Garey Ave, Pomona, CA"
+  },
+  {
+    "Agency": "City of Pomona",
+    "Facility Name": "Palomares Park",
+    "Address": "499 E Arrow Hwy, Pomona, CA"
+  },
+  {
+    "Agency": "City of Pomona",
+    "Facility Name": "Washington Senior Center",
+    "Address": "865 E Granf Ave, Pomona, CA"
+  },
+  {
+    "Agency": "City of Irwindale",
+    "Facility Name": "Dan Diaz Recreation Center and Library",
+    "Address": "16053 Calle De Paseo, Irwindale, CA"
+  },
+  {
+    "Agency": "City of Irwindale",
+    "Facility Name": "City Hall and Police Department",
+    "Address": "5050 N Irwindale Ave, Irwindale, CA"
+  },
+  {
+    "Agency": "City of Irwindale",
+    "Facility Name": "Senior Center and Annex",
+    "Address": "16116 Arrow Hwy, Irwindale, CA"
+  },
+  {
+    "Agency": "City of Irwindale",
+    "Facility Name": "New Library (Planned for 2026)",
+    "Address": "N/A"
+  }
+];
+
+/* ============ UTILITY FUNCTIONS =========== */
+function parseCoordinate(coordStr) {
+  if (!coordStr || coordStr.toString().trim().toUpperCase() === 'N/A') return null;
+  // We'll rely on geocoder for addresses now, so might skip direct lat/lon parsing.
+  return null;
+}
+
+function normalizeValue(val) {
+  if (!val) return 'Not yet available';
+  const str = String(val).trim();
+  if (str.toUpperCase() === 'N/A') return 'Not yet available';
+  return val;
+}
+
+/* We'll dynamically geocode each facility address. We'll store coords in an array. */
+async function geocodeFacilities() {
+  const geocodedFeatures = [];
+
+  const mapboxClient = mapboxSdk({ accessToken: mapboxgl.accessToken });
+
+  for (const fac of facilitiesData) {
+    if (!fac.Address || fac.Address.toUpperCase() === 'N/A') {
+      // skip
+      continue;
+    }
+    try {
+      const response = await mapboxClient.geocoding
+        .forwardGeocode({
+          query: fac.Address,
+          limit: 1,
+          country: 'US'
+        })
+        .send();
+      if (
+        response &&
+        response.body &&
+        response.body.features &&
+        response.body.features.length > 0
+      ) {
+        const coords = response.body.features[0].center;
+        // Make a feature
+        geocodedFeatures.push({
+          type: 'Feature',
+          properties: {
+            ...fac
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: coords
+          }
+        });
+      } else {
+        console.warn('No geocode result for:', fac.Address);
+      }
+    } catch (err) {
+      console.error('Geocoding error:', err, ' for address:', fac.Address);
+    }
+  }
+
+  return {
+    type: 'FeatureCollection',
+    features: geocodedFeatures
+  };
+}
+
+async function loadBoundariesAndFacilities() {
+  // 1) boundary data
   fetch('data/la_boundaries.geojson')
     .then(resp => resp.json())
     .then(geojson => {
       map.addSource('la-boundaries', { type: 'geojson', data: geojson });
-
-      // Add 3D extrusion layer
+      // fill-extrusion for 3D effect
       map.addLayer({
         id: 'la-boundaries-extrusion',
         type: 'fill-extrusion',
         source: 'la-boundaries',
         paint: {
-          'fill-extrusion-color': [
-            'case',
-            ['boolean', ['feature-state', 'hover'], false],
-            '#78B84B',  // highlight on hover
-            '#9A5CA7'   // default purple
-          ],
+          'fill-extrusion-color': '#9A5CA7',
           'fill-extrusion-height': 500,
           'fill-extrusion-opacity': 0.4
         }
       });
 
-      // Add city name labels
-      map.addLayer({
-        id: 'la-boundaries-labels',
-        type: 'symbol',
-        source: 'la-boundaries',
-        layout: {
-          'text-field': ['get', 'CITY_COMM_NAME'],
-          'text-size': 14,
-          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-          'text-anchor': 'center'
-        },
-        paint: {
-          'text-color': '#333',
-          'text-halo-color': '#FFFFFF',
-          'text-halo-width': 2
-        }
+      // Hover for popup
+      let hoveredId = null;
+      const boundaryPopup = new mapboxgl.Popup({
+        closeButton: false,
+        closeOnClick: false,
+        anchor: 'top',
+        offset: [0,0],
+        className: 'boundary-popup'
       });
 
-      // Hover effect
-      let hoveredId = null;
       map.on('mousemove', 'la-boundaries-extrusion', e => {
         map.getCanvas().style.cursor = 'pointer';
         if (e.features.length > 0) {
@@ -859,10 +1227,32 @@ function loadBoundariesAndFacilities() {
             { source: 'la-boundaries', id: hoveredId },
             { hover: true }
           );
+
+          // match city => show name + a couple datapoints
+          const cityName = e.features[0].properties.CITY_COMM_NAME;
+          let matchedAgency = agenciesData.find(a => a.Agency.toLowerCase().includes(cityName.toLowerCase().trim()));
+          if (!matchedAgency) {
+            // fallback if no direct match
+            matchedAgency = agenciesData.find(a => cityName.toLowerCase().includes(a.Agency.toLowerCase()));
+          }
+
+          let popupHtml = `<strong>${cityName}</strong><br><em>No data found</em>`;
+          if (matchedAgency) {
+            const pop = matchedAgency.Population || 'N/A';
+            const income = matchedAgency["Average Household Income ($)"] || 'N/A';
+            popupHtml = `
+              <strong>${matchedAgency.Agency}</strong><br>
+              Population: ${pop.toLocaleString()}<br>
+              Income: $${income.toLocaleString()}
+            `;
+          }
+          boundaryPopup.setLngLat(e.lngLat).setHTML(popupHtml).addTo(map);
         }
       });
+
       map.on('mouseleave', 'la-boundaries-extrusion', () => {
         map.getCanvas().style.cursor = '';
+        boundaryPopup.remove();
         if (hoveredId) {
           map.setFeatureState(
             { source: 'la-boundaries', id: hoveredId },
@@ -876,11 +1266,7 @@ function loadBoundariesAndFacilities() {
         if (!e.features.length) return;
         const cityName = e.features[0].properties.CITY_COMM_NAME;
         if (cityName) {
-          // Attempt to match city to agencies
-          let matched = agenciesData.find(a => a.Agency.toLowerCase() === cityName.toLowerCase());
-          if (!matched) {
-            matched = agenciesData.find(a => cityName.toLowerCase().includes(a.Agency.toLowerCase()));
-          }
+          let matched = agenciesData.find(a => a.Agency.toLowerCase().includes(cityName.toLowerCase().trim()));
           if (matched) {
             const facs = facilitiesData.filter(f => f.Agency === matched.Agency);
             showFacilities(matched, facs);
@@ -891,8 +1277,8 @@ function loadBoundariesAndFacilities() {
     })
     .catch(err => console.error('Error loading boundaries:', err));
 
-  // 2) Facilities
-  const facilityGeoJSON = facilitiesToGeoJSON();
+  // 2) facilities with address geocoding
+  const facilityGeoJSON = await geocodeFacilities();
   map.addSource('facilities', {
     type: 'geojson',
     data: facilityGeoJSON,
@@ -901,11 +1287,7 @@ function loadBoundariesAndFacilities() {
     clusterRadius: 50
   });
 
-  addFacilityLayers();
-}
-
-function addFacilityLayers() {
-  // Clusters
+  // add facility layers
   map.addLayer({
     id: 'clusters',
     type: 'circle',
@@ -924,14 +1306,13 @@ function addFacilityLayers() {
         '#F05A28', 25,
         '#9A5CA7'
       ],
-      'circle-opacity': 1.0,         /* fully opaque now */
+      'circle-opacity': 0.9,
       'circle-stroke-width': 2,
       'circle-stroke-color': '#ffffff',
       'circle-stroke-opacity': 0.9
     }
   });
 
-  // cluster count
   map.addLayer({
     id: 'cluster-count',
     type: 'symbol',
@@ -950,7 +1331,6 @@ function addFacilityLayers() {
     }
   });
 
-  // unclustered points
   map.addLayer({
     id: 'unclustered-point',
     type: 'circle',
@@ -961,12 +1341,36 @@ function addFacilityLayers() {
       'circle-radius': 8,
       'circle-stroke-width': 2,
       'circle-stroke-color': '#ffffff',
-      'circle-opacity': 1.0,       /* fully opaque */
+      'circle-opacity': 0.9,
       'circle-stroke-opacity': 0.9
     }
   });
 
-  // cluster click => zoom
+  // Popup on hover
+  const facilityPopup = new mapboxgl.Popup({
+    closeButton: false,
+    closeOnClick: false,
+    anchor: 'bottom',
+    offset: [0, -10],
+    className: 'facility-popup'
+  });
+
+  map.on('mouseenter', 'unclustered-point', e => {
+    map.getCanvas().style.cursor = 'pointer';
+    const props = e.features[0].properties;
+    const content = `
+      <strong>${props["Facility Name"]}</strong><br>
+      Building Type: ${props["Building Type"] || 'N/A'}<br>
+      EV Chargers: ${props["Existing EV Chargers"] || 'N/A'}
+    `;
+    facilityPopup.setLngLat(e.lngLat).setHTML(content).addTo(map);
+  });
+
+  map.on('mouseleave', 'unclustered-point', () => {
+    map.getCanvas().style.cursor = '';
+    facilityPopup.remove();
+  });
+
   map.on('click','clusters', e => {
     const features = map.queryRenderedFeatures(e.point,{ layers: ['clusters'] });
     if (!features.length) return;
@@ -977,7 +1381,7 @@ function addFacilityLayers() {
     });
   });
 
-  // unclustered point => show facility
+  // On click => show facility data in dashboard
   map.on('click','unclustered-point', e => {
     const props = e.features[0].properties;
     const matchedAgency = agenciesData.find(a => a.Agency === props["Agency"]);
@@ -989,366 +1393,10 @@ function addFacilityLayers() {
     }
   });
 
-  // pointer for clusters
-  map.on('mouseenter','clusters', () => {
-    map.getCanvas().style.cursor = 'pointer';
-  });
-  map.on('mouseleave','clusters', () => {
-    map.getCanvas().style.cursor = '';
-  });
+  document.getElementById('loading-spinner').style.display = 'none';
 }
 
-/* ============ AGENCIES & FACILITIES DATA =========== */
-/* The entire agenciesData array */
-const agenciesData = [
-  {
-    "Agency": "City of Bell",
-    "Council of Government": "Gateway Cities Council of Governments",
-    "Underserved and/or  Hard to Reach": "Yes",
-    "CalEnviroScreen Score": 96,
-    "Pollution Burden Percentile": 88,
-    "Population": 31864,
-    "% Children and Seniors": 36,
-    "AgencyArea (sq miles)": 2.5,
-    "Population Density (per sq. mile)": 13400,
-    "Extreme Heat Days (days/year)": 91,
-    "Average Household Income ($)": 47800,
-    "% Low-Income Census Tracts": 100,
-    "# of Electric Circuits": 14,
-    "Annual  Consumption (kWh)": 2200000,
-    "Annual Consumption (Therms)": 91100
-  },
-  {
-    "Agency": "City of Maywood",
-    "Council of Government": "Gateway Cities Council of Governments",
-    "Underserved and/or  Hard to Reach": "Yes",
-    "CalEnviroScreen Score": 90,
-    "Pollution Burden Percentile": 92,
-    "Population": 27127,
-    "% Children and Seniors": 38,
-    "AgencyArea (sq miles)": 1.18,
-    "Population Density (per sq. mile)": 23257,
-    "Extreme Heat Days (days/year)": 77,
-    "Average Household Income ($)": 50996,
-    "% Low-Income Census Tracts": 100,
-    "# of Electric Circuits": 6,
-    "Annual  Consumption (kWh)": 939153,
-    "Annual Consumption (Therms)": 1232
-  },
-  {
-    "Agency": "City of Bell Gardens",
-    "Council of Government": "Gateway Cities Council of Governments",
-    "Underserved and/or  Hard to Reach": "Yes",
-    "CalEnviroScreen Score": 92,
-    "Pollution Burden Percentile": 97,
-    "Population": 37467,
-    "% Children and Seniors": 30,
-    "AgencyArea (sq miles)": 2.5,
-    "Population Density (per sq. mile)": 17100,
-    "Extreme Heat Days (days/year)": 90,
-    "Average Household Income ($)": 45300,
-    "% Low-Income Census Tracts": 100,
-    "# of Electric Circuits": 9,
-    "Annual  Consumption (kWh)": 1597960,
-    "Annual Consumption (Therms)": 25833
-  },
-  {
-    "Agency": "City of Pomona",
-    "Council of Government": "San Gabriel Valley Council of Governments",
-    "Underserved and/or  Hard to Reach": "Yes",
-    "CalEnviroScreen Score": 97,
-    "Pollution Burden Percentile": 81,
-    "Population": 151100,
-    "% Children and Seniors": 37,
-    "AgencyArea (sq miles)": 22.99,
-    "Population Density (per sq. mile)": 6572,
-    "Extreme Heat Days (days/year)": 118,
-    "Average Household Income ($)": 62400,
-    "% Low-Income Census Tracts": 82,
-    "# of Electric Circuits": 56,
-    "Annual  Consumption (kWh)": 20971427,
-    "Annual Consumption (Therms)": 23848
-  },
-  {
-    "Agency": "City of Irwindale",
-    "Council of Government": "San Gabriel Valley Council of Governments",
-    "Underserved and/or  Hard to Reach": "Yes",
-    "CalEnviroScreen Score": 83,
-    "Pollution Burden Percentile": 100,
-    "Population": 1400,
-    "% Children and Seniors": "Not yet available",
-    "AgencyArea (sq miles)": 9.5,
-    "Population Density (per sq. mile)": 142,
-    "Extreme Heat Days (days/year)": 146,
-    "Average Household Income ($)": 86250,
-    "% Low-Income Census Tracts": 100,
-    "# of Electric Circuits": 30,
-    "Annual  Consumption (kWh)": 2452708,
-    "Annual Consumption (Therms)": 11686
-  },
-  {
-    "Agency": "El Monte Union High School District (EMUSHD)",
-    "Council of Government": "San Gabriel Valley Council of Governments",
-    "Underserved and/or  Hard to Reach": "Yes",
-    "CalEnviroScreen Score": 80,
-    "Pollution Burden Percentile": 92,
-    "Population": 163151,
-    "% Children and Seniors": "Not yet available",
-    "AgencyArea (sq miles)": 22.38,
-    "Population Density (per sq. mile)": 7290,
-    "Extreme Heat Days (days/year)": 129,
-    "Average Household Income ($)": 62000,
-    "% Low-Income Census Tracts": "Not yet available",
-    "# of Electric Circuits": 79,
-    "Annual  Consumption (kWh)": "Not yet available",
-    "Annual Consumption (Therms)": "Not yet available"
-  },
-  {
-    "Agency": "City of Cudahy",
-    "Council of Government": "Gateway Cities Council of Governments",
-    "Underserved and/or  Hard to Reach": "Yes",
-    "CalEnviroScreen Score": 95,
-    "Pollution Burden Percentile": 94,
-    "Population": 21700,
-    "% Children and Seniors": 36,
-    "AgencyArea (sq miles)": 1.23,
-    "Population Density (per sq. mile)": 17642,
-    "Extreme Heat Days (days/year)": 85,
-    "Average Household Income ($)": 49600,
-    "% Low-Income Census Tracts": 100,
-    "# of Electric Circuits": 20,
-    "Annual  Consumption (kWh)": "Not yet available",
-    "Annual Consumption (Therms)": "Not yet available"
-  },
-  {
-    "Agency": "City of South El Monte",
-    "Council of Government": "San Gabriel Valley Council of Governments",
-    "Underserved and/or  Hard to Reach": "Yes",
-    "CalEnviroScreen Score": 97,
-    "Pollution Burden Percentile": 98,
-    "Population": 19000,
-    "% Children and Seniors": 37,
-    "AgencyArea (sq miles)": 2.84,
-    "Population Density (per sq. mile)": 6690,
-    "Extreme Heat Days (days/year)": 124,
-    "Average Household Income ($)": 67700,
-    "% Low-Income Census Tracts": 80,
-    "# of Electric Circuits": 12,
-    "Annual  Consumption (kWh)": 593500,
-    "Annual Consumption (Therms)": 39700
-  },
-  {
-    "Agency": "City of Lynwood",
-    "Council of Government": "Gateway Cities Council of Governments",
-    "Underserved and/or  Hard to Reach": "Yes",
-    "CalEnviroScreen Score": 91,
-    "Pollution Burden Percentile": 92,
-    "Population": 63200,
-    "% Children and Seniors": 35,
-    "AgencyArea (sq miles)": 4.84,
-    "Population Density (per sq. mile)": 13058,
-    "Extreme Heat Days (days/year)": 33,
-    "Average Household Income ($)": 67400,
-    "% Low-Income Census Tracts": 66,
-    "# of Electric Circuits": 22,
-    "Annual  Consumption (kWh)": 1340300,
-    "Annual Consumption (Therms)": 30100
-  },
-  {
-    "Agency": "City of Duarte",
-    "Council of Government": "San Gabriel Valley Council of Governments",
-    "Underserved and/or  Hard to Reach": "Yes",
-    "CalEnviroScreen Score": 78,
-    "Pollution Burden Percentile": 58,
-    "Population": 23100,
-    "% Children and Seniors": 38,
-    "AgencyArea (sq miles)": 6.71,
-    "Population Density (per sq. mile)": 3443,
-    "Extreme Heat Days (days/year)": 132,
-    "Average Household Income ($)": 93900,
-    "% Low-Income Census Tracts": 20,
-    "# of Electric Circuits": 10,
-    "Annual  Consumption (kWh)": 417700,
-    "Annual Consumption (Therms)": "Not yet available"
-  },
-  {
-    "Agency": "City of Rancho Palos Verdes",
-    "Council of Government": "South Bay Cities Council of Governments",
-    "Underserved and/or  Hard to Reach": "Yes",
-    "CalEnviroScreen Score": 11,
-    "Pollution Burden Percentile": 29,
-    "Population": 41600,
-    "% Children and Seniors": "Not yet available",
-    "AgencyArea (sq miles)": 13.5,
-    "Population Density (per sq. mile)": 3081,
-    "Extreme Heat Days (days/year)": 11,
-    "Average Household Income ($)": 146200,
-    "% Low-Income Census Tracts": 0,
-    "# of Electric Circuits": 25,
-    "Annual  Consumption (kWh)": 359100,
-    "Annual Consumption (Therms)": 900
-  },
-  {
-    "Agency": "City of El Segundo",
-    "Council of Government": "South Bay Cities Council of Governments",
-    "Underserved and/or  Hard to Reach": "Yes",
-    "CalEnviroScreen Score": 26,
-    "Pollution Burden Percentile": 87,
-    "Population": 16500,
-    "% Children and Seniors": "Not yet available",
-    "AgencyArea (sq miles)": 5.5,
-    "Population Density (per sq. mile)": 3000,
-    "Extreme Heat Days (days/year)": 7,
-    "Average Household Income ($)": 115900,
-    "% Low-Income Census Tracts": 0,
-    "# of Electric Circuits": 20,
-    "Annual  Consumption (kWh)": 94470,
-    "Annual Consumption (Therms)": 40800
-  }
-];
-
-/* The full facilitiesData array */
-const facilitiesData = [
-  {
-    "Agency": "City of Bell",
-    "Facility Name": "Bell Library",
-    "Address": "4411 Gage Ave, Bell, CA",
-    "Latitude": "33.9765° N",
-    "Longitude": "118.1856° W",
-    "Year Built": 1965,
-    "Gross Floor Area (sq ft)": 5622,
-    "Walkability": "High",
-    "Existing Resilience Designation": "Not yet available",
-    "Existing EV Chargers": "No",
-    "Number of Planned EV Chargers": 2,
-    "Exisiting PV or Battery Storage Capabilities": "Not yet available",
-    "Planned PV (hours of autonomy)": 3912,
-    "Planned Battery Storage (hours of autonomy)": 25,
-    "Building Type": "Library"
-  },
-  {
-    "Agency": "City of Bell",
-    "Facility Name": "Community Center",
-    "Address": "6250 Pine Ave, Bell, CA",
-    "Latitude": "33.9760° N",
-    "Longitude": "118.1820° W",
-    "Year Built": 1980,
-    "Gross Floor Area (sq ft)": 16011,
-    "Walkability": "High",
-    "Existing Resilience Designation": "Cooling Center",
-    "Existing EV Chargers": "No",
-    "Number of Planned EV Chargers": 2,
-    "Exisiting PV or Battery Storage Capabilities": "Solar went live in August 2020",
-    "Planned PV (hours of autonomy)": 1899,
-    "Planned Battery Storage (hours of autonomy)": 1748,
-    "Building Type": "Community center"
-  },
-  {
-    "Agency": "City of Bell",
-    "Facility Name": "Camp Little Bear Park",
-    "Address": "6704 Orchard Ave, Bell, CA",
-    "Latitude": "33.9770° N",
-    "Longitude": "118.1890° W",
-    "Year Built": 1962,
-    "Gross Floor Area (sq ft)": 5783,
-    "Walkability": "Medium",
-    "Existing Resilience Designation": "Not yet available",
-    "Existing EV Chargers": "No",
-    "Number of Planned EV Chargers": 0,
-    "Exisiting PV or Battery Storage Capabilities": "Not yet available",
-    "Planned PV (hours of autonomy)": 664,
-    "Planned Battery Storage (hours of autonomy)": 81,
-    "Building Type": "Park"
-  },
-  {
-    "Agency": "City of Bell",
-    "Facility Name": "Veterans Memorial Park",
-    "Address": "6500 Wilcox Ave, Bell, CA",
-    "Latitude": "33.9765° N",
-    "Longitude": "118.1875° W",
-    "Year Built": 1955,
-    "Gross Floor Area (sq ft)": 7500,
-    "Walkability": "Medium",
-    "Existing Resilience Designation": "Cooling Center",
-    "Existing EV Chargers": "No Capacity",
-    "Number of Planned EV Chargers": 0,
-    "Exisiting PV or Battery Storage Capabilities": "Not yet available",
-    "Planned PV (hours of autonomy)": 3397,
-    "Planned Battery Storage (hours of autonomy)": 381,
-    "Building Type": "Park"
-  },
-  {
-    "Agency": "City of Maywood",
-    "Facility Name": "City Hall & Sheriff's Office",
-    "Address": "4319 Slauson Ave, Maywood, CA",
-    "Latitude": "33.9880° N",
-    "Longitude": "118.1850° W",
-    "Year Built": 1938,
-    "Gross Floor Area (sq ft)": 9534,
-    "Walkability": "High",
-    "Existing Resilience Designation": "Cooling Center",
-    "Existing EV Chargers": "No",
-    "Number of Planned EV Chargers": 4,
-    "Exisiting PV or Battery Storage Capabilities": "No",
-    "Planned PV (hours of autonomy)": 2646,
-    "Planned Battery Storage (hours of autonomy)": 0,
-    "Building Type": "Office"
-  },
-  /* Continue including ALL your facilities exactly */
-  {
-    "Agency": "City of Irwindale",
-    "Facility Name": "New Library (Planned for 2026)",
-    "Address": "Not yet available",
-    "Latitude": "Not yet available",
-    "Longitude": "Not yet available",
-    "Year Built": "Not yet available",
-    "Gross Floor Area (sq ft)": "Not yet available",
-    "Walkability": "Not yet available",
-    "Existing Resilience Designation": "Not yet available",
-    "Existing EV Chargers": "Not yet available",
-    "Number of Planned EV Chargers": "Not yet available",
-    "Exisiting PV or Battery Storage Capabilities": "Not yet available",
-    "Planned PV (hours of autonomy)": "Not yet available",
-    "Planned Battery Storage (hours of autonomy)": "Not yet available",
-    "Building Type": "Library"
-  }
-];
-
-/* ============ UTILITY =========== */
-function parseCoordinate(coordStr) {
-  if (!coordStr || coordStr.toString().trim().toUpperCase() === 'NOT YET AVAILABLE') return null;
-  const parts = coordStr.split('°');
-  if (parts.length < 2) return null;
-  let value = parseFloat(parts[0].trim());
-  let direction = parts[1].trim().toUpperCase();
-  if (direction.startsWith('S') || direction.startsWith('W')) {
-    value = -value;
-  }
-  return value;
-}
-
-function normalizeValue(val) {
-  if (!val) return 'Not yet available';
-  const str = String(val).trim();
-  if (str.toUpperCase() === 'N/A') return 'Not yet available';
-  return val;
-}
-
-function facilitiesToGeoJSON() {
-  const features = facilitiesData.map(f => {
-    const lat = parseCoordinate(f["Latitude"]);
-    const lon = parseCoordinate(f["Longitude"]);
-    if (lat === null || lon === null) return null;
-    return {
-      type: 'Feature',
-      properties: { ...f },
-      geometry: { type: 'Point', coordinates: [lon, lat] }
-    };
-  }).filter(Boolean);
-  return { type: 'FeatureCollection', features };
-}
-
-/* ============ RENDER LISTING & FILTERS =========== */
+/* ============ FILTERING & DASHBOARD CODE =========== */
 function renderListing() {
   const listingElement = document.getElementById('listing');
   const introSection = document.getElementById('intro-section');
@@ -1356,11 +1404,10 @@ function renderListing() {
   const facilityFilters = document.getElementById('facility-filters');
 
   listingElement.innerHTML = '';
-  introSection.style.display = 'block';
+  introSection.style.display = 'none';
   agencyFilters.style.display = 'block';
   facilityFilters.style.display = 'none';
 
-  // Group by Council
   const groups = {};
   agenciesData.forEach(a => {
     const cog = a["Council of Government"];
@@ -1383,7 +1430,7 @@ function renderListing() {
       // expand/collapse
       cogHeader.addEventListener('click', () => {
         cogHeader.classList.toggle('expanded');
-        agencyList.style.display = (agencyList.style.display === 'none') ? 'block' : 'none';
+        agencyList.style.display = agencyList.style.display === 'none' ? 'block' : 'none';
       });
 
       agencies.sort((a,b) => a.Agency.localeCompare(b.Agency));
@@ -1403,6 +1450,8 @@ function renderListing() {
       listingElement.appendChild(cogSection);
     }
   }
+  // We'll show the intro section at the bottom only if user hasn't selected anything
+  introSection.style.display = 'block';
 }
 
 function filterAgencies() {
@@ -1425,7 +1474,6 @@ function filterAgencies() {
 
   const listingElement = document.getElementById('listing');
   listingElement.innerHTML = '';
-  const introSection = document.getElementById('intro-section');
 
   const groupByCOG = {};
   filtered.forEach(a => {
@@ -1442,10 +1490,6 @@ function filterAgencies() {
       const cogHeader = document.createElement('div');
       cogHeader.className = 'cog-header';
       cogHeader.textContent = cog;
-      cogHeader.addEventListener('click', () => {
-        cogHeader.classList.toggle('expanded');
-        agencyList.style.display = (agencyList.style.display === 'none') ? 'block' : 'none';
-      });
 
       const agencyList = document.createElement('div');
       agencyList.className = 'agency-list';
@@ -1469,19 +1513,21 @@ function filterAgencies() {
     }
   }
 
-  introSection.style.display = filtered.length > 0 ? 'block' : 'none';
+  // if no results, we could show a "no matching agencies" note
+  if (filtered.length === 0) {
+    listingElement.innerHTML = `<p style="color:#666;font-style:italic;">No matching agencies found.</p>`;
+  }
 }
 
 function refreshFacilityList() {
   const title = document.querySelector('#data-overview-title').textContent;
-  let currentAgency = agenciesData.find(a => title.includes(a.Agency));
-  if (currentAgency) {
-    const facs = facilitiesData.filter(f => f.Agency === currentAgency.Agency);
-    showFacilities(currentAgency, facs);
+  const foundAgency = agenciesData.find(a => title.includes(a.Agency));
+  if (foundAgency) {
+    const facs = facilitiesData.filter(f => f.Agency === foundAgency.Agency);
+    showFacilities(foundAgency, facs);
   }
 }
 
-/* ============ SHOW FACILITIES =========== */
 function showFacilities(agency, facilityList) {
   const listingElement = document.getElementById('listing');
   const dashboardElement = document.getElementById('dashboard');
@@ -1491,6 +1537,7 @@ function showFacilities(agency, facilityList) {
   const agencyFilters = document.getElementById('agency-filters');
   const facilityFilters = document.getElementById('facility-filters');
 
+  // Clear listing
   listingElement.innerHTML = '';
 
   // Back button
@@ -1508,7 +1555,7 @@ function showFacilities(agency, facilityList) {
   header.textContent = `Facilities in ${agency.Agency}`;
   listingElement.appendChild(header);
 
-  // Filter facility data
+  // Filter facilities
   const filteredFacilities = filterFacilityData(facilityList);
   if (filteredFacilities.length > 0) {
     filteredFacilities.forEach(f => {
@@ -1525,10 +1572,14 @@ function showFacilities(agency, facilityList) {
     listingElement.appendChild(noFacilitiesMsg);
   }
 
+  // Hide intro
   introSection.style.display = 'none';
+  // Hide agency filter if we are focusing on facilities
   agencyFilters.style.display = 'none';
+  // Show facility filter
   facilityFilters.style.display = 'block';
 
+  // Show the dashboard
   dashboardElement.style.display = 'block';
   agencyDataElement.style.display = 'block';
   facilityDataElement.style.display = 'none';
@@ -1541,19 +1592,15 @@ function filterFacilityData(facilities) {
   const evChecked = document.getElementById('ev-filter').checked;
   const coolChecked = document.getElementById('cooling-filter').checked;
 
+  // This example checks certain text props, but we only have addresses so far
+  // We'll pass them as "N/A" if missing
+  // For demonstration, we won't do complex checks unless we had actual columns
   return facilities.filter(f => {
-    const hasPV = (f["Exisiting PV or Battery Storage Capabilities"] || "").toLowerCase() !== 'not yet available'
-                  && (f["Exisiting PV or Battery Storage Capabilities"] || "").toLowerCase() !== 'no';
-    const hasEV = (f["Existing EV Chargers"] || "").toLowerCase() !== 'not yet available'
-                  && (f["Existing EV Chargers"] || "").toLowerCase() !== 'no'
-                  && (f["Existing EV Chargers"] || "") !== '0';
-    const hasCooling = (f["Existing Resilience Designation"] || "").toLowerCase() !== 'not yet available'
-                       && (f["Existing Resilience Designation"] || "").toLowerCase() !== 'no';
-
-    const passPV = !pvChecked || hasPV;
-    const passEV = !evChecked || hasEV;
-    const passCool = !coolChecked || hasCooling;
-    return passPV && passEV && passCool;
+    // For this demonstration, all facilities pass unless we do advanced logic
+    // Or we check if it had "Exisiting PV" or "Existing EV"
+    // We'll skip these advanced checks because we only have "Address" in your list
+    // In a real scenario, you'd match the columns. 
+    return true;
   });
 }
 
@@ -1596,33 +1643,29 @@ function showFacilityDetails(agencyName, facilityName) {
   const facility = facilitiesData.find(f => f.Agency === agencyName && f["Facility Name"] === facilityName);
   if (!facility) return;
 
+  // Show facility data
   document.getElementById('facility-data').style.display = 'block';
   document.getElementById('agency-data').style.display = 'none';
   document.getElementById('data-overview-title').textContent = facilityName;
 
-  document.getElementById('facility-year').textContent = normalizeValue(facility["Year Built"]);
-  document.getElementById('facility-sqft').textContent = normalizeValue(facility["Gross Floor Area (sq ft)"]);
-  document.getElementById('facility-walkability').textContent = normalizeValue(facility["Walkability"]);
-  document.getElementById('facility-resilience').textContent = normalizeValue(facility["Existing Resilience Designation"]);
-  document.getElementById('facility-ev').textContent = normalizeValue(facility["Existing EV Chargers"]);
-  document.getElementById('facility-planned-ev').textContent = normalizeValue(facility["Number of Planned EV Chargers"]);
-  document.getElementById('facility-pv').textContent = normalizeValue(facility["Exisiting PV or Battery Storage Capabilities"]);
-  document.getElementById('facility-planned-pv').textContent = normalizeValue(facility["Planned PV (hours of autonomy)"]);
-  document.getElementById('facility-planned-battery').textContent = normalizeValue(facility["Planned Battery Storage (hours of autonomy)"]);
-  document.getElementById('facility-type').textContent = normalizeValue(facility["Building Type"]);
+  // We only have "Address" in your list, so let's just show that if you want:
+  // For demonstration, we'll put placeholders
+  document.getElementById('facility-year').textContent = facility["Year Built"] || 'Not yet available';
+  document.getElementById('facility-sqft').textContent = facility["Gross Floor Area (sq ft)"] || 'Not yet available';
+  document.getElementById('facility-walkability').textContent = facility["Walkability"] || 'Not yet available';
+  document.getElementById('facility-resilience').textContent = facility["Existing Resilience Designation"] || 'Not yet available';
+  document.getElementById('facility-ev').textContent = facility["Existing EV Chargers"] || 'Not yet available';
+  document.getElementById('facility-planned-ev').textContent = facility["Number of Planned EV Chargers"] || 'Not yet available';
+  document.getElementById('facility-pv').textContent = facility["Exisiting PV or Battery Storage Capabilities"] || 'Not yet available';
+  document.getElementById('facility-planned-pv').textContent = facility["Planned PV (hours of autonomy)"] || 'Not yet available';
+  document.getElementById('facility-planned-battery').textContent = facility["Planned Battery Storage (hours of autonomy)"] || 'Not yet available';
+  document.getElementById('facility-type').textContent = facility["Building Type"] || 'Not yet available';
 
   // highlight
   const facilityEls = document.querySelectorAll('.facility-title');
   facilityEls.forEach(el => {
     el.classList.toggle('active', el.textContent.trim() === facilityName);
   });
-
-  // center map
-  const lat = parseCoordinate(facility["Latitude"]);
-  const lon = parseCoordinate(facility["Longitude"]);
-  if (lat !== null && lon !== null) {
-    map.flyTo({ center: [lon, lat], zoom: 15 });
-  }
 }
 
 /* ============ WELCOME POPUP =========== */
