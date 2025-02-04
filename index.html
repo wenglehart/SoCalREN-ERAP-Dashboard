@@ -5,7 +5,7 @@
     <title>SoCalREN's ERAP Dashboard</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
 
-    <!-- Mapbox GL JS and Geocoder Plugin Versions -->
+    <!-- MAPBOX & FONTS -->
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
 
@@ -14,35 +14,37 @@
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.min.js"></script>
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.css" type="text/css">
 
+    <script src="https://unpkg.com/@mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+
     <style>
-        body {
+        html, body {
             margin: 0;
             padding: 0;
             font-family: 'Roboto', sans-serif;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-            background-color: #ffffff; /* White base */
+            height: 100%;
+            overflow: hidden; /* Hide scrollbars on body */
+            background-color: #ffffff; 
         }
 
-        /* ================= */
-        /*   Password Modal  */
-        /* ================= */
+        /* ============ Password Modal ============ */
         #password-modal {
             position: fixed;
+            z-index: 10000; 
             top: 0; 
             left: 0;
             width: 100vw; 
             height: 100vh; 
-            background-color: rgba(0,0,0,0.6);
             display: flex; 
             align-items: center; 
             justify-content: center;
-            z-index: 10001; /* above everything */
+
+            /* Blur the background behind the modal */
+            background-color: rgba(0,0,0,0.4);
+            backdrop-filter: blur(7px);
         }
         #password-modal-content {
-            background: #fff;
+            background: #ffffff;
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 2px 20px rgba(0,0,0,0.2);
@@ -53,6 +55,7 @@
         #password-modal-content h2 {
             font-family: 'Montserrat', sans-serif;
             margin-bottom: 20px;
+            color: #2c3e50;
         }
         #password-input {
             width: 100%;
@@ -63,8 +66,8 @@
             margin-bottom: 15px;
         }
         #password-submit {
-            background-color: #555;
-            color: #fff;
+            background: linear-gradient(to right, #374852, #2D3E4F);
+            color: #ffffff;
             font-family: 'Montserrat', sans-serif;
             border: none;
             padding: 10px 20px;
@@ -73,14 +76,14 @@
             cursor: pointer;
         }
         #password-submit:hover {
-            background-color: #333;
+            background: linear-gradient(to right, #4a5c6b, #2D3E4F);
         }
 
-        /* HEADER STYLES */
-        /* Darker, more professional than bright teal */
+        /* ============ Header ============ */
         header {
             width: 100%;
-            background-color: #2D3E4F; 
+            /* Subtle gradient for professional feel */
+            background: linear-gradient(to right, #2D3E4F, #202f3e);
             color: #ffffff;
             padding: 15px 30px;
             display: flex;
@@ -93,10 +96,12 @@
         .header-left {
             flex: 0 0 auto;
         }
-        .header-left h1 {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 20px;
-            margin: 0;
+        .header-left img {
+            transition: transform 0.3s ease;
+            height: 50px;
+        }
+        .header-left img:hover {
+            transform: scale(1.05);
         }
         .header-controls {
             display: flex;
@@ -110,13 +115,13 @@
         .geocoder-container {
             flex: 1;
             max-width: 400px;
-            min-width: 200px;
+            min-width: 220px;
         }
         .style-selector {
             display: flex;
             align-items: center;
             gap: 10px;
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(255,255,255,0.1);
             padding: 8px 12px;
             border-radius: 4px;
         }
@@ -127,32 +132,37 @@
         .style-selector select {
             background-color: transparent;
             color: #ecf0f1;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255,255,255,0.3);
             padding: 4px 8px;
             border-radius: 4px;
             font-size: 14px;
             cursor: pointer;
         }
         .style-selector select:hover {
-            border-color: rgba(255, 255, 255, 0.5);
+            border-color: rgba(255,255,255,0.5);
         }
-        .style-selector select option {
+        .style-selector option {
             background-color: #2D3E4F;
             color: #ecf0f1;
         }
+        .fullscreen-container {
+            margin-left: 10px;
+        }
         .mapboxgl-ctrl-geocoder {
-            box-shadow: none !important;
-            width: 100% !important;
-            max-width: none !important;
-            font-family: 'Montserrat', sans-serif !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
             border-radius: 4px;
+            font-family: 'Montserrat', sans-serif !important;
         }
         .mapboxgl-ctrl-geocoder--input {
             height: 36px !important;
             padding: 6px 35px !important;
+            font-family: 'Roboto', sans-serif !important;
+        }
+        .mapboxgl-ctrl-geocoder--suggestion {
+            font-family: 'Roboto', sans-serif !important;
         }
 
-        /* MAIN CONTAINER */
+        /* ============ Container Layout ============ */
         #container {
             flex: 1;
             display: flex;
@@ -167,7 +177,18 @@
             min-height: 400px;
             width: 100%;
         }
+        #loading-spinner {
+            position: fixed; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%);
+            font-size: 20px; 
+            color: #2c3e50; 
+            z-index: 999;
+            display: none;
+        }
 
+        /* Side Panel Overlay */
         .map-overlay {
             position: relative;
             flex: 1;
@@ -175,12 +196,14 @@
             background: linear-gradient(to bottom, #fff, #f8f9fa);
             border-left: 1px solid rgba(0,0,0,0.1);
             padding: 25px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             transition: transform 0.3s ease;
         }
+
+        /* ============ Dashboard & Listing ============ */
         fieldset {
             background: #f0f0f0;
             border: none;
@@ -188,66 +211,18 @@
             border-radius: 5px;
             margin-bottom: 10px;
         }
-        input[type="text"], input[type="number"], input[type="range"] {
+        input[type="text"], input[type="number"] {
             border: 1px solid #ccc;
-            width: 100%;
             border-radius: 5px;
             padding: 8px;
             box-sizing: border-box;
             margin-bottom: 10px;
             font-size: 14px;
+            width: 100%;
         }
-
-        /* FILTER AND LISTING STYLES */
-        #agency-filter {
-            position: relative;
-        }
-        #agency-suggestions {
-            position: absolute;
-            background: #fff;
-            border: 1px solid #ccc;
-            width: calc(100% - 16px);
-            margin: 0;
-            padding: 0;
-            list-style: none;
-            max-height: 150px;
-            overflow-y: auto;
-            z-index: 9999;
-        }
-        #agency-suggestions li {
-            padding: 8px;
-            cursor: pointer;
-        }
-        #agency-suggestions li:hover {
-            background: #e0f7fa;
-            color: #00796b;
-        }
-        .listing {
-            flex: 1;
-            overflow-y: auto;
-            margin-bottom: 10px;
-        }
-        .listing a {
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            color: #404;
-            text-decoration: none;
-            display: block;
-            padding: 10px;
-            border-radius: 5px;
-            transition: background-color 0.2s ease;
-            font-size: 14px;
-        }
-        .listing a:hover {
-            background: #e0f7fa;
-            color: #00796b;
-        }
-
         #listing {
-            position: relative;
-            height: auto;
-            min-height: 200px;
-            max-height: none;
-            overflow-y: visible;
+            max-height: 400px;
+            overflow-y: auto;
             padding: 10px;
             margin-top: 10px;
         }
@@ -261,107 +236,26 @@
             border-bottom: 2px solid #ecf0f1;
             font-weight: bold;
         }
-        .filters {
-            margin-bottom: 10px;
-            background: #f0f0f0;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 12px;
-        }
-        .filters label {
-            display: flex;
-            align-items: center;
-            margin-bottom: 5px;
-        }
-        .filters input[type=checkbox] {
-            margin-right: 5px;
-        }
-        .filters select {
-            width: 100%;
-            margin-bottom: 10px;
-            font-size: 12px;
-            padding: 5px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        /* DASHBOARD */
-        .dashboard {
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            padding: 30px;
-            font-size: 14px;
-            margin-top: 20px;
-            height: auto;
-            overflow-y: visible;
-        }
-        .dashboard::-webkit-scrollbar {
-            width: 8px;
-        }
-        .dashboard::-webkit-scrollbar-track {
-            background: #f5f6fa;
-            border-radius: 4px;
-        }
-        .dashboard::-webkit-scrollbar-thumb {
-            background: #bdc3c7;
-            border-radius: 4px;
-        }
-        .dashboard h3 {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 20px;
-            margin-top: 0;
-            padding-bottom: 15px;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #ecf0f1;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-        .dashboard h4 {
-            margin-top: 30px;
-            margin-bottom: 20px;
-            font-size: 16px;
-            color: #34495e;
-        }
-        .metric {
-            margin-bottom: 20px;
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .metric .metric-label {
-            margin-right: 15px;
-        }
-        #agency-data, #facility-data {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #ecf0f1;
-        }
-        #back-button {
-            background-color: #2D3E4F;
-            color: white;
-            border: none;
-            padding: 8px 16px;
+        .facility-title {
+            display: block;
+            padding: 12px;
+            margin: 8px 0;
+            background: #f8f9fa;
             border-radius: 4px;
             cursor: pointer;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 15px;
             transition: background-color 0.2s ease;
+            color: #2c3e50;
+            text-decoration: none;
+            border: 1px solid #e9ecef;
         }
-        #back-button:hover {
-            background-color: #4a5c6b;
+        .facility-title:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
         }
-        #back-button::before {
-            content: "←";
-            font-size: 16px;
+        .facility-title.active {
+            background: #fff3e0;
+            border-left: 3px solid #F05A28;
+            transform: translateX(5px);
         }
         .cog-section {
             margin-bottom: 10px;
@@ -416,28 +310,6 @@
             color: #00796b;
             transform: translateX(5px);
         }
-        .facility-title {
-            display: block;
-            padding: 12px;
-            margin: 8px 0;
-            background: #f8f9fa;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-            color: #2c3e50;
-            text-decoration: none;
-            border: 1px solid #e9ecef;
-        }
-        .facility-title:hover {
-            background: #e9ecef;
-            transform: translateX(5px);
-        }
-        #listing {
-            max-height: 400px;
-            overflow-y: auto;
-            padding: 10px;
-            margin-top: 10px;
-        }
         #no-facilities-msg {
             padding: 10px;
             color: #666;
@@ -446,35 +318,110 @@
             border-radius: 4px;
             margin: 10px 0;
         }
-        .style-overlay {
-            background-color: #2D3E4F;
+
+        /* Filters */
+        .filters {
+            margin-bottom: 10px;
+            background: #f0f0f0;
             padding: 10px;
             border-radius: 5px;
             font-size: 12px;
-            color: #ecf0f1;
-            margin-right: 10px;
         }
-        .style-overlay label {
-            display: block;
+        .filters label {
+            display: flex;
+            align-items: center;
             margin-bottom: 5px;
-            font-weight: normal;
         }
-        .style-overlay select {
-            width: 100%;
-            padding: 5px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            color: #000;
+        .filters input[type=checkbox] {
+            margin-right: 5px;
         }
 
-        /* WELCOME POPUP */
+        /* ============ Dashboard ============ */
+        .dashboard {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 30px;
+            font-size: 14px;
+            margin-top: 20px;
+            height: auto;
+            overflow-y: visible;
+            transition: transform 0.3s ease;
+        }
+        .dashboard:hover {
+            transform: translateY(-2px);
+        }
+        .dashboard h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 20px;
+            margin-top: 0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #ecf0f1;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .dashboard h4 {
+            margin-top: 30px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: #34495e;
+        }
+        .metric {
+            margin-bottom: 20px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .metric .metric-label {
+            margin-right: 15px;
+            flex: 0 0 auto;
+        }
+        .metric .metric-value {
+            flex: 1;
+            text-align: right;
+        }
+
+        #agency-data, #facility-data {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ecf0f1;
+        }
+        #back-button {
+            background-color: #2D3E4F;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            transition: background-color 0.2s ease;
+        }
+        #back-button:hover {
+            background-color: #455463;
+        }
+        #back-button::before {
+            content: "←";
+            font-size: 16px;
+        }
+
+        /* ============ Welcome Popup ============ */
         #welcome-popup {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-color: rgba(44, 62, 80, 0.90);
+            background-color: rgba(44,62,80,0.90);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -486,7 +433,7 @@
             opacity: 0;
             pointer-events: none;
         }
-        #welcome-popup .welcome-content {
+        .welcome-content {
             background: white;
             padding: 60px 70px;
             border-radius: 16px;
@@ -517,14 +464,10 @@
             border-bottom: 2px solid #ecf0f1;
             padding-bottom: 20px;
         }
-        #welcome-popup h1 .title-line {
-            display: block;
-            margin-bottom: 5px;
-        }
         #welcome-popup h2 {
             font-family: 'Nunito', sans-serif;
             font-size: 22px;
-            color: #F05A28; 
+            color: #F05A28;
             margin: 30px 0 25px;
             font-weight: 600;
             line-height: 1.4;
@@ -560,31 +503,10 @@
         #welcome-popup button:hover {
             background-color: #455463;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        #welcome-popup button:active {
-            transform: translateY(0);
-        }
-        @media (max-width: 768px) {
-            #welcome-popup .welcome-content {
-                padding: 40px;
-                width: 85%;
-            }
-            #welcome-popup h1 {
-                font-size: 28px;
-            }
-            #welcome-popup h2 {
-                font-size: 20px;
-            }
-            #welcome-popup p {
-                font-size: 16px;
-            }
-            #welcome-popup button {
-                padding: 14px 35px;
-                font-size: 16px;
-            }
-        }
-        /* RESPONSIVE */
+
+        /* Responsive Adjustments */
         @media (max-width: 768px) {
             #container {
                 flex-direction: column;
@@ -597,205 +519,70 @@
                 position: relative;
                 transform: none !important;
             }
-        }
-        #intro-section {
-            margin-top: 20px;
-            background: #f0f0f0;
-            padding: 15px;
-            border-radius: 8px;
-            display: none;
-        }
-        #intro-section h4 {
-            margin: 0 0 10px 0;
-            font-size: 16px;
-            font-family: 'Montserrat', sans-serif;
-            color: #2c3e50;
-        }
-        #intro-section p {
-            margin: 0 0 15px 0;
-            font-size: 14px;
-            line-height: 1.6;
-            color: #34495e;
-        }
-        #intro-section ul {
-            list-style: inside square;
-            margin: 0 0 15px 0;
-            padding: 0;
-        }
-        #intro-section li {
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: #34495e;
+            .header-controls {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            .welcome-content {
+                padding: 40px;
+                width: 85%;
+            }
         }
 
-        /* FACILITY POPUPS */
-        .facility-popup .mapboxgl-popup-content {
-            background-color: rgba(255, 255, 255, 0.95);
+        /* Boundary Popup styling */
+        .boundary-popup .mapboxgl-popup-content {
+            background-color: rgba(255,255,255,0.95);
             border-radius: 6px;
             padding: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        .boundary-popup .mapboxgl-popup-tip {
+            border-top-color: rgba(255,255,255,0.95);
+        }
+        .facility-popup .mapboxgl-popup-content {
+            background-color: rgba(255,255,255,0.95);
+            border-radius: 6px;
+            padding: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             font-family: 'Montserrat', sans-serif;
             font-size: 13px;
             line-height: 1.4;
         }
         .facility-popup .mapboxgl-popup-tip {
-            border-top-color: rgba(255, 255, 255, 0.95);
+            border-top-color: rgba(255,255,255,0.95);
         }
-        .facility-title.active {
-            background: #fff3e0;
-            border-left: 3px solid #F05A28; 
-            transform: translateX(5px);
-        }
-        .mapboxgl-ctrl-geocoder {
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
-            font-family: 'Montserrat', sans-serif !important;
-        }
-        .mapboxgl-ctrl-geocoder--input {
-            font-family: 'Roboto', sans-serif !important;
-        }
-        .mapboxgl-ctrl-geocoder--suggestion {
-            font-family: 'Roboto', sans-serif !important;
-        }
-        .fullscreen-container {
-            margin-left: 10px;
-        }
-        .mapboxgl-ctrl-fullscreen {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-        }
-        .mapboxgl-ctrl-fullscreen:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-        #populationChartContainer {
-            height: 300px;
-            margin-bottom: 20px;
-            padding: 10px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        #populationChart {
-            width: 100%;
-            height: 100%;
-        }
-        .mapboxgl-map.mapboxgl-fullscreen {
-            height: 100vh !important;
-        }
-        #container.mapboxgl-fullscreen {
-            height: 100vh !important;
-            width: 100vw !important;
-        }
-        .header-left img {
-            transition: transform 0.3s ease;
-        }
-        .header-left img:hover {
-            transform: scale(1.05);
-        }
-        .map-overlay {
-            background: linear-gradient(to bottom, #fff, #f8f9fa);
-            border-left: 1px solid rgba(0,0,0,0.1);
-            padding: 25px;
-        }
-        .dashboard {
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            transition: transform 0.3s ease;
-        }
-        .dashboard:hover {
-            transform: translateY(-2px);
-        }
-        .facility-title {
-            transition: all 0.3s ease;
-            border-left: 3px solid transparent;
-        }
-        .facility-title:hover {
-            background: linear-gradient(to right, #e3f2fd, transparent);
-            border-left-color: #2196f3;
-        }
+
         .mapboxgl-popup {
             animation: fadeIn 0.3s ease;
         }
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @media (max-width: 768px) {
-            .header-controls {
-                flex-wrap: wrap;
-                gap: 10px;
-            }
-            .map-overlay {
-                height: 50vh;
-                overflow-y: auto;
-            }
+            from {opacity: 0;} to {opacity: 1;}
         }
         :focus {
             outline: 2px solid #2196f3;
             outline-offset: 2px;
         }
-        [role="button"] {
-            cursor: pointer;
-        }
-        .search-box {
-            background: #fff;
-            border: 1px solid rgba(0,0,0,0.1);
-            border-radius: 8px;
-            padding: 12px 16px;
-            width: 100%;
-            transition: all 0.3s ease;
-        }
-        .search-box:focus {
-            border-color: #2196f3;
-            box-shadow: 0 0 0 3px rgba(33,150,243,0.1);
-        }
-        .population-filter {
-            margin-top: 15px;
-        }
-        .population-filter label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: #2c3e50;
-        }
-        .population-inputs {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .population-input {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-            width: calc(50% - 15px);
-        }
-        .population-inputs span {
-            color: #666;
-            font-size: 14px;
-        }
-        .population-input:focus {
-            border-color: #2196f3;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(33,150,243,0.1);
-        }
     </style>
 </head>
 <body>
 
-<!-- PASSWORD GATE MODAL -->
+<!-- ============ PASSWORD MODAL ============ -->
 <div id="password-modal">
     <div id="password-modal-content">
-        <h2>Please Enter Password</h2>
-        <input type="password" id="password-input" placeholder="Password">
+        <h2>To access the dashboard, please enter your provided access code</h2>
+        <input type="password" id="password-input" placeholder="Access Code">
         <button id="password-submit">Submit</button>
     </div>
 </div>
 
+<!-- ============ HEADER ============ -->
 <header>
     <div class="header-left">
         <a href="https://socalren.org/" target="_blank">
-            <img src="images/socalren_erapdashboard.png" alt="SoCalREN ERAP Logo" style="height: 50px;">
+            <img src="images/socalren_erapdashboard.png" alt="SoCalREN ERAP Logo">
         </a>
     </div>
     <div class="header-controls">
@@ -814,12 +601,13 @@
         <div class="fullscreen-container" id="fullscreen-control"></div>
     </div>
 </header>
+
+<!-- ============ MAIN CONTAINER ============ -->
 <div id="container">
     <div id="map"></div>
     <div class="map-overlay" id="dashboard-panel">
         <fieldset>
             <input id="agency-filter" type="text" placeholder="Search for an agency">
-            <ul id="agency-suggestions" style="display:none;"></ul>
         </fieldset>
 
         <fieldset class="filters" id="agency-filters">
@@ -835,18 +623,10 @@
             
             <div class="population-filter">
                 <label for="population-min">Population Range:</label>
-                <div class="population-inputs">
-                    <input type="number" 
-                           id="population-min" 
-                           placeholder="Min Population" 
-                           min="0" 
-                           class="population-input">
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="number" id="population-min" placeholder="Min Population" min="0" style="flex:1;">
                     <span>to</span>
-                    <input type="number" 
-                           id="population-max" 
-                           placeholder="Max Population" 
-                           min="0" 
-                           class="population-input">
+                    <input type="number" id="population-max" placeholder="Max Population" min="0" style="flex:1;">
                 </div>
             </div>
         </fieldset>
@@ -867,9 +647,10 @@
             </label>
         </fieldset>
 
-        <div id="listing" class="listing"></div>
+        <div id="listing"></div>
 
-        <div id="intro-section">
+        <!-- INTRO SECTION -->
+        <div id="intro-section" style="display:none;">
             <h4>Welcome to SoCalREN's ERAP Dashboard</h4>
             <p>
                 This dashboard provides insights into public agencies' energy resilience planning efforts across Southern California that have received support from the SoCalREN Public Agency Programs. Use the filters above to find agencies by name, select a council of governments, or set population thresholds. Click on an agency name to view detailed metrics and access facility information.
@@ -892,9 +673,11 @@
             <p><em>This dashboard is a living tool designed to evolve and improve as we progress through the program. We welcome any feedback you may have, as it will help shape future versions.</em></p>
         </div>
 
+        <!-- DASHBOARD CONTENT -->
         <div class="dashboard" id="dashboard" style="display: none;">
             <h3 id="data-overview-title">Data Overview</h3>
         
+            <!-- AGENCY DATA -->
             <div id="agency-data" style="display:none; margin-top:20px;">
                 <h4>Agency-Level Data</h4>
                 <div class="metric">
@@ -950,7 +733,8 @@
                     <span class="metric-value" id="agency-therms">Not yet available</span>
                 </div>
             </div>
-        
+
+            <!-- FACILITY DATA -->
             <div id="facility-data" style="display:none; margin-top:20px;">
                 <h4>Facility-Level Data</h4>
                 <div class="metric">
@@ -996,81 +780,53 @@
             </div>
         </div>
     </div>
-
-    <div id="welcome-popup">
-        <div class="welcome-content">
-            <img src="images/SoCalREN_Logo_2017_PRIMARY.png" alt="SoCalREN Logo" style="width: 500px; margin-bottom: 20px;">
-            <h1>
-                <span class="title-line">Welcome to Southern California Regional Energy Network (SoCalREN)'s</span>
-                <span class="title-line">Energy Resilience Action Plan (ERAP) Dashboard</span>
-            </h1>
-            <h2>Explore energy resilience planning efforts across Southern California</h2>
-            <p>This interactive dashboard provides comprehensive information about facilities and agencies participating in SoCalREN's ERAP program. Use the map to explore geographical data, or search for specific details.</p>
-            <button onclick="closeWelcome()">Enter Dashboard</button>
-        </div>
-    </div>
-
 </div>
 
-<div id="loading-spinner" style="display: flex; justify-content: center; align-items: center; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 20px; color: #2c3e50; z-index: 999;">
+<!-- WELCOME POPUP -->
+<div id="welcome-popup">
+    <div class="welcome-content">
+        <img src="images/SoCalREN_Logo_2017_PRIMARY.png" alt="SoCalREN Logo" style="width: 500px; margin-bottom: 20px;">
+        <h1>
+            <span class="title-line">Welcome to Southern California Regional Energy Network (SoCalREN)'s</span>
+            <span class="title-line">Energy Resilience Action Plan (ERAP) Dashboard</span>
+        </h1>
+        <h2>Explore energy resilience planning efforts across Southern California</h2>
+        <p>This interactive dashboard provides comprehensive information about facilities and agencies participating in SoCalREN's ERAP program. Use the map to explore geographical data, or search for specific details.</p>
+        <button onclick="closeWelcome()">Enter Dashboard</button>
+    </div>
+</div>
+
+<div id="loading-spinner">
     <i class="fas fa-spinner fa-spin"></i> Loading...
 </div>
 
-<!-- Include external scripts -->
-<script src="https://unpkg.com/@mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
-
 <script>
-// ============
-// PASSWORD GATE
-// ============
+/* =================================
+   1) PASSWORD PROMPT LOGIC
+================================== */
 const passwordModal = document.getElementById('password-modal');
 const passwordInput = document.getElementById('password-input');
 const passwordSubmit = document.getElementById('password-submit');
 
-// Show password modal on load
+// Show password modal on DOM load
 document.addEventListener('DOMContentLoaded', () => {
     passwordModal.style.display = 'flex';
 });
 
 passwordSubmit.addEventListener('click', () => {
     if (passwordInput.value === 'SoCalREN2025') {
-        // Correct password => hide modal, show welcome popup
+        // Correct code => hide modal
         passwordModal.style.display = 'none';
+        initMap(); // Initialize the map only after correct password
     } else {
         // Wrong => reload
         location.reload();
     }
 });
 
-// ============
-// MAP AND DATA
-// ============
-
-// Hard-coded AGENCIES data
-const agenciesData = [
-    /* Same as before, omitted for brevity; 
-       insert your final agencies data array here exactly 
-       (or the version from the prior code) */
-];
-
-// Hard-coded FACILITIES data
-const facilitiesData = [
-    /* Same as before, omitted for brevity; 
-       insert your final facilities data array here 
-       (or from the prior code) */
-];
-
-function normalizeValue(value) {
-    if (!value) return "Not yet available";
-    const valStr = String(value).trim();
-    if (valStr.toUpperCase() === "N/A") {
-        return "Not yet available";
-    }
-    return value;
-}
-
-// Mapbox
+/* =================================
+   2) MAPBOX SETUP
+================================== */
 mapboxgl.accessToken = 'pk.eyJ1Ijoid2VuZ2xlMSIsImEiOiJjbHBtaWx0N2IwMGljMmxwNjBsMnU4a2E4In0.Dzf3G-WBKzDfgnXsGHiMXw';
 let map;
 
@@ -1081,123 +837,53 @@ function initMap() {
         center: [-118.2437, 34.0522],
         zoom: 10,
         pitch: 35,
-        maxBounds: [[-119.5, 33.2], [-117.0, 34.8]]
+        maxBounds: [[-119.5, 33.2], [-117.0, 34.8]] 
     });
-
-    map.addControl(new mapboxgl.FullscreenControl({
-        container: document.querySelector('#container')
-    }), 'top-right');
-
+    map.addControl(new mapboxgl.FullscreenControl({ container: document.querySelector('#container') }), 'top-right');
     map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-    // We'll load boundaries & facilities in "map.on('load')" + also handle style changes
+    // Add geocoder
+    const geocoder = new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        mapboxgl: mapboxgl,
+        placeholder: 'Search for a location',
+        bbox: [-119.5, 33.2, -117.0, 34.8],
+        proximity: { longitude: -118.2437, latitude: 34.0522 }
+    });
+    document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+
     map.on('load', () => {
-        addLayersAndSources();
+        // Show loading spinner until everything is set
+        document.getElementById('loading-spinner').style.display = 'block';
+
+        loadBoundariesAndFacilities();
+
+        // Hide spinner
         document.getElementById('loading-spinner').style.display = 'none';
     });
 
-    map.on('styledata', () => {
-        // Re-check if sources/layers exist. If not, re-add them.
-        if (!map.getSource('la-boundaries') || !map.getSource('facilities')) {
-            addLayersAndSources();
-        }
+    // If user changes style => re-add layers
+    map.on('style.load', () => {
+        loadBoundariesAndFacilities();
     });
 }
 
-function addLayersAndSources() {
-    // 1) Add LA boundaries
-    fetch('data/la_boundaries.geojson')
-        .then(resp => resp.json())
-        .then(geojson => {
-            if (!map.getSource('la-boundaries')) {
-                map.addSource('la-boundaries', {
-                    type: 'geojson',
-                    data: geojson
-                });
-            }
-            // Remove old layers if they exist
-            if (map.getLayer('la-boundaries-extrusion')) {
-                map.removeLayer('la-boundaries-extrusion');
-            }
+function loadBoundariesAndFacilities() {
+    // 1) Boundaries
+    if (!map.getSource('la-boundaries')) {
+        fetch('data/la_boundaries.geojson')
+            .then(resp => resp.json())
+            .then(geojson => {
+                map.addSource('la-boundaries', { type: 'geojson', data: geojson });
+                addBoundaryLayer();
+            })
+            .catch(err => console.error('Error loading boundaries:', err));
+    } else {
+        // If it exists but style changed, re-add layer
+        addBoundaryLayer();
+    }
 
-            // 3D fill-extrusion for boundaries
-            map.addLayer({
-                id: 'la-boundaries-extrusion',
-                type: 'fill-extrusion',
-                source: 'la-boundaries',
-                paint: {
-                    'fill-extrusion-color': [
-                        'case',
-                        ['boolean', ['feature-state', 'hover'], false],
-                        '#78B84B', // highlight green
-                        '#9A5CA7'  // default purple
-                    ],
-                    'fill-extrusion-height': 500,  // static height for 3D effect
-                    'fill-extrusion-base': 0,
-                    'fill-extrusion-opacity': 0.4
-                }
-            });
-
-            // Hover/click logic
-            let hoveredId = null;
-            map.on('mousemove', 'la-boundaries-extrusion', e => {
-                map.getCanvas().style.cursor = 'pointer';
-                if (e.features.length > 0) {
-                    if (hoveredId) {
-                        map.setFeatureState({ source: 'la-boundaries', id: hoveredId }, { hover: false });
-                    }
-                    hoveredId = e.features[0].id;
-                    map.setFeatureState({ source: 'la-boundaries', id: hoveredId }, { hover: true });
-
-                    // Show a stylized popup
-                    const props = e.features[0].properties;
-                    const cityName = props.CITY_COMM_NAME || 'Not yet available';
-                    boundaryHoverPopup
-                        .setLngLat(e.lngLat)
-                        .setHTML(`<div style="font-family: 'Montserrat'; font-size:13px;">
-                                    <strong>${cityName}</strong>
-                                 </div>`)
-                        .addTo(map);
-                }
-            });
-            map.on('mouseleave', 'la-boundaries-extrusion', () => {
-                map.getCanvas().style.cursor = '';
-                if (hoveredId) {
-                    map.setFeatureState({ source: 'la-boundaries', id: hoveredId }, { hover: false });
-                }
-                hoveredId = null;
-                boundaryHoverPopup.remove();
-            });
-            map.on('click', 'la-boundaries-extrusion', e => {
-                if (!e.features.length) return;
-                const props = e.features[0].properties;
-                const cityName = props.CITY_COMM_NAME;
-                // Attempt to match cityName to one of our agencies
-                if (cityName) {
-                    // In some boundary data, cityName might be "City of X"
-                    // We'll try a direct match first
-                    let matchedAgency = agenciesData.find(a => a.Agency.toLowerCase() === cityName.toLowerCase());
-                    // If not found, attempt partial match e.g. "City of Bell Gardens" => "City of Bell Gardens"
-                    if (!matchedAgency) {
-                        matchedAgency = agenciesData.find(a => {
-                            // e.g. boundary says "City of El Segundo", CSV has "City of El Segundo"
-                            return cityName.toLowerCase().includes(a.Agency.toLowerCase());
-                        });
-                    }
-                    if (matchedAgency) {
-                        const facs = facilitiesData.filter(f => f.Agency === matchedAgency.Agency);
-                        showFacilities(matchedAgency, facs);
-                        document.getElementById('dashboard-panel').scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                }
-            });
-        })
-        .catch(err => console.error('Error loading boundaries:', err));
-
-    // 2) Add Facilities
+    // 2) Facilities
     if (!map.getSource('facilities')) {
         const facilityGeoJSON = facilitiesToGeoJSON();
         map.addSource('facilities', {
@@ -1207,79 +893,214 @@ function addLayersAndSources() {
             clusterMaxZoom: 14,
             clusterRadius: 50
         });
-    }
-
-    // Layers for facilities
-    if (!map.getLayer('clusters')) {
-        map.addLayer({
-            id: 'clusters',
-            type: 'circle',
-            source: 'facilities',
-            filter: ['has', 'point_count'],
-            paint: {
-                'circle-radius': [
-                    'step',
-                    ['get', 'point_count'],
-                    25,
-                    10,
-                    30,
-                    25,
-                    35
-                ],
-                'circle-color': [
-                    'step',
-                    ['get', 'point_count'],
-                    '#F37B43',  // orange
-                    10,
-                    '#F05A28',  // reddish-orange
-                    25,
-                    '#9A5CA7'   // purple
-                ],
-                'circle-opacity': 0.9,
-                'circle-stroke-width': 2,
-                'circle-stroke-color': '#ffffff',
-                'circle-stroke-opacity': 0.8
-            }
-        });
-    }
-    if (!map.getLayer('cluster-count')) {
-        map.addLayer({
-            id: 'cluster-count',
-            type: 'symbol',
-            source: 'facilities',
-            filter: ['has', 'point_count'],
-            layout: {
-                'text-field': '{point_count_abbreviated}',
-                'text-font': ['DIN Offc Pro Bold', 'Arial Unicode MS Bold'],
-                'text-size': 16,
-                'text-allow-overlap': true
-            },
-            paint: {
-                'text-color': '#ffffff',
-                'text-halo-color': 'rgba(0, 0, 0, 0.2)',
-                'text-halo-width': 1
-            }
-        });
-    }
-    if (!map.getLayer('unclustered-point')) {
-        map.addLayer({
-            id: 'unclustered-point',
-            type: 'circle',
-            source: 'facilities',
-            filter: ['!', ['has', 'point_count']],
-            paint: {
-                'circle-color': '#F37B43',
-                'circle-radius': 8,
-                'circle-stroke-width': 2,
-                'circle-stroke-color': '#ffffff',
-                'circle-opacity': 0.9,
-                'circle-stroke-opacity': 0.8
-            }
-        });
+        addFacilityLayers();
+    } else {
+        addFacilityLayers();
     }
 }
 
-// Convert lat/long from strings
+function addBoundaryLayer() {
+    // remove old boundary layers if any
+    if (map.getLayer('la-boundaries-extrusion')) {
+        map.removeLayer('la-boundaries-extrusion');
+    }
+    map.addLayer({
+        id: 'la-boundaries-extrusion',
+        type: 'fill-extrusion',
+        source: 'la-boundaries',
+        paint: {
+            'fill-extrusion-color': [
+                'case',
+                ['boolean', ['feature-state', 'hover'], false],
+                '#78B84B',
+                '#9A5CA7'
+            ],
+            'fill-extrusion-height': 500,
+            'fill-extrusion-base': 0,
+            'fill-extrusion-opacity': 0.4
+        }
+    });
+
+    let hoveredId = null;
+    map.on('mousemove', 'la-boundaries-extrusion', e => {
+        map.getCanvas().style.cursor = 'pointer';
+        if (e.features.length > 0) {
+            if (hoveredId) {
+                map.setFeatureState({ source: 'la-boundaries', id: hoveredId }, { hover: false });
+            }
+            hoveredId = e.features[0].id;
+            map.setFeatureState({ source: 'la-boundaries', id: hoveredId }, { hover: true });
+
+            const props = e.features[0].properties;
+            boundaryHoverPopup
+                .setLngLat(e.lngLat)
+                .setHTML(`<div><strong>${props.CITY_COMM_NAME || 'Not yet available'}</strong></div>`)
+                .addTo(map);
+        }
+    });
+    map.on('mouseleave', 'la-boundaries-extrusion', () => {
+        map.getCanvas().style.cursor = '';
+        if (hoveredId) {
+            map.setFeatureState({ source: 'la-boundaries', id: hoveredId }, { hover: false });
+        }
+        hoveredId = null;
+        boundaryHoverPopup.remove();
+    });
+    map.on('click', 'la-boundaries-extrusion', e => {
+        if (!e.features.length) return;
+        const cityName = e.features[0].properties.CITY_COMM_NAME;
+        if (cityName) {
+            let matchedAgency = agenciesData.find(a => a.Agency.toLowerCase() === cityName.toLowerCase());
+            if (!matchedAgency) {
+                matchedAgency = agenciesData.find(a => cityName.toLowerCase().includes(a.Agency.toLowerCase()));
+            }
+            if (matchedAgency) {
+                const facs = facilitiesData.filter(f => f.Agency === matchedAgency.Agency);
+                showFacilities(matchedAgency, facs);
+                document.getElementById('dashboard-panel').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    });
+}
+
+function addFacilityLayers() {
+    // remove any old layers
+    ['clusters', 'cluster-count', 'unclustered-point'].forEach(id => {
+        if (map.getLayer(id)) {
+            map.removeLayer(id);
+        }
+    });
+
+    // Add the cluster circle
+    map.addLayer({
+        id: 'clusters',
+        type: 'circle',
+        source: 'facilities',
+        filter: ['has', 'point_count'],
+        paint: {
+            'circle-radius': [
+                'step', ['get', 'point_count'],
+                25, 10,
+                30, 25,
+                35
+            ],
+            'circle-color': [
+                'step', ['get', 'point_count'],
+                '#F37B43', 10,
+                '#F05A28', 25,
+                '#9A5CA7'
+            ],
+            'circle-opacity': 0.9,
+            'circle-stroke-width': 2,
+            'circle-stroke-color': '#ffffff',
+            'circle-stroke-opacity': 0.8
+        }
+    });
+
+    // Add cluster text
+    map.addLayer({
+        id: 'cluster-count',
+        type: 'symbol',
+        source: 'facilities',
+        filter: ['has', 'point_count'],
+        layout: {
+            'text-field': '{point_count_abbreviated}',
+            'text-font': ['DIN Offc Pro Bold', 'Arial Unicode MS Bold'],
+            'text-size': 16,
+            'text-allow-overlap': true
+        },
+        paint: {
+            'text-color': '#ffffff',
+            'text-halo-color': 'rgba(0,0,0,0.2)',
+            'text-halo-width': 1
+        }
+    });
+
+    // unclustered points
+    map.addLayer({
+        id: 'unclustered-point',
+        type: 'circle',
+        source: 'facilities',
+        filter: ['!', ['has', 'point_count']],
+        paint: {
+            'circle-color': '#F37B43',
+            'circle-radius': 8,
+            'circle-stroke-width': 2,
+            'circle-stroke-color': '#ffffff',
+            'circle-opacity': 0.9,
+            'circle-stroke-opacity': 0.8
+        }
+    });
+
+    // cluster click => zoom
+    map.on('click', 'clusters', e => {
+        const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+        if (!features.length) return;
+        const clusterId = features[0].properties.cluster_id;
+        map.getSource('facilities').getClusterExpansionZoom(clusterId, (err, zoom) => {
+            if (err) return;
+            map.easeTo({ center: features[0].geometry.coordinates, zoom });
+        });
+    });
+
+    // facility hover popup
+    map.on('mouseenter', 'unclustered-point', e => {
+        map.getCanvas().style.cursor = 'pointer';
+        const props = e.features[0].properties;
+        const desc = `
+            <strong>${normalizeValue(props["Facility Name"])}</strong><br>
+            Building Type: ${normalizeValue(props["Building Type"])}<br>
+            EV: ${normalizeValue(props["Existing EV Chargers"])}<br>
+            PV: ${normalizeValue(props["Exisiting PV or Battery Storage Capabilities"])}
+        `;
+        facilityHoverPopup.setLngLat(e.lngLat).setHTML(desc).addTo(map);
+    });
+    map.on('mouseleave', 'unclustered-point', () => {
+        map.getCanvas().style.cursor = '';
+        facilityHoverPopup.remove();
+    });
+
+    // unclustered point click => show facility details
+    map.on('click', 'unclustered-point', e => {
+        const props = e.features[0].properties;
+        const matchedAgency = agenciesData.find(a => a.Agency === props["Agency"]);
+        if (matchedAgency) {
+            const facs = facilitiesData.filter(f => f.Agency === matchedAgency.Agency);
+            showFacilities(matchedAgency, facs);
+            showFacilityDetails(props["Agency"], props["Facility Name"]);
+            document.getElementById('dashboard-panel').scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+
+    // pointer on clusters
+    map.on('mouseenter', 'clusters', () => {
+        map.getCanvas().style.cursor = 'pointer';
+    });
+    map.on('mouseleave', 'clusters', () => {
+        map.getCanvas().style.cursor = '';
+    });
+}
+
+/* ============ BOUNDARY & FACILITY POPUPS =========== */
+const boundaryHoverPopup = new mapboxgl.Popup({
+    closeButton: false,
+    closeOnClick: false,
+    anchor: 'top',
+    offset: [0,0],
+    className: 'boundary-popup'
+});
+const facilityHoverPopup = new mapboxgl.Popup({
+    closeButton: false,
+    closeOnClick: false,
+    anchor: 'bottom',
+    offset: [0,-10],
+    className: 'facility-popup'
+});
+
+/* ============ AGENCIES & FACILITIES DATA =========== */
+// (Already included: agenciesData & facilitiesData arrays)
+
+/* ============ UTILITY FUNCTIONS =========== */
 function parseCoordinate(coordStr) {
     if (!coordStr || coordStr.toString().trim().toUpperCase() === 'NOT YET AVAILABLE') return null;
     const parts = coordStr.split('°');
@@ -1292,14 +1113,18 @@ function parseCoordinate(coordStr) {
     return value;
 }
 
-// Convert facilities to GeoJSON
+function normalizeValue(val) {
+    if (!val) return 'Not yet available';
+    const str = String(val).trim();
+    if (str.toUpperCase() === 'N/A') return 'Not yet available';
+    return val;
+}
+
 function facilitiesToGeoJSON() {
     const features = facilitiesData.map(f => {
         const lat = parseCoordinate(f["Latitude"]);
         const lon = parseCoordinate(f["Longitude"]);
-        if (lat === null || lon === null) {
-            return null; 
-        }
+        if (lat === null || lon === null) return null;
         return {
             type: 'Feature',
             properties: { ...f },
@@ -1312,103 +1137,102 @@ function facilitiesToGeoJSON() {
     return { type: 'FeatureCollection', features };
 }
 
-// POPUP for boundary hover
-const boundaryHoverPopup = new mapboxgl.Popup({
-    closeButton: false,
-    closeOnClick: false,
-    anchor: 'top',
-    offset: [0, 0],
-    className: 'boundary-popup'
-});
-
-// POPUP for facility hover
-const facilityHoverPopup = new mapboxgl.Popup({
-    closeButton: false,
-    closeOnClick: false,
-    anchor: 'bottom',
-    offset: [0, -10],
-    className: 'facility-popup'
-});
-
-// Initialize the map
-initMap();
-
-// On cluster click => zoom
-if (typeof map !== 'undefined') {
-    // This will wait until the map is ready
-    if (map) {
-        map.on('click', 'clusters', e => {
-            const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
-            const clusterId = features[0].properties.cluster_id;
-            map.getSource('facilities').getClusterExpansionZoom(clusterId, (err, zoom) => {
-                if (err) return;
-                map.easeTo({
-                    center: features[0].geometry.coordinates,
-                    zoom: zoom
-                });
-            });
-        });
-
-        // Add facility hover for unclustered
-        map.on('mouseenter', 'unclustered-point', e => {
-            map.getCanvas().style.cursor = 'pointer';
-            const props = e.features[0].properties;
-            const desc = `
-                <strong>${props["Facility Name"]}</strong><br>
-                Building Type: ${normalizeValue(props["Building Type"])}<br>
-                EV: ${normalizeValue(props["Existing EV Chargers"])}<br>
-                PV: ${normalizeValue(props["Exisiting PV or Battery Storage Capabilities"])}
-            `;
-            facilityHoverPopup.setLngLat(e.lngLat).setHTML(desc).addTo(map);
-        });
-        map.on('mouseleave', 'unclustered-point', () => {
-            map.getCanvas().style.cursor = '';
-            facilityHoverPopup.remove();
-        });
-
-        map.on('click', 'unclustered-point', e => {
-            const props = e.features[0].properties;
-            const matchedAgency = agenciesData.find(a => a.Agency === props["Agency"]);
-            if (matchedAgency) {
-                const facs = facilitiesData.filter(f => f.Agency === matchedAgency.Agency);
-                showFacilities(matchedAgency, facs);
-                showFacilityDetails(props["Agency"], props["Facility Name"]);
-                document.getElementById('dashboard-panel').scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-
-        // Cursor changes for clusters
-        map.on('mouseenter', 'clusters', () => {
-            map.getCanvas().style.cursor = 'pointer';
-        });
-        map.on('mouseleave', 'clusters', () => {
-            map.getCanvas().style.cursor = '';
-        });
-    }
-}
-
-// RENDER LISTING
+/* ============ RENDER LISTING =========== */
 function renderListing() {
     const listingElement = document.getElementById('listing');
     const introSection = document.getElementById('intro-section');
     const agencyFilters = document.getElementById('agency-filters');
     const facilityFilters = document.getElementById('facility-filters');
-    if (!listingElement) return;
 
     listingElement.innerHTML = '';
     introSection.style.display = 'block';
     agencyFilters.style.display = 'block';
     facilityFilters.style.display = 'none';
 
-    // Group agencies by Council
-    const groupByCOG = {};
+    // Group by COG
+    const groups = {};
     agenciesData.forEach(a => {
         const cog = a["Council of Government"];
-        if (!groupByCOG[cog]) groupByCOG[cog] = [];
-        groupByCOG[cog].push(a);
+        if (!groups[cog]) groups[cog] = [];
+        groups[cog].push(a);
+    });
+
+    for (const [cog, agencies] of Object.entries(groups)) {
+        if (agencies.length > 0) {
+            const cogSection = document.createElement('div');
+            cogSection.className = 'cog-section';
+
+            const cogHeader = document.createElement('div');
+            cogHeader.className = 'cog-header';
+            cogHeader.textContent = cog;
+
+            // Expand/collapse logic
+            cogHeader.addEventListener('click', () => {
+                cogHeader.classList.toggle('expanded');
+                agencyList.style.display = agencyList.style.display === 'none' ? 'block' : 'none';
+            });
+
+            const agencyList = document.createElement('div');
+            agencyList.className = 'agency-list';
+            agencyList.style.display = 'block';
+
+            agencies.sort((a,b) => a.Agency.localeCompare(b.Agency));
+            agencies.forEach(a => {
+                const div = document.createElement('div');
+                div.className = 'agency-title';
+                div.textContent = a.Agency;
+                div.onclick = () => {
+                    const facs = facilitiesData.filter(f => f.Agency === a.Agency);
+                    showFacilities(a, facs);
+                };
+                agencyList.appendChild(div);
+            });
+
+            cogSection.appendChild(cogHeader);
+            cogSection.appendChild(agencyList);
+            listingElement.appendChild(cogSection);
+        }
+    }
+}
+
+/* ============ AGENCY / FACILITY FILTERS =========== */
+document.getElementById('population-min').addEventListener('input', filterAgencies);
+document.getElementById('population-max').addEventListener('input', filterAgencies);
+document.getElementById('agency-filter').addEventListener('input', filterAgencies);
+document.getElementById('dac-filter').addEventListener('change', filterAgencies);
+document.getElementById('ces90-filter').addEventListener('change', filterAgencies);
+
+document.getElementById('pv-filter').addEventListener('change', refreshFacilityList);
+document.getElementById('ev-filter').addEventListener('change', refreshFacilityList);
+document.getElementById('cooling-filter').addEventListener('change', refreshFacilityList);
+
+function filterAgencies() {
+    const minPop = parseInt(document.getElementById('population-min').value) || 0;
+    const maxPop = parseInt(document.getElementById('population-max').value) || Infinity;
+    const searchText = document.getElementById('agency-filter').value.toLowerCase().trim();
+    const dacFilter = document.getElementById('dac-filter').checked;
+    const ces90Filter = document.getElementById('ces90-filter').checked;
+
+    const filtered = agenciesData.filter(a => {
+        const matchSearch = searchText === '' || a.Agency.toLowerCase().includes(searchText);
+        const pop = Number(a["Population"]) || 0;
+        const matchPop = (pop >= minPop && pop <= maxPop);
+        const isUnderserved = (a["Underserved and/or  Hard to Reach"] || "").toLowerCase() === 'yes';
+        const matchDAC = !dacFilter || isUnderserved;
+        const calVal = Number(a["CalEnviroScreen Score"]) || 0;
+        const matchCal = !ces90Filter || (calVal > 90);
+        return matchSearch && matchPop && matchDAC && matchCal;
+    });
+
+    const listingElement = document.getElementById('listing');
+    const introSection = document.getElementById('intro-section');
+    listingElement.innerHTML = '';
+
+    const groupByCOG = {};
+    filtered.forEach(a => {
+        const c = a["Council of Government"];
+        if (!groupByCOG[c]) groupByCOG[c] = [];
+        groupByCOG[c].push(a);
     });
 
     for (const [cog, agencies] of Object.entries(groupByCOG)) {
@@ -1419,6 +1243,7 @@ function renderListing() {
             const cogHeader = document.createElement('div');
             cogHeader.className = 'cog-header';
             cogHeader.textContent = cog;
+
             cogHeader.addEventListener('click', () => {
                 cogHeader.classList.toggle('expanded');
                 agencyList.style.display = agencyList.style.display === 'none' ? 'block' : 'none';
@@ -1426,15 +1251,17 @@ function renderListing() {
 
             const agencyList = document.createElement('div');
             agencyList.className = 'agency-list';
+            agencyList.style.display = 'block';
+
             agencies.sort((a,b) => a.Agency.localeCompare(b.Agency));
-            agencies.forEach(ag => {
+            agencies.forEach(a => {
                 const agencyDiv = document.createElement('div');
                 agencyDiv.className = 'agency-title';
-                agencyDiv.textContent = ag.Agency;
-                agencyDiv.addEventListener('click', () => {
-                    const facs = facilitiesData.filter(f => f.Agency === ag.Agency);
-                    showFacilities(ag, facs);
-                });
+                agencyDiv.textContent = a.Agency;
+                agencyDiv.onclick = () => {
+                    const facs = facilitiesData.filter(f => f.Agency === a.Agency);
+                    showFacilities(a, facs);
+                };
                 agencyList.appendChild(agencyDiv);
             });
 
@@ -1443,9 +1270,20 @@ function renderListing() {
             listingElement.appendChild(cogSection);
         }
     }
+
+    introSection.style.display = filtered.length > 0 ? 'block' : 'none';
 }
 
-// Show facilities for an agency
+function refreshFacilityList() {
+    const title = document.querySelector('#data-overview-title').textContent;
+    let currentAgency = agenciesData.find(a => title.includes(a.Agency));
+    if (currentAgency) {
+        const facs = facilitiesData.filter(f => f.Agency === currentAgency.Agency);
+        showFacilities(currentAgency, facs);
+    }
+}
+
+/* ============ SHOW FACILITIES & DATA =========== */
 function showFacilities(agency, facilityList) {
     const listingElement = document.getElementById('listing');
     const dashboardElement = document.getElementById('dashboard');
@@ -1500,7 +1338,6 @@ function showFacilities(agency, facilityList) {
     updateAgencyDashboard(agency);
 }
 
-// Filter facility data by user checkboxes
 function filterFacilityData(facilities) {
     const pvChecked = document.getElementById('pv-filter').checked;
     const evChecked = document.getElementById('ev-filter').checked;
@@ -1522,11 +1359,43 @@ function filterFacilityData(facilities) {
     });
 }
 
-// Show facility details
+function updateAgencyDashboard(agency) {
+    document.getElementById('data-overview-title').textContent = `${agency.Agency} Data Overview`;
+    document.getElementById('agency-underserved').textContent = normalizeValue(agency["Underserved and/or  Hard to Reach"]);
+    document.getElementById('agency-calenviroscore').textContent = normalizeValue(agency["CalEnviroScreen Score"]);
+    document.getElementById('agency-pollutionburden').textContent = normalizeValue(agency["Pollution Burden Percentile"]);
+
+    let popVal = normalizeValue(agency["Population"]);
+    if (!isNaN(parseInt(popVal))) popVal = parseInt(popVal).toLocaleString();
+    document.getElementById('agency-population').textContent = popVal;
+
+    document.getElementById('agency-children-seniors').textContent = normalizeValue(agency["% Children and Seniors"]);
+    document.getElementById('agency-area').textContent = normalizeValue(agency["AgencyArea (sq miles)"]);
+
+    let denVal = normalizeValue(agency["Population Density (per sq. mile)"]);
+    if (!isNaN(parseInt(denVal))) denVal = parseInt(denVal).toLocaleString();
+    document.getElementById('agency-density').textContent = denVal;
+
+    document.getElementById('agency-heat-days').textContent = normalizeValue(agency["Extreme Heat Days (days/year)"]);
+
+    let incVal = normalizeValue(agency["Average Household Income ($)"]);
+    if (!isNaN(parseInt(incVal))) incVal = parseInt(incVal).toLocaleString();
+    document.getElementById('agency-income').textContent = incVal;
+
+    document.getElementById('agency-low-income').textContent = normalizeValue(agency["% Low-Income Census Tracts"]);
+    document.getElementById('agency-circuits').textContent = normalizeValue(agency["# of Electric Circuits"]);
+
+    let kwhVal = normalizeValue(agency["Annual  Consumption (kWh)"]);
+    if (!isNaN(parseInt(kwhVal))) kwhVal = parseInt(kwhVal).toLocaleString();
+    document.getElementById('agency-kwh').textContent = kwhVal;
+
+    let thermVal = normalizeValue(agency["Annual Consumption (Therms)"]);
+    if (!isNaN(parseInt(thermVal))) thermVal = parseInt(thermVal).toLocaleString();
+    document.getElementById('agency-therms').textContent = thermVal;
+}
+
 function showFacilityDetails(agencyName, facilityName) {
-    const facility = facilitiesData.find(f => 
-        f.Agency === agencyName && f["Facility Name"] === facilityName
-    );
+    const facility = facilitiesData.find(f => f.Agency === agencyName && f["Facility Name"] === facilityName);
     if (!facility) return;
 
     document.getElementById('facility-data').style.display = 'block';
@@ -1550,7 +1419,7 @@ function showFacilityDetails(agencyName, facilityName) {
         el.classList.toggle('active', el.textContent.trim() === facilityName);
     });
 
-    // Center map
+    // center map
     const lat = parseCoordinate(facility["Latitude"]);
     const lon = parseCoordinate(facility["Longitude"]);
     if (lat !== null && lon !== null) {
@@ -1558,132 +1427,7 @@ function showFacilityDetails(agencyName, facilityName) {
     }
 }
 
-// Show agency data
-function updateAgencyDashboard(agency) {
-    document.getElementById('data-overview-title').textContent = `${agency.Agency} Data Overview`;
-    document.getElementById('agency-underserved').textContent = normalizeValue(agency["Underserved and/or  Hard to Reach"]);
-    document.getElementById('agency-calenviroscore').textContent = normalizeValue(agency["CalEnviroScreen Score"]);
-    document.getElementById('agency-pollutionburden').textContent = normalizeValue(agency["Pollution Burden Percentile"]);
-
-    // population
-    let popVal = normalizeValue(agency["Population"]);
-    if (!isNaN(parseInt(popVal))) popVal = parseInt(popVal).toLocaleString();
-    document.getElementById('agency-population').textContent = popVal;
-
-    document.getElementById('agency-children-seniors').textContent = normalizeValue(agency["% Children and Seniors"]);
-    document.getElementById('agency-area').textContent = normalizeValue(agency["AgencyArea (sq miles)"]);
-
-    // density
-    let denVal = normalizeValue(agency["Population Density (per sq. mile)"]);
-    if (!isNaN(parseInt(denVal))) denVal = parseInt(denVal).toLocaleString();
-    document.getElementById('agency-density').textContent = denVal;
-
-    document.getElementById('agency-heat-days').textContent = normalizeValue(agency["Extreme Heat Days (days/year)"]);
-
-    // income
-    let incVal = normalizeValue(agency["Average Household Income ($)"]);
-    if (!isNaN(parseInt(incVal))) incVal = parseInt(incVal).toLocaleString();
-    document.getElementById('agency-income').textContent = incVal;
-
-    document.getElementById('agency-low-income').textContent = normalizeValue(agency["% Low-Income Census Tracts"]);
-    document.getElementById('agency-circuits').textContent = normalizeValue(agency["# of Electric Circuits"]);
-
-    // kwh
-    let kwhVal = normalizeValue(agency["Annual  Consumption (kWh)"]);
-    if (!isNaN(parseInt(kwhVal))) kwhVal = parseInt(kwhVal).toLocaleString();
-    document.getElementById('agency-kwh').textContent = kwhVal;
-
-    // therms
-    let thermVal = normalizeValue(agency["Annual Consumption (Therms)"]);
-    if (!isNaN(parseInt(thermVal))) thermVal = parseInt(thermVal).toLocaleString();
-    document.getElementById('agency-therms').textContent = thermVal;
-}
-
-// Filter agencies
-function filterAgencies() {
-    const minPop = parseInt(document.getElementById('population-min').value) || 0;
-    const maxPop = parseInt(document.getElementById('population-max').value) || Infinity;
-    const searchText = document.getElementById('agency-filter').value.toLowerCase().trim();
-    const dacFilter = document.getElementById('dac-filter').checked;
-    const ces90Filter = document.getElementById('ces90-filter').checked;
-
-    const filtered = agenciesData.filter(a => {
-        // search
-        const matchSearch = searchText === '' || a.Agency.toLowerCase().includes(searchText);
-        // population
-        const pop = Number(a["Population"]) || 0;
-        const matchPop = (pop >= minPop && pop <= maxPop);
-        // DAC
-        const isUnderserved = (a["Underserved and/or  Hard to Reach"] || "").toLowerCase() === 'yes';
-        const matchDAC = !dacFilter || isUnderserved;
-        // CES
-        const calVal = Number(a["CalEnviroScreen Score"]) || 0;
-        const matchCal = !ces90Filter || (calVal > 90);
-
-        return matchSearch && matchPop && matchDAC && matchCal;
-    });
-
-    const listingElement = document.getElementById('listing');
-    listingElement.innerHTML = '';
-
-    // group by COG
-    const groupByCOG = {};
-    filtered.forEach(ag => {
-        const c = ag["Council of Government"];
-        if (!groupByCOG[c]) groupByCOG[c] = [];
-        groupByCOG[c].push(ag);
-    });
-
-    for (const [cog, agencies] of Object.entries(groupByCOG)) {
-        if (agencies.length > 0) {
-            const cogSection = document.createElement('div');
-            cogSection.className = 'cog-section';
-
-            const cogHeader = document.createElement('div');
-            cogHeader.className = 'cog-header';
-            cogHeader.textContent = cog;
-            cogHeader.addEventListener('click', () => {
-                cogHeader.classList.toggle('expanded');
-                agencyList.style.display = agencyList.style.display === 'none' ? 'block' : 'none';
-            });
-
-            const agencyList = document.createElement('div');
-            agencyList.className = 'agency-list';
-            agencyList.style.display = 'block';
-
-            agencies.sort((a,b) => a.Agency.localeCompare(b.Agency));
-            agencies.forEach(a => {
-                const agencyDiv = document.createElement('div');
-                agencyDiv.className = 'agency-title';
-                agencyDiv.textContent = a.Agency;
-                agencyDiv.onclick = () => {
-                    const facs = facilitiesData.filter(f => f.Agency === a.Agency);
-                    showFacilities(a, facs);
-                };
-                agencyList.appendChild(agencyDiv);
-            });
-
-            cogSection.appendChild(cogHeader);
-            cogSection.appendChild(agencyList);
-            listingElement.appendChild(cogSection);
-        }
-    }
-    const introSection = document.getElementById('intro-section');
-    introSection.style.display = filtered.length > 0 ? 'block' : 'none';
-}
-
-// Refresh facility list if user toggles facility filters
-function refreshFacilityList() {
-    // find current agency
-    const title = document.querySelector('#data-overview-title').textContent;
-    let currentAgency = agenciesData.find(a => title.includes(a.Agency));
-    if (currentAgency) {
-        const facs = facilitiesData.filter(f => f.Agency === currentAgency.Agency);
-        showFacilities(currentAgency, facs);
-    }
-}
-
-// Close welcome popup
+/* ============ WELCOME POPUP =========== */
 function closeWelcome() {
     const popup = document.getElementById('welcome-popup');
     popup.classList.add('fade-out');
@@ -1693,26 +1437,12 @@ function closeWelcome() {
 }
 
 // Map Style
-document.getElementById('style-selector').addEventListener('change', (e) => {
+document.getElementById('style-selector').addEventListener('change', e => {
     map.setStyle(e.target.value);
 });
 
-// FILTER events
-document.getElementById('population-min').addEventListener('input', filterAgencies);
-document.getElementById('population-max').addEventListener('input', filterAgencies);
-document.getElementById('agency-filter').addEventListener('input', filterAgencies);
-document.getElementById('dac-filter').addEventListener('change', filterAgencies);
-document.getElementById('ces90-filter').addEventListener('change', filterAgencies);
-
-// facility filter
-document.getElementById('pv-filter').addEventListener('change', refreshFacilityList);
-document.getElementById('ev-filter').addEventListener('change', refreshFacilityList);
-document.getElementById('cooling-filter').addEventListener('change', refreshFacilityList);
-
-// On DOM load, also render listing
-document.addEventListener('DOMContentLoaded', () => {
-    renderListing();
-});
+// Finally, render the initial agency listing
+renderListing();
 </script>
 </body>
 </html>
