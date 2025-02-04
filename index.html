@@ -13,8 +13,7 @@
   <style>
   @font-face {
     font-family: 'Aptos';
-    /*
-       If you have a local or hosted source for Aptos, declare it here:
+    /* If you have a local or hosted source for Aptos, declare it here:
        src: url('path-to-aptos.woff2') format('woff2'); 
        Otherwise, the user’s system must have Aptos installed. 
     */
@@ -121,14 +120,13 @@
       flex-direction: row;
       overflow: hidden;
     }
-    /* Let the map take leftover space; fix the dashboard width so it's not squashed */
     #map {
       flex: 1; 
       position: relative;
       min-height: 400px;
     }
     .map-overlay {
-      width: 400px; /* fixed width so the panel stays readable */
+      width: 400px; /* Fixed width so the panel stays readable */
       background: linear-gradient(to bottom, #fff, #f8f9fa);
       border-left: 1px solid rgba(0,0,0,0.1);
       padding: 20px 20px 0 20px;
@@ -373,7 +371,7 @@
       font-size: 16px;
     }
 
-    /* ============ Intro Section at bottom ============ */
+    /* ============ Intro Section positioned lower ============ */
     #intro-section {
       display: none;
       font-family: 'Aptos', sans-serif;
@@ -381,7 +379,7 @@
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 1px 5px rgba(0,0,0,0.1);
-      margin-top: 15px;
+      margin-top: 40vh; /* Push this “welcome” text lower on the panel */
       margin-bottom: 15px;
     }
     #intro-section h4 {
@@ -519,6 +517,10 @@
       }
       #listing {
         max-height: 200px;
+      }
+      /* If on a phone, we can reduce the margin-top for #intro-section */
+      #intro-section {
+        margin-top: 20vh;
       }
     }
   </style>
@@ -818,7 +820,7 @@ const agenciesData = [
     "Number of Electric Circuits": 14,
     "Annual kWh consumption": 2200000,
     "Annual Therms Consumption": 91100,
-    "Underserved and/or  Hard to Reach": "Yes" // For filter
+    "Underserved and/or  Hard to Reach": "Yes"
   },
   {
     "Agency": "Maywood",
