@@ -6,8 +6,8 @@
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
   
   <!-- MAPBOX & FONTS -->
-  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
-  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.9.4/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.4/mapbox-gl.js"></script>
 
   <!-- Aptos font-face (sample) -->
   <style>
@@ -22,6 +22,7 @@
   }
   </style>
 
+  <!-- Mapbox Geocoder -->
   <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.min.js"></script>
   <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.css" type="text/css">
 
@@ -30,7 +31,7 @@
 
   <style>
     html, body {
-      margin: 0;
+      margin: 0; 
       padding: 0;
       height: 100%;
       font-family: 'Aptos', sans-serif;
@@ -89,7 +90,7 @@
       background: linear-gradient(to right, #4a5c6b, #2D3E4F);
     }
 
-    /* ============ Header / Toolbar ============ */
+    /* ============ Header ============ */
     header {
       width: 100%;
       background: linear-gradient(to right, #2D3E4F, #202f3e);
@@ -114,25 +115,6 @@
     .header-left img:hover {
       transform: scale(1.05);
     }
-    .header-tools {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-    .header-button {
-      background-color: rgba(255,255,255,0.15);
-      color: #ffffff;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 4px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      font-family: 'Aptos', sans-serif;
-    }
-    .header-button:hover {
-      background-color: rgba(255,255,255,0.25);
-    }
 
     /* ============ Container Layout ============ */
     #container {
@@ -150,8 +132,7 @@
     }
     #loading-spinner {
       position: fixed; 
-      top: 50%; 
-      left: 50%;
+      top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       font-size: 20px; 
       color: #2c3e50; 
@@ -159,22 +140,21 @@
       display: none;
     }
 
-    /* Geocoder placed top-left within the map */
-    #map-geocoder {
-      position: absolute;
-      top: 10px; 
-      left: 10px;
-      width: 250px;
-      z-index: 10; 
-    }
+    /* Place geocoder in top-left corner, as in the example */
     .mapboxgl-ctrl-geocoder {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 300px;
+      z-index: 10;
+      font-family: 'Aptos', sans-serif !important;
       border-radius: 4px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
-      font-family: 'Aptos', sans-serif !important;
     }
     .mapboxgl-ctrl-geocoder--input {
       height: 36px !important;
       padding: 6px 35px !important;
+      font-family: 'Aptos', sans-serif !important;
     }
 
     /* ============ Map Overlay Panel ============ */
@@ -550,27 +530,18 @@
   </div>
 </div>
 
-<!-- ============ HEADER / TOOLBAR ============ -->
+<!-- ============ HEADER ============ -->
 <header>
   <div class="header-left">
     <a href="https://socalren.org/" target="_blank">
       <img src="images/socalren_erapdashboard.png" alt="SoCalREN ERAP Logo">
     </a>
   </div>
-
-  <!-- Additional tools in the header -->
-  <div class="header-tools">
-    <button class="header-button" id="reset-view-btn">Reset View</button>
-    <!-- Could add other buttons here if desired -->
-  </div>
 </header>
 
 <!-- ============ MAIN CONTAINER ============ -->
 <div id="container">
-  <div id="map">
-    <!-- The geocoder is placed inside the map container -->
-    <div id="map-geocoder"></div>
-  </div>
+  <div id="map"></div>
 
   <div class="map-overlay" id="dashboard-panel">
     <fieldset>
@@ -640,7 +611,6 @@
       <p><em>This dashboard is a living tool designed to evolve and improve as we progress through the program. We welcome any feedback you may have, as it will help shape future versions.</em></p>
     </div>
 
-    <!-- DASHBOARD CONTENT -->
     <div class="dashboard" id="dashboard" style="display: none;">
       <h3 id="data-overview-title">Data Overview</h3>
   
@@ -790,147 +760,69 @@ passwordSubmit.addEventListener('click', () => {
 });
 
 /* ============ MAPBOX SETUP ============ */
-mapboxgl.accessToken = 'pk.eyJ1Ijoid2VuZ2xlMSIsImEiOiJjbHBtaWx0N2IwMGljMmxwNjBsMnU4a2E4In0.Dzf3G-WBKzDfgnXsGHiMXw';
+mapboxgl.accessToken = 'pk.eyJ1Ijoid2VuZ2xlMSIsImEiOiJjbGh0bTJ0OTUzN2dzM21tbTB0NzFmM2QyIn0.-ItjIktoJtcQUsk6l9TbbQ';
 let map;
 
 function initMap() {
   map = new mapboxgl.Map({
     container: 'map',
-    // Use your custom style
-    style: 'mapbox://styles/wengle1/cm4m4sedc001v01sqdtx0cioz',
+    style: 'mapbox://styles/mapbox/streets-v12', 
     center: [-118.2437, 34.0522],
-    zoom: 10,
-    pitch: 35,
-    maxBounds: [[-119.5, 33.2], [-117.0, 34.8]]
+    zoom: 10
   });
 
   // Add Nav/Fullscreen
-  map.addControl(new mapboxgl.FullscreenControl({ container: document.querySelector('#container') }), 'top-right');
+  map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
   map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-  // Move geocoder to top-left inside map
+  // Add geocoder
   const geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
     mapboxgl: mapboxgl,
-    placeholder: 'Search for a location',
-    bbox: [-119.5, 33.2, -117.0, 34.8],
-    proximity: { longitude: -118.2437, latitude: 34.0522 }
+    placeholder: 'Search for a location'
   });
-  document.getElementById('map-geocoder').appendChild(geocoder.onAdd(map));
+  // By default, geocoder goes top-left
+  map.addControl(geocoder, 'top-left');
 
-  // On map load, load boundaries & facilities
   map.on('load', () => {
     document.getElementById('loading-spinner').style.display = 'block';
     loadBoundariesAndFacilities();
     document.getElementById('loading-spinner').style.display = 'none';
-  });
-
-  // Re-add sources/layers if style changes
-  map.on('style.load', () => {
-    loadBoundariesAndFacilities();
   });
 }
 
 /* ============ LOAD BOUNDARIES & FACILITIES ============ */
 function loadBoundariesAndFacilities() {
   // Boundaries
-  if (!map.getSource('la-boundaries')) {
-    fetch('data/la_boundaries.geojson')
-      .then(resp => resp.json())
-      .then(geojson => {
-        map.addSource('la-boundaries', { type: 'geojson', data: geojson });
-        addBoundaryLayer();
-      })
-      .catch(err => console.error('Error loading boundaries:', err));
-  } else {
-    addBoundaryLayer();
-  }
+  fetch('data/la_boundaries.geojson')
+    .then(resp => resp.json())
+    .then(geojson => {
+      map.addSource('la-boundaries', { type: 'geojson', data: geojson });
+      map.addLayer({
+        id: 'la-boundaries-layer',
+        type: 'fill',
+        source: 'la-boundaries',
+        paint: {
+          'fill-color': '#9A5CA7', 
+          'fill-opacity': 0.4
+        }
+      });
+    })
+    .catch(err => console.error('Error loading boundaries:', err));
 
   // Facilities
-  if (!map.getSource('facilities')) {
-    const facilityGeoJSON = facilitiesToGeoJSON();
-    map.addSource('facilities', {
-      type: 'geojson',
-      data: facilityGeoJSON,
-      cluster: true,
-      clusterMaxZoom: 14,
-      clusterRadius: 50
-    });
-    addFacilityLayers();
-  } else {
-    addFacilityLayers();
-  }
-}
-
-function addBoundaryLayer() {
-  // Remove old layer if needed
-  if (map.getLayer('la-boundaries-extrusion')) {
-    map.removeLayer('la-boundaries-extrusion');
-  }
-  map.addLayer({
-    id: 'la-boundaries-extrusion',
-    type: 'fill-extrusion',
-    source: 'la-boundaries',
-    paint: {
-      'fill-extrusion-color': [
-        'case',
-        ['boolean', ['feature-state', 'hover'], false],
-        '#78B84B',
-        '#9A5CA7'
-      ],
-      'fill-extrusion-height': 500,
-      'fill-extrusion-opacity': 0.4
-    }
+  const facilityGeoJSON = facilitiesToGeoJSON();
+  map.addSource('facilities', {
+    type: 'geojson',
+    data: facilityGeoJSON,
+    cluster: true,
+    clusterMaxZoom: 14,
+    clusterRadius: 50
   });
-
-  let hoveredId = null;
-  map.on('mousemove', 'la-boundaries-extrusion', e => {
-    map.getCanvas().style.cursor = 'pointer';
-    if (e.features.length > 0) {
-      if (hoveredId) {
-        map.setFeatureState({ source: 'la-boundaries', id: hoveredId }, { hover: false });
-      }
-      hoveredId = e.features[0].id;
-      map.setFeatureState({ source: 'la-boundaries', id: hoveredId }, { hover: true });
-
-      const city = e.features[0].properties.CITY_COMM_NAME || 'Not yet available';
-      boundaryHoverPopup.setLngLat(e.lngLat).setHTML(`<div><strong>${city}</strong></div>`).addTo(map);
-    }
-  });
-  map.on('mouseleave', 'la-boundaries-extrusion', () => {
-    map.getCanvas().style.cursor = '';
-    if (hoveredId) {
-      map.setFeatureState({ source: 'la-boundaries', id: hoveredId }, { hover: false });
-    }
-    hoveredId = null;
-    boundaryHoverPopup.remove();
-  });
-  map.on('click', 'la-boundaries-extrusion', e => {
-    if (!e.features.length) return;
-    const cityName = e.features[0].properties.CITY_COMM_NAME;
-    if (cityName) {
-      // Attempt to match city to agencies
-      let matched = agenciesData.find(a => a.Agency.toLowerCase() === cityName.toLowerCase());
-      if (!matched) {
-        matched = agenciesData.find(a => cityName.toLowerCase().includes(a.Agency.toLowerCase()));
-      }
-      if (matched) {
-        const facs = facilitiesData.filter(f => f.Agency === matched.Agency);
-        showFacilities(matched, facs);
-        document.getElementById('dashboard-panel').scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  });
+  addFacilityLayers();
 }
 
 function addFacilityLayers() {
-  // remove if they exist
-  ['clusters','cluster-count','unclustered-point'].forEach(id => {
-    if (map.getLayer(id)) {
-      map.removeLayer(id);
-    }
-  });
-
   map.addLayer({
     id: 'clusters',
     type: 'circle',
@@ -1000,24 +892,7 @@ function addFacilityLayers() {
     });
   });
 
-  // facility popup hover
-  map.on('mouseenter','unclustered-point', e => {
-    map.getCanvas().style.cursor = 'pointer';
-    const props = e.features[0].properties;
-    const desc = `
-      <strong>${normalizeValue(props["Facility Name"])}</strong><br>
-      Building Type: ${normalizeValue(props["Building Type"])}<br>
-      EV: ${normalizeValue(props["Existing EV Chargers"])}<br>
-      PV: ${normalizeValue(props["Exisiting PV or Battery Storage Capabilities"])}
-    `;
-    facilityHoverPopup.setLngLat(e.lngLat).setHTML(desc).addTo(map);
-  });
-  map.on('mouseleave','unclustered-point', () => {
-    map.getCanvas().style.cursor = '';
-    facilityHoverPopup.remove();
-  });
-
-  // click => show facility details
+  // unclustered point click => facility detail
   map.on('click','unclustered-point', e => {
     const props = e.features[0].properties;
     const matchedAgency = agenciesData.find(a => a.Agency === props["Agency"]);
@@ -1029,7 +904,7 @@ function addFacilityLayers() {
     }
   });
 
-  // pointer on clusters
+  // Cursor changes for clusters
   map.on('mouseenter','clusters', () => {
     map.getCanvas().style.cursor = 'pointer';
   });
@@ -1038,25 +913,7 @@ function addFacilityLayers() {
   });
 }
 
-/* ============ BOUNDARY & FACILITY POPUPS =========== */
-const boundaryHoverPopup = new mapboxgl.Popup({
-  closeButton: false,
-  closeOnClick: false,
-  anchor: 'top',
-  offset: [0,0],
-  className: 'boundary-popup'
-});
-const facilityHoverPopup = new mapboxgl.Popup({
-  closeButton: false,
-  closeOnClick: false,
-  anchor: 'bottom',
-  offset: [0,-10],
-  className: 'facility-popup'
-});
-
 /* ============ AGENCIES & FACILITIES DATA =========== */
-
-/* ------- agenciesData Array ------- */
 const agenciesData = [
   {
     "Agency": "City of Bell",
@@ -1264,7 +1121,6 @@ const agenciesData = [
   }
 ];
 
-/* ------- facilitiesData Array ------- */
 const facilitiesData = [
   {
     "Agency": "City of Bell",
@@ -1642,7 +1498,7 @@ function facilitiesToGeoJSON() {
   return { type: 'FeatureCollection', features };
 }
 
-/* ============ AGENCY LISTING & FILTERING =========== */
+/* ============ RENDER LISTING & FILTERS =========== */
 function renderListing() {
   const listingElement = document.getElementById('listing');
   const introSection = document.getElementById('intro-section');
@@ -1654,6 +1510,7 @@ function renderListing() {
   agencyFilters.style.display = 'block';
   facilityFilters.style.display = 'none';
 
+  // Group by Council
   const groups = {};
   agenciesData.forEach(a => {
     const cog = a["Council of Government"];
@@ -1926,18 +1783,6 @@ function closeWelcome() {
     popup.style.display = 'none';
   }, 400);
 }
-
-/* ============ MAP STYLE & RESET VIEW =========== */
-document.getElementById('style-selector').addEventListener('change', e => {
-  if (map) map.setStyle(e.target.value);
-});
-
-// Reset view button
-document.getElementById('reset-view-btn').addEventListener('click', () => {
-  if (map) {
-    map.flyTo({ center: [-118.2437, 34.0522], zoom: 10, pitch: 35 });
-  }
-});
 
 /* ============ FILTER EVENTS =========== */
 document.getElementById('population-min').addEventListener('input', filterAgencies);
