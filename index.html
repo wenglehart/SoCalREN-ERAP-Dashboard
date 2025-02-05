@@ -501,7 +501,7 @@
     /* LAYER TOGGLE LEGEND */
     #layer-toggle-legend {
       position: absolute;
-      top: 130px; /* moved down to avoid overlapping the search bar */
+      top: 130px; /* below the search bar */
       left: 10px;
       z-index: 12; 
       background-color: #ffffff;
@@ -542,7 +542,7 @@
         padding: 8px 12px;
       }
       #layer-toggle-legend {
-        top: 180px; 
+        top: 180px;
         left: 8px;
       }
     }
@@ -1384,6 +1384,7 @@ async function loadBoundariesAndFacilities() {
         type: 'geojson',
         data: scrData
       });
+      // place behind 'water'
       map.addLayer({
         id: 'scr-territory-fill',
         type: 'fill',
@@ -1396,7 +1397,7 @@ async function loadBoundariesAndFacilities() {
     })
     .catch(err => console.error('Error loading scr_territory:', err));
 
-  // 2) Agency boundaries => reduced extrusion height to 50 so facilities are not overshadowed
+  // 2) Agency boundaries => fill-extrusion
   fetch('data/la_boundaries.geojson')
     .then(resp => resp.json())
     .then(geojson => {
@@ -1421,7 +1422,7 @@ async function loadBoundariesAndFacilities() {
         className: 'boundary-popup'
       });
 
-      // Hover
+      // Hover => boundary popup
       map.on('mousemove', 'la-boundaries-extrusion', e => {
         map.getCanvas().style.cursor = 'pointer';
         if (e.features.length) {
@@ -1480,7 +1481,7 @@ async function loadBoundariesAndFacilities() {
     })
     .catch(err => console.error('Error loading boundaries:', err));
 
-  // 3) Facilities => cluster
+  // 3) Add facility cluster layers
   const facilityFeatures = [];
   facilitiesData.forEach(fac => {
     const lat = parseFloat(fac.Latitude);
@@ -1506,6 +1507,7 @@ async function loadBoundariesAndFacilities() {
     clusterRadius: 50
   });
 
+  // cluster circles
   map.addLayer({
     id: 'clusters',
     type: 'circle',
@@ -1531,6 +1533,7 @@ async function loadBoundariesAndFacilities() {
     }
   });
 
+  // cluster counts
   map.addLayer({
     id: 'cluster-count',
     type: 'symbol',
@@ -1549,6 +1552,7 @@ async function loadBoundariesAndFacilities() {
     }
   });
 
+  // unclustered facility points
   map.addLayer({
     id: 'unclustered-point',
     type: 'circle',
@@ -1564,11 +1568,7 @@ async function loadBoundariesAndFacilities() {
     }
   });
 
-  // reorder so extrusions are behind circles
-  map.moveLayer('clusters', 'la-boundaries-extrusion');
-  map.moveLayer('cluster-count', 'clusters');
-  map.moveLayer('unclustered-point', 'cluster-count');
-
+  // facility popup
   const facilityPopup = new mapboxgl.Popup({
     closeButton: false,
     closeOnClick: false,
@@ -1577,7 +1577,6 @@ async function loadBoundariesAndFacilities() {
     className: 'facility-popup'
   });
 
-  // Hover on facility => show popup
   map.on('mouseenter', 'unclustered-point', e => {
     map.getCanvas().style.cursor = 'pointer';
     const props = e.features[0].properties;
@@ -1609,7 +1608,7 @@ async function loadBoundariesAndFacilities() {
     });
   });
 
-  // unclustered => show that agency in panel
+  // unclustered => show that agency
   map.on('click','unclustered-point', e => {
     const props = e.features[0].properties;
     const matchedAgency = agenciesData.find(a => a.Agency === props["Agency"]);
@@ -1621,7 +1620,7 @@ async function loadBoundariesAndFacilities() {
 
   document.getElementById('loading-spinner').style.display = 'none';
 
-  // Wire up layer toggles
+  // set up layer toggles
   setupLayerToggles();
 }
 
@@ -1682,7 +1681,6 @@ function renderListing() {
       agencyList.style.display = 'block';
       cogHeader.classList.add('expanded');
 
-      // expand/collapse
       cogHeader.addEventListener('click', () => {
         const isHidden = (agencyList.style.display === 'none');
         cogHeader.classList.toggle('expanded', isHidden);
