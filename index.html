@@ -264,8 +264,8 @@
     /* Subtle fill color on hover => agencies less compact */
     .agency-title {
       background: #f9f9f9;
-      margin-bottom: 6px;
-      padding: 8px 10px;
+      margin-bottom: 6px; /* increased from 4px => less compact */
+      padding: 8px 10px;  /* increased top/bottom => less compact */
       border-radius: 8px;
       border: 1px solid #e0e0e0;
       color: #2D3E4F;
@@ -337,6 +337,7 @@
       margin-top: 8px;
       margin-bottom: 8px;
     }
+    /* Purple outline text => text-shadow trick */
     #intro-section h4.welcome-title {
       margin-top: 0;
       font-size: 17px;
@@ -1444,24 +1445,20 @@ async function loadBoundariesAndFacilities() {
     })
     .catch(err => console.error('Error loading scr_territory:', err));
 
-  // AGENCY boundaries => 2D orange fill + darker outline
+  // AGENCY boundaries => 2D orange fill
   fetch('data/la_boundaries.geojson')
     .then(resp => resp.json())
     .then(geojson => {
       map.addSource('la-boundaries', { type: 'geojson', data: geojson });
-
-      // Place boundary layer on top of the SoCalREN fill but below facility markers
       map.addLayer({
         id: 'la-boundaries-2d',
         type: 'fill',
         source: 'la-boundaries',
         paint: {
-          'fill-color': '#FFA500',
-          'fill-opacity': 0.4,
-          /* Give it an outline so it’s visible */
-          'fill-outline-color': '#666'
+          'fill-color': '#FFA500',   /* orange */
+          'fill-opacity': 0.4
         }
-      }, 'scr-territory-fill');
+      });
 
       let hoveredId = null;
       const boundaryPopup = new mapboxgl.Popup({
@@ -1556,7 +1553,7 @@ async function loadBoundariesAndFacilities() {
     clusterRadius: 50
   });
 
-  // No second argument => these layers are on top by default
+  // Note: Second argument removed so these layers draw on top by default
   map.addLayer({
     id: 'clusters',
     type: 'circle',
@@ -1606,7 +1603,7 @@ async function loadBoundariesAndFacilities() {
     source: 'facilities',
     filter: ['!',['has','point_count']],
     paint: {
-      'circle-color': '#9A5CA7',
+      'circle-color': '#9A5CA7', /* purple facility marker */
       'circle-radius': 8,
       'circle-stroke-width': 2,
       'circle-stroke-color': '#ffffff',
@@ -1880,7 +1877,7 @@ function showFacilities(agency, facilityList) {
   updateAgencyDashboard(agency);
   highlightAgency(agency);
 
-  // Expandable facilities listing => start expanded
+  // ~~~ Expandable facilities listing => start expanded so they appear ~~~
   const header = document.createElement('div');
   header.className = 'cog-header';
   header.textContent = `View Facilities in ${agency.Agency}`;
@@ -1919,7 +1916,7 @@ function showFacilities(agency, facilityList) {
   }
   listingElement.appendChild(facilitiesContainer);
 
-  // "Back to Agencies" button
+  // Add a small "Back to Agencies" button
   const backBtn = document.createElement('button');
   backBtn.textContent = "← Back to Agencies";
   backBtn.style.backgroundColor = "#2D3E4F";
