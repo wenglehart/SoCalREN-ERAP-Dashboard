@@ -96,41 +96,61 @@
       width: 100%;
       background: linear-gradient(to right, #2D3E4F, #202f3e);
       color: #ffffff;
-      padding: 10px 20px;
+      /* Reduced from 60px down to 45px (~1/4 smaller) */
+      height: 45px;
+      padding: 5px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       box-shadow: 0 2px 15px rgba(0,0,0,0.1);
       box-sizing: border-box;
-      height: 60px;
     }
     .header-left {
       display: flex;
       align-items: center;
       gap: 20px;
     }
+    /* Adjust logo height proportionally (was 50px) */
     .header-left img {
-      height: 50px;
+      height: 35px;
+    }
+
+    /* Right-aligned menu in header */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .header-right a {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 14px;
+      padding: 4px 8px;
+      transition: background-color 0.2s ease;
+    }
+    .header-right a:hover {
+      background-color: rgba(255,255,255,0.1);
+      border-radius: 4px;
     }
 
     /* ============ MAIN WRAPPER ============ */
     #container {
       display: flex;
       width: 100%;
-      height: calc(100vh - 60px);
+      height: calc(100vh - 45px); /* Updated for new header height */
       flex-direction: row;
     }
 
     /* ============ MAP (70%) ============ */
     #map {
-      flex: 0 0 70%; /* 70% of the screen for the map */
+      flex: 0 0 70%; 
       position: relative;
       min-height: 400px;
     }
 
     /* ============ PANEL (30%) ============ */
     .map-overlay {
-      flex: 0 0 30%; /* 30% of the screen for the panel */
+      flex: 0 0 30%;
       display: flex;
       flex-direction: column;
       background-color: #ffffff;
@@ -154,11 +174,11 @@
       display: none;
     }
 
-    /* ============ MAPBOX GEOCODER ============ */
+    /* MAPBOX GEOCODER - now on top-right */
     .mapboxgl-ctrl-geocoder {
       position: absolute;
       top: 10px;
-      left: 10px;
+      right: 10px; /* changed from left to right */
       width: 300px;
       z-index: 10;
       font-family: 'Aptos', sans-serif !important;
@@ -171,9 +191,6 @@
     }
 
     /* ============ PANEL CONTENT SECTIONS ============ */
-    /* We'll place filters, listing, agency data, and intro as separate sections stacked. */
-
-    /* FILTERS SECTION */
     #filters-section {
       padding: 15px 20px;
       border-bottom: 1px solid #e0e0e0;
@@ -214,7 +231,6 @@
       cursor: pointer;
     }
 
-    /* LISTING SECTION */
     #listing-section {
       padding: 15px 20px;
       border-bottom: 1px solid #e0e0e0;
@@ -281,7 +297,7 @@
     }
     .agency-title:hover {
       background: #f0f7fa;
-      border-color: #34A794; /* teal accent on hover */
+      border-color: #34A794; 
     }
     #no-facilities-msg {
       padding: 10px;
@@ -523,9 +539,16 @@
 <!-- ============ HEADER ============ -->
 <header>
   <div class="header-left">
-    <a href="https://socalren.org/" target="_blank">
+    <!-- Changed link to wenglehart GitHub page -->
+    <a href="https://wenglehart.github.io/SoCalREN-ERAP-Dashboard/" target="_blank">
       <img src="images/socalren_erapdashboard.png" alt="SoCalREN ERAP Logo">
     </a>
+  </div>
+
+  <!-- Right-aligned menu -->
+  <div class="header-right">
+    <a href="https://socalren.org/" target="_blank">SoCalREN</a>
+    <a href="https://oehha.ca.gov/calenviroscreen/report/calenviroscreen-40" target="_blank">CalEnviroScreen 4.0</a>
   </div>
 </header>
 
@@ -536,7 +559,6 @@
 
   <!-- ============ PANEL (30%) ============ -->
   <div class="map-overlay" id="dashboard-panel">
-
     <!-- ~~~ FILTERS SECTION ~~~ -->
     <section id="filters-section">
       <fieldset>
@@ -699,7 +721,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 passwordSubmit.addEventListener('click', () => {
-  if (passwordInput.value === 'SoCalREN2025') {
+  if (passwordInput.value === 'test') {
     passwordModal.style.display = 'none';
     initMap();
   } else {
@@ -718,7 +740,7 @@ const COGMapping = {
   "SBCOG": "South Bay Cities Council of Governments"
 };
 
-/* ============ AGENCIES DATA (FULL) =========== */
+/* ============ AGENCIES DATA =========== */
 const agenciesData = [
   {
     "Agency": "Bell",
@@ -938,7 +960,7 @@ const agenciesData = [
   }
 ];
 
-/* ============ FACILITIES DATA (FULL) =========== */
+/* ============ FACILITIES DATA =========== */
 const facilitiesData = [
   {
     "Agency": "Bell",
@@ -1288,20 +1310,21 @@ function initMap() {
     container: 'map',
     style: 'mapbox://styles/mapbox/streets-v12',
     center: [-118.2437, 34.0522],
-    zoom: 10,
+    /* Slightly more zoomed out: from 10 down to 9 */
+    zoom: 9,
     pitch: 45
   });
 
   map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
   map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-  // Add geocoder for location search
+  // Geocoder on top-right
   const geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
     mapboxgl: mapboxgl,
     placeholder: 'Search for a location'
   });
-  map.addControl(geocoder, 'top-left');
+  map.addControl(geocoder, 'top-right');
 
   map.on('load', () => {
     document.getElementById('loading-spinner').style.display = 'block';
@@ -1500,12 +1523,12 @@ async function loadBoundariesAndFacilities() {
     }
   });
 
-  // Reorder to ensure on top
+  // ensure clusters are on top
   map.moveLayer('clusters');
   map.moveLayer('cluster-count');
   map.moveLayer('unclustered-point');
 
-  // Facility popup on hover => Name, Address, Existing use
+  // facility popup => name, address, existing use
   const facilityPopup = new mapboxgl.Popup({
     closeButton: false,
     closeOnClick: false,
@@ -1535,7 +1558,7 @@ async function loadBoundariesAndFacilities() {
     facilityPopup.remove();
   });
 
-  // cluster click => zoom in
+  // cluster click => zoom
   map.on('click','clusters', e => {
     const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
     if (!features.length) return;
@@ -1546,7 +1569,7 @@ async function loadBoundariesAndFacilities() {
     });
   });
 
-  // unclustered point click => show facilities for that agency
+  // unclustered point => show agency data
   map.on('click','unclustered-point', e => {
     const props = e.features[0].properties;
     const matchedAgency = agenciesData.find(a => a.Agency === props["Agency"]);
@@ -1569,7 +1592,7 @@ function renderListing() {
   agencyFilters.style.display = 'block';
   facilityFilters.style.display = 'none';
 
-  // group agencies by COG
+  // group by COG
   const groups = {};
   agenciesData.forEach(a => {
     const cog = a.COG;
@@ -1713,7 +1736,7 @@ function refreshFacilityList() {
 
 /* ============ SHOW FACILITIES & AGENCY DATA =========== */
 function showFacilities(agency, facilityList) {
-  // 1) Re-render the listing as a simple list of facilities
+  // 1) Re-render the listing with that agency's facilities
   const listingElement = document.getElementById('listing');
   listingElement.innerHTML = '';
 
@@ -1733,9 +1756,7 @@ function showFacilities(agency, facilityList) {
   document.getElementById('agency-filters').style.display = 'none';
   document.getElementById('facility-filters').style.display = 'block';
 
-  // Apply facility filter checkboxes
   const filteredFacilities = filterFacilities(facilityList);
-
   if (filteredFacilities.length > 0) {
     filteredFacilities.forEach(f => {
       const div = document.createElement('div');
@@ -1750,7 +1771,7 @@ function showFacilities(agency, facilityList) {
     listingElement.appendChild(msg);
   }
 
-  // 2) Show the Agency-Level Data on the panel
+  // 2) Show the Agency-Level Data
   const dashboard = document.getElementById('dashboard');
   const agencyDataElement = document.getElementById('agency-data');
 
@@ -1760,7 +1781,7 @@ function showFacilities(agency, facilityList) {
   updateAgencyDashboard(agency);
 }
 
-/* ============ FILTER FACILITIES BASED ON CHECKBOXES =========== */
+/* ============ FILTER FACILITIES =========== */
 function filterFacilities(facList) {
   const pvChecked = document.getElementById('pv-filter').checked;
   const evChecked = document.getElementById('ev-filter').checked;
