@@ -316,10 +316,12 @@
       padding-bottom: 4px;
       color: #2D3E4F;
     }
-    #agency-data {
+    #agency-data,
+    #facility-data {
       margin-top: 8px; 
     }
-    #agency-data h4 {
+    #agency-data h4,
+    #facility-data h4 {
       font-size: 14px;
       margin-bottom: 6px;
       color: #2D3E4F;
@@ -371,17 +373,19 @@
       margin-right: 5px;
     }
 
-    /* INTRO SECTION => light warm green #E1E6D2 with outline */
+    /* INTRO SECTION => now white background, a bit more color in the title. */
     #intro-section {
-      background-color: #E1E6D2;
+      background-color: #ffffff;
       color: #2D3E4F;
       border: 1px solid #bbb;
+      padding: 10px 15px;
     }
     #intro-section h4 {
       margin-top: 0;
-      font-size: 14px;
-      margin-bottom: 6px;
-      color: #2D3E4F;
+      font-size: 17px; /* slightly larger */
+      margin-bottom: 8px;
+      color: #F05A28; /* add some color */
+      font-weight: 700;
     }
     #intro-section p,
     #intro-section li {
@@ -601,11 +605,13 @@
     <!-- ~~~ FILTERS SECTION ~~~ -->
     <section id="filters-section">
       <fieldset>
-        <input id="agency-filter" type="text" placeholder="Search for an agency">
+        <!-- Changed placeholder here -->
+        <input id="agency-filter" type="text" placeholder="Search dashboard">
       </fieldset>
 
+      <!-- Changed legend text here -->
       <fieldset class="filters" id="agency-filters">
-        <legend>Agency Filters</legend>
+        <legend>Agency Search Filters</legend>
         <label>
           <input type="checkbox" id="dac-filter">
           Show only Underserved and/or Hard to Reach
@@ -624,9 +630,11 @@
         </div>
       </fieldset>
 
-      <!-- Facility Filters (Boolean) -->
+      <!-- Combined all facility filters (boolean + numeric) into one fieldset -->
       <fieldset class="filters" id="facility-filters" style="display:none;">
-        <legend>Facility Filters</legend>
+        <legend>Facility Search Filters</legend>
+        
+        <!-- Boolean filters -->
         <label>
           <input type="checkbox" id="pv-filter">
           Show only facilities with PV/Battery
@@ -639,23 +647,22 @@
           <input type="checkbox" id="cooling-filter">
           Show only Cooling Center/Emergency Ops
         </label>
-      </fieldset>
 
-      <!-- Facility Filters (Numeric) -->
-      <fieldset class="filters" id="facility-numeric-filters" style="display:none;">
-        <legend>Additional Facility Numeric Filters</legend>
-        <label style="margin-bottom: 6px;">
-          Min # of Planned EV Chargers:
-          <input type="number" id="evChargersMin" min="0" style="width:80px; margin-left:6px;">
-        </label>
-        <label style="margin-bottom: 6px;">
-          Min PV Hours of Autonomy:
-          <input type="number" id="pvHoursMin" min="0" style="width:80px; margin-left:6px;">
-        </label>
-        <label>
-          Min Battery Hours of Autonomy:
-          <input type="number" id="batteryHoursMin" min="0" style="width:80px; margin-left:6px;">
-        </label>
+        <!-- Numeric filters -->
+        <div style="margin-top:10px;">
+          <label style="display:block; margin-bottom:6px;">
+            Min # of Planned EV Chargers:
+            <input type="number" id="evChargersMin" min="0" style="width:100px; margin-left:6px;">
+          </label>
+          <label style="display:block; margin-bottom:6px;">
+            Min PV Hours of Autonomy:
+            <input type="number" id="pvHoursMin" min="0" style="width:100px; margin-left:6px;">
+          </label>
+          <label style="display:block;">
+            Min Battery Hours of Autonomy:
+            <input type="number" id="batteryHoursMin" min="0" style="width:100px; margin-left:6px;">
+          </label>
+        </div>
       </fieldset>
     </section>
 
@@ -669,6 +676,7 @@
       <div class="dashboard" id="dashboard" style="display: none;">
         <h3 id="data-overview-title">Data Overview</h3>
 
+        <!-- AGENCY INFO -->
         <div id="agency-data" style="display:none;">
           <h4>Agency-Level Data</h4>
           <div class="metric">
@@ -724,6 +732,43 @@
             <span class="metric-value" id="agency-therms">Not yet available</span>
           </div>
         </div>
+
+        <!-- FACILITY INFO -->
+        <div id="facility-data" style="display:none;">
+          <h4>Facility-Level Data</h4>
+          <div class="metric">
+            <span class="metric-label">Facility Name:</span>
+            <span class="metric-value" id="fac-name">N/A</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Address:</span>
+            <span class="metric-value" id="fac-address">N/A</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Existing Use:</span>
+            <span class="metric-value" id="fac-use">N/A</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">EV Chargers (Existing):</span>
+            <span class="metric-value" id="fac-ev-existing">N/A</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Planned EV Chargers:</span>
+            <span class="metric-value" id="fac-ev-planned">N/A</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Existing PV/Battery?</span>
+            <span class="metric-value" id="fac-pv-existing">N/A</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Planned PV (hrs):</span>
+            <span class="metric-value" id="fac-pv-planned">N/A</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Planned Battery (hrs):</span>
+            <span class="metric-value" id="fac-batt-planned">N/A</span>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -738,7 +783,7 @@
       </p>
       <h4>Getting Started</h4>
       <ul>
-        <li>Use the "Search for an agency" box to quickly locate a participating agency.</li>
+        <li>Use the "Search dashboard" box to locate a participating agency or facility.</li>
         <li>Adjust the range filter to focus on agencies with larger or smaller populations.</li>
         <li>Click an agency name to view its details and a list of associated facilities.</li>
       </ul>
@@ -1023,10 +1068,7 @@ const agenciesData = [
   }
 ];
 
-/* ~~~ FACILITIES DATA (FULL) ~~~
-   Renamed "Exisiting ..." => "Existing ..."
-   Renamed "Existing Use? (cooling center or emergency ops)" => "Existing Use"
-*/
+/* ~~~ FACILITIES DATA (FULL) ~~~ */
 const facilitiesData = [
   {
     "Agency": "Bell",
@@ -1039,10 +1081,7 @@ const facilitiesData = [
     "Number of Planned EV Chargers": 2,
     "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 3912,
-    "Planned Battery Storage (hours of autonomy)": 25,
-    "Walk Score (RHOA)": "High",
-    "Sq Ft": 5622,
-    "Yr Built (RHOA)": 1965
+    "Planned Battery Storage (hours of autonomy)": 25
   },
   {
     "Agency": "Bell",
@@ -1055,10 +1094,7 @@ const facilitiesData = [
     "Number of Planned EV Chargers": 2,
     "Existing PV or Battery Capabilities (Yes/No)": "Solar went live in August 2020",
     "Planned PV (hours of autonomy)": 1899,
-    "Planned Battery Storage (hours of autonomy)": 1748,
-    "Walk Score (RHOA)": "High",
-    "Sq Ft": 16011,
-    "Yr Built (RHOA)": 1980
+    "Planned Battery Storage (hours of autonomy)": 1748
   },
   {
     "Agency": "Bell",
@@ -1071,10 +1107,7 @@ const facilitiesData = [
     "Number of Planned EV Chargers": 0,
     "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 664,
-    "Planned Battery Storage (hours of autonomy)": 81,
-    "Walk Score (RHOA)": "Medium",
-    "Sq Ft": 5783,
-    "Yr Built (RHOA)": 1962
+    "Planned Battery Storage (hours of autonomy)": 81
   },
   {
     "Agency": "Bell",
@@ -1087,10 +1120,7 @@ const facilitiesData = [
     "Number of Planned EV Chargers": 0,
     "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 3397,
-    "Planned Battery Storage (hours of autonomy)": 381,
-    "Walk Score (RHOA)": "Medium",
-    "Sq Ft": 7500,
-    "Yr Built (RHOA)": 1955
+    "Planned Battery Storage (hours of autonomy)": 381
   },
   {
     "Agency": "Maywood",
@@ -1103,10 +1133,7 @@ const facilitiesData = [
     "Number of Planned EV Chargers": 4,
     "Existing PV or Battery Capabilities (Yes/No)": "No",
     "Planned PV (hours of autonomy)": 2646,
-    "Planned Battery Storage (hours of autonomy)": 0,
-    "Walk Score (RHOA)": "High",
-    "Sq Ft": 9534,
-    "Yr Built (RHOA)": 1938
+    "Planned Battery Storage (hours of autonomy)": 0
   },
   {
     "Agency": "Maywood",
@@ -1119,10 +1146,7 @@ const facilitiesData = [
     "Number of Planned EV Chargers": 0,
     "Existing PV or Battery Capabilities (Yes/No)": "No",
     "Planned PV (hours of autonomy)": "Whole year",
-    "Planned Battery Storage (hours of autonomy)": "Whole year",
-    "Walk Score (RHOA)": "Medium",
-    "Sq Ft": "N/A",
-    "Yr Built (RHOA)": "N/A"
+    "Planned Battery Storage (hours of autonomy)": "Whole year"
   },
   {
     "Agency": "Maywood",
@@ -1135,10 +1159,7 @@ const facilitiesData = [
     "Number of Planned EV Chargers": 4,
     "Existing PV or Battery Capabilities (Yes/No)": "No",
     "Planned PV (hours of autonomy)": 1140,
-    "Planned Battery Storage (hours of autonomy)": 5,
-    "Walk Score (RHOA)": "Medium",
-    "Sq Ft": 30819,
-    "Yr Built (RHOA)": 1999
+    "Planned Battery Storage (hours of autonomy)": 5
   },
   {
     "Agency": "Maywood",
@@ -1151,10 +1172,7 @@ const facilitiesData = [
     "Number of Planned EV Chargers": 0,
     "Existing PV or Battery Capabilities (Yes/No)": "No",
     "Planned PV (hours of autonomy)": 2311,
-    "Planned Battery Storage (hours of autonomy)": 5,
-    "Walk Score (RHOA)": "High",
-    "Sq Ft": 3382,
-    "Yr Built (RHOA)": 1938
+    "Planned Battery Storage (hours of autonomy)": 5
   },
   {
     "Agency": "Bell Gardens",
@@ -1167,10 +1185,7 @@ const facilitiesData = [
     "Number of Planned EV Chargers": 10,
     "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 3563,
-    "Planned Battery Storage (hours of autonomy)": 13,
-    "Walk Score (RHOA)": "High",
-    "Sq Ft": 9083,
-    "Yr Built (RHOA)": 1976
+    "Planned Battery Storage (hours of autonomy)": 13
   },
   {
     "Agency": "Bell Gardens",
@@ -1183,10 +1198,7 @@ const facilitiesData = [
     "Number of Planned EV Chargers": 0,
     "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 3330,
-    "Planned Battery Storage (hours of autonomy)": 71,
-    "Walk Score (RHOA)": "Low",
-    "Sq Ft": 20000,
-    "Yr Built (RHOA)": 1976
+    "Planned Battery Storage (hours of autonomy)": 71
   },
   {
     "Agency": "Bell Gardens",
@@ -1199,10 +1211,7 @@ const facilitiesData = [
     "Number of Planned EV Chargers": 0,
     "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 3406,
-    "Planned Battery Storage (hours of autonomy)": 11,
-    "Walk Score (RHOA)": "Medium",
-    "Sq Ft": 11446,
-    "Yr Built (RHOA)": 1948
+    "Planned Battery Storage (hours of autonomy)": 11
   },
   {
     "Agency": "Bell Gardens",
@@ -1215,10 +1224,7 @@ const facilitiesData = [
     "Number of Planned EV Chargers": 0,
     "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 5,
-    "Planned Battery Storage (hours of autonomy)": 0,
-    "Walk Score (RHOA)": "Medium",
-    "Sq Ft": 18500,
-    "Yr Built (RHOA)": 1967
+    "Planned Battery Storage (hours of autonomy)": 0
   },
   {
     "Agency": "Pomona",
@@ -1231,10 +1237,7 @@ const facilitiesData = [
     "Number of Planned EV Chargers": 0,
     "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 2057,
-    "Planned Battery Storage (hours of autonomy)": 0,
-    "Walk Score (RHOA)": "High",
-    "Sq Ft": 25977,
-    "Yr Built (RHOA)": 1956
+    "Planned Battery Storage (hours of autonomy)": 0
   },
   {
     "Agency": "Pomona",
@@ -1247,10 +1250,7 @@ const facilitiesData = [
     "Number of Planned EV Chargers": 0,
     "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 2482,
-    "Planned Battery Storage (hours of autonomy)": 14,
-    "Walk Score (RHOA)": "High",
-    "Sq Ft": 44996,
-    "Yr Built (RHOA)": 1969
+    "Planned Battery Storage (hours of autonomy)": 14
   },
   {
     "Agency": "Pomona",
@@ -1263,10 +1263,7 @@ const facilitiesData = [
     "Number of Planned EV Chargers": 19,
     "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 6470,
-    "Planned Battery Storage (hours of autonomy)": 48,
-    "Walk Score (RHOA)": "Low",
-    "Sq Ft": 15704,
-    "Yr Built (RHOA)": 1983
+    "Planned Battery Storage (hours of autonomy)": 48
   },
   {
     "Agency": "Pomona",
@@ -1279,10 +1276,7 @@ const facilitiesData = [
     "Number of Planned EV Chargers": 6,
     "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 4070,
-    "Planned Battery Storage (hours of autonomy)": 883,
-    "Walk Score (RHOA)": "Low",
-    "Sq Ft": 2539,
-    "Yr Built (RHOA)": 1935
+    "Planned Battery Storage (hours of autonomy)": 883
   },
   {
     "Agency": "Irwindale",
@@ -1295,10 +1289,7 @@ const facilitiesData = [
     "Number of Planned EV Chargers": 0,
     "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 1068,
-    "Planned Battery Storage (hours of autonomy)": 1,
-    "Walk Score (RHOA)": "Low",
-    "Sq Ft": 22855,
-    "Yr Built (RHOA)": 1970
+    "Planned Battery Storage (hours of autonomy)": 1
   },
   {
     "Agency": "Irwindale",
@@ -1311,10 +1302,7 @@ const facilitiesData = [
     "Number of Planned EV Chargers": 4,
     "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 4,
-    "Planned Battery Storage (hours of autonomy)": 0,
-    "Walk Score (RHOA)": "Low",
-    "Sq Ft": 20600,
-    "Yr Built (RHOA)": 1957
+    "Planned Battery Storage (hours of autonomy)": 0
   },
   {
     "Agency": "Irwindale",
@@ -1327,10 +1315,7 @@ const facilitiesData = [
     "Number of Planned EV Chargers": 4,
     "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 24,
-    "Planned Battery Storage (hours of autonomy)": 0,
-    "Walk Score (RHOA)": "Low",
-    "Sq Ft": 20678,
-    "Yr Built (RHOA)": 1985
+    "Planned Battery Storage (hours of autonomy)": 0
   },
   {
     "Agency": "Irwindale",
@@ -1343,10 +1328,7 @@ const facilitiesData = [
     "Number of Planned EV Chargers": "N/A",
     "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": "N/A",
-    "Planned Battery Storage (hours of autonomy)": "N/A",
-    "Walk Score (RHOA)": "N/A",
-    "Sq Ft": "N/A",
-    "Yr Built (RHOA)": "N/A"
+    "Planned Battery Storage (hours of autonomy)": "N/A"
   }
 ];
 
@@ -1656,10 +1638,6 @@ async function loadBoundariesAndFacilities() {
 
 /* LAYER TOGGLE SETUP */
 function setupLayerToggles() {
-  // SoCalREN territory => 'scr-territory-fill'
-  // Agency boundaries => 'la-boundaries-extrusion'
-  // Facilities => 'clusters', 'cluster-count', 'unclustered-point'
-
   toggleSCR.addEventListener('change', e => {
     const visible = e.target.checked ? 'visible' : 'none';
     map.setLayoutProperty('scr-territory-fill', 'visibility', visible);
@@ -1683,12 +1661,13 @@ function renderListing() {
   const listingElement = document.getElementById('listing');
   const agencyFilters = document.getElementById('agency-filters');
   const facilityFilters = document.getElementById('facility-filters');
-  const facilityNumericFilters = document.getElementById('facility-numeric-filters');
 
   listingElement.innerHTML = '';
   agencyFilters.style.display = 'block';
   facilityFilters.style.display = 'none';
-  facilityNumericFilters.style.display = 'none';
+
+  // Clear out facility-data
+  document.getElementById('facility-data').style.display = 'none';
 
   // group by COG
   const groups = {};
@@ -1822,8 +1801,6 @@ document.getElementById('ces90-filter').addEventListener('change', filterAgencie
 document.getElementById('pv-filter').addEventListener('change', refreshFacilityList);
 document.getElementById('ev-filter').addEventListener('change', refreshFacilityList);
 document.getElementById('cooling-filter').addEventListener('change', refreshFacilityList);
-
-// Numeric facility filters
 document.getElementById('evChargersMin').addEventListener('input', refreshFacilityList);
 document.getElementById('pvHoursMin').addEventListener('input', refreshFacilityList);
 document.getElementById('batteryHoursMin').addEventListener('input', refreshFacilityList);
@@ -1858,7 +1835,6 @@ function showFacilities(agency, facilityList) {
 
   document.getElementById('agency-filters').style.display = 'none';
   document.getElementById('facility-filters').style.display = 'block';
-  document.getElementById('facility-numeric-filters').style.display = 'block';
 
   // filter the facilities with the current checkboxes + numeric inputs
   const filteredFacilities = filterFacilities(facilityList);
@@ -1868,6 +1844,12 @@ function showFacilities(agency, facilityList) {
       const div = document.createElement('div');
       div.className = 'agency-title';
       div.textContent = f["Facility Name"];
+
+      // On facility click => show facility details
+      div.onclick = () => {
+        showFacilityDetails(f);
+      };
+
       listingElement.appendChild(div);
     });
   } else {
@@ -1946,6 +1928,8 @@ function filterFacilities(facList) {
 function updateAgencyDashboard(agency) {
   document.getElementById('data-overview-title').textContent = agency.Agency + " Data Overview";
   document.getElementById('agency-data').style.display = 'block';
+  document.getElementById('facility-data').style.display = 'none'; // hide facility data initially
+
   const dash = document.getElementById('dashboard');
   dash.style.display = 'block';
 
@@ -1990,6 +1974,29 @@ function updateAgencyDashboard(agency) {
   document.getElementById('agency-therms').textContent = thermVal;
 }
 
+/* SHOW FACILITY DETAILS */
+function showFacilityDetails(fac) {
+  // Show the facility-data block, fill it in
+  document.getElementById('facility-data').style.display = 'block';
+
+  // Hide any existing text from prior facility
+  document.getElementById('fac-name').textContent = fac["Facility Name"] || 'N/A';
+  document.getElementById('fac-address').textContent = fac["Address"] || 'N/A';
+  document.getElementById('fac-use').textContent = fac["Existing Use"] || 'N/A';
+  document.getElementById('fac-ev-existing').textContent = fac["Existing EV Chargers (Yes/No)"] || 'N/A';
+  document.getElementById('fac-ev-planned').textContent = fac["Number of Planned EV Chargers"] || 'N/A';
+  document.getElementById('fac-pv-existing').textContent = fac["Existing PV or Battery Capabilities (Yes/No)"] || 'N/A';
+  document.getElementById('fac-pv-planned').textContent = fac["Planned PV (hours of autonomy)"] || 'N/A';
+  document.getElementById('fac-batt-planned').textContent = fac["Planned Battery Storage (hours of autonomy)"] || 'N/A';
+
+  // Zoom map to facility lat/lon if available
+  const lat = parseFloat(fac.Latitude);
+  const lng = parseFloat(fac.Longitude);
+  if (!isNaN(lat) && !isNaN(lng)) {
+    map.easeTo({ center: [lng, lat], zoom: 15 });
+  }
+}
+
 /* HIGHLIGHT AGENCY & ZOOM */
 function highlightAgency(agency) {
   // Attempt to find the boundary feature that matches
@@ -2017,7 +2024,6 @@ function highlightAgency(agency) {
 
 /* GET BOUNDING BOX FOR A POLYGON GEOMETRY */
 function getBoundingBox(geometry) {
-  // Minimal bounding box for a single Polygon geometry
   let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
   if (geometry.type === 'Polygon') {
     const coords = geometry.coordinates[0];
