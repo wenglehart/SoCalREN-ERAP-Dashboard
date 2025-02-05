@@ -148,7 +148,7 @@
       box-shadow: 0 2px 10px rgba(0,0,0,0.05);
       overflow-x: hidden; /* remove side scroll */
       overflow-y: auto;   /* vertical scrolling if needed */
-      font-size: 14px;    /* reduced text scale in the panel */
+      font-size: 14px;    
       box-sizing: border-box;
     }
 
@@ -164,12 +164,7 @@
       display: none;
     }
 
-    /*
-      Mapbox Geocoder 
-      Now place geocoder top-left. 
-      We'll rely on default styling
-      (no forced flex row).
-    */
+    /* Mapbox Geocoder at top-left */
     .mapboxgl-ctrl-geocoder {
       position: absolute;
       top: 10px;
@@ -190,7 +185,7 @@
     #listing-section,
     #agency-dashboard,
     #intro-section {
-      padding: 10px 15px; /* slightly reduced spacing */
+      padding: 10px 15px; 
     }
     fieldset {
       background: #f9f9f9;
@@ -1290,17 +1285,18 @@ const facilitiesData = [
 ];
 
 /* ============ INITIALIZE MAP ETC ============ */
+let map;
+
 function initMap() {
   map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/streets-v12',
     center: [-118.2437, 34.0522],
-    zoom: 9, /* slightly more zoomed out */
+    zoom: 9,
     pitch: 45
   });
 
-  // Return controls to original positions:
-  // Fullscreen & Zoom top-right, geocoder top-left
+  // Fullscreen & zoom in top-right, geocoder top-left
   map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
   map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
@@ -1319,7 +1315,7 @@ function initMap() {
 
 /* ============ LOAD BOUNDARIES AND FACILITIES =========== */
 async function loadBoundariesAndFacilities() {
-  // 1) Load LA boundaries w/ 3D extrusions
+  // 1) LA boundaries with 3D extrusions
   fetch('data/la_boundaries.geojson')
     .then(resp => resp.json())
     .then(geojson => {
@@ -1344,6 +1340,7 @@ async function loadBoundariesAndFacilities() {
         className: 'boundary-popup'
       });
 
+      // Mousemove => boundary hover info
       map.on('mousemove', 'la-boundaries-extrusion', e => {
         map.getCanvas().style.cursor = 'pointer';
         if (e.features.length > 0) {
@@ -1394,7 +1391,7 @@ async function loadBoundariesAndFacilities() {
         hoveredId = null;
       });
 
-      // click => show that agency's listing
+      // On click => show that agency's listing
       map.on('click', 'la-boundaries-extrusion', e => {
         if (!e.features.length) return;
         const cityName = e.features[0].properties.CITY_COMM_NAME || '';
@@ -1412,7 +1409,7 @@ async function loadBoundariesAndFacilities() {
     })
     .catch(err => console.error('Error loading boundaries:', err));
 
-  // 2) Load SoCalREN territory (outline only)
+  // 2) SoCalREN territory => Transparent Blue Fill
   fetch('data/scr_territory.geojson')
     .then(resp => resp.json())
     .then(scrData => {
@@ -1420,20 +1417,20 @@ async function loadBoundariesAndFacilities() {
         type: 'geojson',
         data: scrData
       });
-      // Outline only, no fill
+      // A fill layer with no outline, transparent blue
       map.addLayer({
-        id: 'scr-territory-outline',
-        type: 'line',
+        id: 'scr-territory-fill',
+        type: 'fill',
         source: 'scr-territory',
         paint: {
-          'line-color': '#F05A28',
-          'line-width': 2
+          'fill-color': 'rgba(0, 128, 255, 0.25)',
+          'fill-outline-color': 'rgba(0,0,0,0)' /* effectively no outline */
         }
       });
     })
     .catch(err => console.error('Error loading scr_territory:', err));
 
-  // 3) Build facility FeatureCollection => clustering
+  // 3) Facilities => cluster
   const facilityFeatures = [];
   facilitiesData.forEach(fac => {
     const lat = parseFloat(fac.Latitude);
@@ -1482,9 +1479,7 @@ async function loadBoundariesAndFacilities() {
       'circle-opacity': 0.9,
       'circle-stroke-width': 2,
       'circle-stroke-color': '#ffffff',
-      'circle-stroke-opacity': 0.9,
-      'circle-pitch-scale': 'viewport',
-      'circle-pitch-alignment': 'map'
+      'circle-stroke-opacity': 0.9
     }
   });
 
@@ -1498,9 +1493,7 @@ async function loadBoundariesAndFacilities() {
       'text-field': '{point_count_abbreviated}',
       'text-font': ['DIN Offc Pro Bold','Arial Unicode MS Bold'],
       'text-size': 16,
-      'text-allow-overlap': true,
-      'text-pitch-alignment': 'viewport',
-      'text-rotation-alignment': 'viewport'
+      'text-allow-overlap': true
     },
     paint: {
       'text-color': '#ffffff',
@@ -1521,9 +1514,7 @@ async function loadBoundariesAndFacilities() {
       'circle-stroke-width': 2,
       'circle-stroke-color': '#ffffff',
       'circle-opacity': 0.9,
-      'circle-stroke-opacity': 0.9,
-      'circle-pitch-scale': 'viewport',
-      'circle-pitch-alignment': 'map'
+      'circle-stroke-opacity': 0.9
     }
   });
 
@@ -1532,6 +1523,7 @@ async function loadBoundariesAndFacilities() {
   map.moveLayer('cluster-count');
   map.moveLayer('unclustered-point');
 
+  // facility popup
   const facilityPopup = new mapboxgl.Popup({
     closeButton: false,
     closeOnClick: false,
@@ -1584,7 +1576,7 @@ async function loadBoundariesAndFacilities() {
   document.getElementById('loading-spinner').style.display = 'none';
 }
 
-/* ============ RENDER AGENCY LISTING RIGHT AWAY =========== */
+/* ============ RENDER AGENCY LISTING ON PAGE LOAD =========== */
 function renderListing() {
   const listingElement = document.getElementById('listing');
   const agencyFilters = document.getElementById('agency-filters');
@@ -1790,19 +1782,16 @@ function filterFacilities(facList) {
   const coolChecked = document.getElementById('cooling-filter').checked;
 
   return facList.filter(f => {
-    // Check for PV
     if (pvChecked) {
       const hasPV = f["Exisiting PV or Battery Capabilities (Yes/No)"] &&
         f["Exisiting PV or Battery Capabilities (Yes/No)"].toLowerCase() !== 'no' &&
         f["Exisiting PV or Battery Capabilities (Yes/No)"].toLowerCase() !== 'n/a';
       if (!hasPV) return false;
     }
-    // Check for EV
     if (evChecked) {
       const evVal = (f["Existing EV Chargers (Yes/No)"] || '').toLowerCase();
       if (!evVal.includes('yes')) return false;
     }
-    // Check for Cooling/Emergency
     if (coolChecked) {
       const usage = (f["Existing Use? (cooling center or emergency ops)"] || '').toLowerCase();
       if (!usage.includes('cooling') && !usage.includes('emergency')) return false;
