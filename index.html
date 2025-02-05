@@ -97,7 +97,7 @@
       width: 100%;
       background: linear-gradient(to right, #2D3E4F, #202f3e);
       color: #ffffff;
-      height: 45px; 
+      height: 45px;
       padding: 5px 20px;
       display: flex;
       align-items: center;
@@ -185,16 +185,10 @@
       padding: 6px 35px !important;
     }
 
-    /* ============ PANEL CONTENT SECTIONS ============ */
-    #filters-section,
-    #listing-section,
-    #agency-dashboard,
-    #intro-section {
-      padding: 10px 15px;
-    }
+    /* REMOVE OUTLINES FROM TOP & MIDDLE SECTIONS */
     fieldset {
+      border: none; /* removed the default fieldset border */
       background: #f9f9f9;
-      border: 1px solid #e0e0e0;
       padding: 10px 12px;
       border-radius: 6px;
       margin-bottom: 8px;
@@ -205,27 +199,10 @@
       color: #2D3E4F;
       font-weight: 600;
     }
-    input[type="text"], input[type="number"] {
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 6px;
-      box-sizing: border-box;
-      font-size: 14px;
-      width: 100%;
-      font-family: 'Aptos', sans-serif;
-      margin-bottom: 6px;
-    }
-    .filters label {
-      display: flex;
-      align-items: center;
-      margin-bottom: 4px;
-      font-size: 14px;
-      color: #2D3E4F;
-      cursor: pointer;
-    }
-    .filters input[type=checkbox] {
-      margin-right: 6px;
-      cursor: pointer;
+
+    /* SPACING BETWEEN SECTIONS IN THE PANEL */
+    .map-overlay section {
+      margin-bottom: 15px; /* adds some space between sections */
     }
 
     #listing {
@@ -233,7 +210,7 @@
       background: #ffffff;
       border: 1px solid #ddd;
       border-radius: 6px;
-      padding: 8px; 
+      padding: 8px;
     }
     #listing h4 {
       margin-top: 0;
@@ -317,7 +294,7 @@
       color: #2D3E4F;
     }
     #agency-data {
-      margin-top: 8px; 
+      margin-top: 8px;
     }
     #agency-data h4 {
       font-size: 14px;
@@ -348,6 +325,7 @@
       color: #34495e;
     }
 
+    /* SPACING BETWEEN BACK BUTTON AND FACILITIES */
     #back-button {
       background-color: #2D3E4F;
       color: white;
@@ -357,7 +335,7 @@
       cursor: pointer;
       font-family: 'Aptos', sans-serif;
       font-size: 13px;
-      margin-bottom: 8px;
+      margin-bottom: 15px; /* additional spacing below back button */
       transition: background-color 0.2s ease;
       display: inline-flex;
       align-items: center;
@@ -377,9 +355,10 @@
       color: #2D3E4F;
       border: 1px solid #bbb;
     }
+    /* Title in bottom area bigger */
     #intro-section h4 {
       margin-top: 0;
-      font-size: 14px;
+      font-size: 18px; /* increased from 14px */
       margin-bottom: 6px;
       color: #2D3E4F;
     }
@@ -419,6 +398,8 @@
       max-width: 800px;
       width: 90%;
       text-align: center;
+      /* Thicker border around welcome popup */
+      border: 3px solid #fff; 
       box-shadow: 0 20px 40px rgba(0,0,0,0.15);
       position: relative;
       animation: slideIn 0.5s ease-out;
@@ -1348,13 +1329,12 @@ const facilitiesData = [
   }
 ];
 
-/* INIT MAP */
 function initMap() {
   map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/streets-v12',
     center: [-118.2437, 34.0522],
-    zoom: 9,
+    zoom: 7, /* Zoomed out further from 9 to 7 */
     pitch: 45
   });
 
@@ -1374,17 +1354,12 @@ function initMap() {
   });
 }
 
-/* LOAD BOUNDARIES, TERRITORY, FACILITIES */
 async function loadBoundariesAndFacilities() {
   // 1) SoCalREN territory => behind everything
   fetch('data/scr_territory.geojson')
     .then(resp => resp.json())
     .then(scrData => {
-      map.addSource('scr-territory', {
-        type: 'geojson',
-        data: scrData
-      });
-      // place behind 'water'
+      map.addSource('scr-territory', { type: 'geojson', data: scrData });
       map.addLayer({
         id: 'scr-territory-fill',
         type: 'fill',
@@ -1397,19 +1372,18 @@ async function loadBoundariesAndFacilities() {
     })
     .catch(err => console.error('Error loading scr_territory:', err));
 
-  // 2) Agency boundaries => fill-extrusion
+  // 2) Agency boundaries => 2D fill, orange w/ partial opacity
   fetch('data/la_boundaries.geojson')
     .then(resp => resp.json())
     .then(geojson => {
       map.addSource('la-boundaries', { type: 'geojson', data: geojson });
       map.addLayer({
         id: 'la-boundaries-extrusion',
-        type: 'fill-extrusion',
+        type: 'fill',
         source: 'la-boundaries',
         paint: {
-          'fill-extrusion-color': '#9A5CA7',
-          'fill-extrusion-height': 50, /* reduced from 500 */
-          'fill-extrusion-opacity': 0.4
+          'fill-color': '#F37B43', 
+          'fill-opacity': 0.5
         }
       });
 
@@ -1422,7 +1396,6 @@ async function loadBoundariesAndFacilities() {
         className: 'boundary-popup'
       });
 
-      // Hover => boundary popup
       map.on('mousemove', 'la-boundaries-extrusion', e => {
         map.getCanvas().style.cursor = 'pointer';
         if (e.features.length) {
@@ -1463,7 +1436,7 @@ async function loadBoundariesAndFacilities() {
         hoveredId = null;
       });
 
-      // Click => show listing
+      // On click => show listing
       map.on('click', 'la-boundaries-extrusion', e => {
         if (!e.features.length) return;
         const cityName = e.features[0].properties.CITY_COMM_NAME || '';
@@ -1481,7 +1454,7 @@ async function loadBoundariesAndFacilities() {
     })
     .catch(err => console.error('Error loading boundaries:', err));
 
-  // 3) Add facility cluster layers
+  // 3) Facilities => cluster
   const facilityFeatures = [];
   facilitiesData.forEach(fac => {
     const lat = parseFloat(fac.Latitude);
@@ -1507,7 +1480,7 @@ async function loadBoundariesAndFacilities() {
     clusterRadius: 50
   });
 
-  // cluster circles
+  // cluster circles (purple)
   map.addLayer({
     id: 'clusters',
     type: 'circle',
@@ -1520,12 +1493,8 @@ async function loadBoundariesAndFacilities() {
         30, 25,
         35
       ],
-      'circle-color': [
-        'step', ['get','point_count'],
-        '#F37B43', 10,
-        '#F05A28', 25,
-        '#9A5CA7'
-      ],
+      // all cluster circles purple
+      'circle-color': '#9A5CA7',
       'circle-opacity': 0.9,
       'circle-stroke-width': 2,
       'circle-stroke-color': '#ffffff',
@@ -1533,7 +1502,7 @@ async function loadBoundariesAndFacilities() {
     }
   });
 
-  // cluster counts
+  // cluster counts (white text)
   map.addLayer({
     id: 'cluster-count',
     type: 'symbol',
@@ -1552,14 +1521,14 @@ async function loadBoundariesAndFacilities() {
     }
   });
 
-  // unclustered facility points
+  // unclustered facility points also purple
   map.addLayer({
     id: 'unclustered-point',
     type: 'circle',
     source: 'facilities',
     filter: ['!',['has','point_count']],
     paint: {
-      'circle-color': '#F37B43',
+      'circle-color': '#9A5CA7',
       'circle-radius': 8,
       'circle-stroke-width': 2,
       'circle-stroke-color': '#ffffff',
