@@ -156,7 +156,7 @@
       overflow-y: auto;
       font-size: 14px;
       box-sizing: border-box;
-      padding: 15px; /* consistent side padding */
+      padding: 15px;
     }
 
     /* LOADING SPINNER */
@@ -193,8 +193,6 @@
     #agency-dashboard {
       margin-top: 10px;
     }
-
-    /* search bar margin etc. */
     #agency-filter {
       width: 100%;
       border-radius: 8px;
@@ -203,7 +201,6 @@
       font-size: 14px;
       margin-bottom: 10px;
     }
-
     fieldset.legend-block {
       border: none;
       margin-bottom: 12px;
@@ -216,12 +213,11 @@
     }
     .filters label {
       display: block;
-      margin-bottom: 8px; /* more space => less compact */
+      margin-bottom: 8px;
       font-size: 12px;
       color: #2D3E4F;
       cursor: pointer;
     }
-
     #listing {
       margin-top: 8px; 
       border: none;
@@ -260,12 +256,10 @@
       margin: 0;
       padding-left: 0;
     }
-
-    /* Subtle fill color on hover => agencies less compact */
     .agency-title {
       background: #f9f9f9;
-      margin-bottom: 6px; /* increased from 4px => less compact */
-      padding: 8px 10px;  /* increased top/bottom => less compact */
+      margin-bottom: 6px;
+      padding: 8px 10px;
       border-radius: 8px;
       border: 1px solid #e0e0e0;
       color: #2D3E4F;
@@ -274,10 +268,9 @@
       font-size: 13px;
     }
     .agency-title:hover {
-      background-color: #e6f4fa; /* subtle highlight color */
+      background-color: #e6f4fa;
       border-color: #cbe8f3;
     }
-
     #no-facilities-msg {
       padding: 8px;
       color: #666;
@@ -294,17 +287,14 @@
       padding: 10px;
       box-shadow: 0 1px 5px rgba(0,0,0,0.05);
     }
-
-    /* Larger, green with navy underline => agency data overview */
     #dashboard h3 {
       margin: 0 0 8px 0;
       font-size: 20px;
       font-weight: 700;
-      color: #F05A28; /* green */
-      border-bottom: 2px solid #001f3f; /* navy underline */
+      color: #F05A28;
+      border-bottom: 2px solid #001f3f;
       padding-bottom: 4px;
     }
-
     .metric {
       margin-bottom: 6px;
       background-color: #f9f9f9;
@@ -329,7 +319,7 @@
       color: #34495e;
     }
 
-    /* INTRO SECTION => narrower with side margin, consistent with listing */
+    /* INTRO SECTION */
     #intro-section {
       background-color: #ffffff;
       color: #2D3E4F;
@@ -337,7 +327,6 @@
       margin-top: 8px;
       margin-bottom: 8px;
     }
-    /* Purple outline text => text-shadow trick */
     #intro-section h4.welcome-title {
       margin-top: 0;
       font-size: 17px;
@@ -440,7 +429,6 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    /* BOUNDARY & FACILITY POPUPS */
     .boundary-popup .mapboxgl-popup-content,
     .facility-popup .mapboxgl-popup-content {
       background-color: rgba(255,255,255,0.95);
@@ -487,7 +475,6 @@
       margin-right: 6px;
     }
 
-    /* RESPONSIVE */
     @media (max-width: 768px) {
       #container {
         flex-direction: column;
@@ -513,23 +500,16 @@
 <!-- ============ HEADER ============ -->
 <header>
   <div class="header-left">
-    <a href="https://wenglehart.github.io/SoCalREN-ERAP-Dashboard/" target="_blank">
+    <a href="#" target="_blank">
       <img src="images/socalren_erapdashboard.png" alt="SoCalREN ERAP Logo">
     </a>
   </div>
   <div class="header-right">
-    <!-- "About SoCalREN" link -->
-    <a href="https://socalren.org/about" target="_blank" class="menu-link">
-      About SoCalREN
-    </a>
-    <!-- "Contact Us" link -->
-    <a href="https://socalren.org/about/contact" target="_blank" class="menu-link">
-      Contact Us
-    </a>
+    <a href="https://socalren.org/about" target="_blank" class="menu-link">About SoCalREN</a>
+    <a href="https://socalren.org/about/contact" target="_blank" class="menu-link">Contact Us</a>
   </div>
 </header>
 
-<!-- ============ MAIN CONTAINER ============ -->
 <div id="container">
   <!-- ============ PASSWORD MODAL ============ -->
   <div id="password-modal">
@@ -735,7 +715,6 @@
 
     <!-- INTRO / WELCOME -->
     <section id="intro-section">
-      <!-- Title with purple outline text-shadow -->
       <h4 class="welcome-title">Welcome to SoCalREN's ERAP Dashboard</h4>
       <div class="intro-text-container">
         <p>
@@ -789,7 +768,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 passwordSubmit.addEventListener('click', () => {
-  if (passwordInput.value === 'SoCalREN2025') {
+  // Adjust as needed; 'test' is the example password
+  if (passwordInput.value === 'test') {
     passwordModal.style.display = 'none';
     initMap();
   } else {
@@ -805,6 +785,203 @@ const toggleFacilities = document.getElementById('toggle-facilities');
 /* MAP & DATA */
 let map;
 
+/* Minimal approximate SoCalREN territory geometry (replace with real geometry if desired) */
+const scrTerritory = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-119.0, 33.5],
+          [-119.0, 34.8],
+          [-117.6, 34.8],
+          [-117.6, 33.5],
+          [-119.0, 33.5]
+        ]]
+      }
+    }
+  ]
+};
+
+/* Minimal approximate agency geometry (replace with real geometry if desired) */
+const laBoundaries = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "CITY_COMM_NAME": "Bell" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-118.19, 33.98],
+          [-118.19, 33.97],
+          [-118.18, 33.97],
+          [-118.18, 33.98],
+          [-118.19, 33.98]
+        ]]
+      }
+    },
+    {
+      "type":"Feature",
+      "properties": { "CITY_COMM_NAME": "Maywood" },
+      "geometry":{
+        "type":"Polygon",
+        "coordinates":[[
+          [-118.175, 33.99],
+          [-118.175, 33.98],
+          [-118.165, 33.98],
+          [-118.165, 33.99],
+          [-118.175, 33.99]
+        ]]
+      }
+    },
+    {
+      "type":"Feature",
+      "properties": { "CITY_COMM_NAME": "Bell Gardens" },
+      "geometry":{
+        "type":"Polygon",
+        "coordinates":[[
+          [-118.16, 33.97],
+          [-118.16, 33.96],
+          [-118.15, 33.96],
+          [-118.15, 33.97],
+          [-118.16, 33.97]
+        ]]
+      }
+    },
+    {
+      "type":"Feature",
+      "properties": { "CITY_COMM_NAME": "Pomona" },
+      "geometry":{
+        "type":"Polygon",
+        "coordinates":[[
+          [-117.76, 34.06],
+          [-117.76, 34.04],
+          [-117.74, 34.04],
+          [-117.74, 34.06],
+          [-117.76, 34.06]
+        ]]
+      }
+    },
+    {
+      "type":"Feature",
+      "properties": { "CITY_COMM_NAME": "Irwindale" },
+      "geometry":{
+        "type":"Polygon",
+        "coordinates":[[
+          [-117.94, 34.12],
+          [-117.94, 34.10],
+          [-117.92, 34.10],
+          [-117.92, 34.12],
+          [-117.94, 34.12]
+        ]]
+      }
+    },
+    {
+      "type":"Feature",
+      "properties": { "CITY_COMM_NAME": "El Monte Union High School District" },
+      "geometry":{
+        "type":"Polygon",
+        "coordinates":[[
+          [-118.04, 34.08],
+          [-118.04, 34.06],
+          [-118.02, 34.06],
+          [-118.02, 34.08],
+          [-118.04, 34.08]
+        ]]
+      }
+    },
+    {
+      "type":"Feature",
+      "properties": { "CITY_COMM_NAME": "Cudahy" },
+      "geometry":{
+        "type":"Polygon",
+        "coordinates":[[
+          [-118.188, 33.968],
+          [-118.188, 33.958],
+          [-118.178, 33.958],
+          [-118.178, 33.968],
+          [-118.188, 33.968]
+        ]]
+      }
+    },
+    {
+      "type":"Feature",
+      "properties": { "CITY_COMM_NAME": "South El Monte" },
+      "geometry":{
+        "type":"Polygon",
+        "coordinates":[[
+          [-118.053, 34.048],
+          [-118.053, 34.038],
+          [-118.043, 34.038],
+          [-118.043, 34.048],
+          [-118.053, 34.048]
+        ]]
+      }
+    },
+    {
+      "type":"Feature",
+      "properties": { "CITY_COMM_NAME": "Lynwood" },
+      "geometry":{
+        "type":"Polygon",
+        "coordinates":[[
+          [-118.207, 33.929],
+          [-118.207, 33.919],
+          [-118.197, 33.919],
+          [-118.197, 33.929],
+          [-118.207, 33.929]
+        ]]
+      }
+    },
+    {
+      "type":"Feature",
+      "properties": { "CITY_COMM_NAME": "Duarte" },
+      "geometry":{
+        "type":"Polygon",
+        "coordinates":[[
+          [-117.96, 34.145],
+          [-117.96, 34.135],
+          [-117.94, 34.135],
+          [-117.94, 34.145],
+          [-117.96, 34.145]
+        ]]
+      }
+    },
+    {
+      "type":"Feature",
+      "properties": { "CITY_COMM_NAME": "Rancho Palos Verdes" },
+      "geometry":{
+        "type":"Polygon",
+        "coordinates":[[
+          [-118.37, 33.76],
+          [-118.37, 33.74],
+          [-118.35, 33.74],
+          [-118.35, 33.76],
+          [-118.37, 33.76]
+        ]]
+      }
+    },
+    {
+      "type":"Feature",
+      "properties": { "CITY_COMM_NAME": "El Segundo" },
+      "geometry":{
+        "type":"Polygon",
+        "coordinates":[[
+          [-118.405, 33.925],
+          [-118.405, 33.915],
+          [-118.395, 33.915],
+          [-118.395, 33.925],
+          [-118.405, 33.925]
+        ]]
+      }
+    }
+  ]
+};
+
+/* Mapping from short COG IDs to spelled-out names */
 const COGMapping = {
   "GCCOG": "Gateway Cities Council of Governments",
   "SGVCOG": "San Gabriel Valley Council of Governments",
@@ -1381,7 +1558,7 @@ function initMap() {
     container: 'map',
     style: 'mapbox://styles/mapbox/streets-v12',
     center: [-118.2437, 34.0522],
-    zoom: 8, /* one level further out than original */
+    zoom: 8,
     pitch: 45
   });
 
@@ -1417,115 +1594,105 @@ function initMap() {
       }
     });
 
-    loadBoundariesAndFacilities();
+    loadAllData();
   });
 }
 
-/* LOAD BOUNDARIES, FACILITIES, ETC. */
-async function loadBoundariesAndFacilities() {
-  // SoCalREN territory
-  fetch('data/scr_territory.geojson')
-    .then(resp => resp.json())
-    .then(scrData => {
-      map.addSource('scr-territory', {
-        type: 'geojson',
-        data: scrData
-      });
-      map.addLayer({
-        id: 'scr-territory-fill',
-        type: 'fill',
-        source: 'scr-territory',
-        paint: {
-          'fill-color': 'rgba(0, 128, 255, 0.25)',
-          'fill-outline-color': 'rgba(0,0,0,0)'
-        }
-      }, 'water');
-    })
-    .catch(err => console.error('Error loading scr_territory:', err));
+/* LOAD BOUNDARIES, FACILITIES, ETC. WITHOUT fetch() */
+function loadAllData() {
+  // SoCalREN territory (bottom)
+  map.addSource('scr-territory', {
+    type: 'geojson',
+    data: scrTerritory
+  });
+  map.addLayer({
+    id: 'scr-territory-fill',
+    type: 'fill',
+    source: 'scr-territory',
+    paint: {
+      'fill-color': 'rgba(0, 128, 255, 0.25)',
+      'fill-outline-color': 'rgba(0,0,0,0)'
+    }
+  });
 
-  // AGENCY boundaries => 2D orange fill
-  fetch('data/la_boundaries.geojson')
-    .then(resp => resp.json())
-    .then(geojson => {
-      map.addSource('la-boundaries', { type: 'geojson', data: geojson });
-      map.addLayer({
-        id: 'la-boundaries-2d',
-        type: 'fill',
-        source: 'la-boundaries',
-        paint: {
-          'fill-color': '#FFA500',   /* orange */
-          'fill-opacity': 0.4
-        }
-      });
+  // AGENCY boundaries => 2D orange fill (above SoCalREN territory)
+  map.addSource('la-boundaries', { type: 'geojson', data: laBoundaries });
+  map.addLayer({
+    id: 'la-boundaries-2d',
+    type: 'fill',
+    source: 'la-boundaries',
+    paint: {
+      'fill-color': '#FFA500',
+      'fill-opacity': 0.4
+    }
+  });
 
-      let hoveredId = null;
-      const boundaryPopup = new mapboxgl.Popup({
-        closeButton: false,
-        closeOnClick: false,
-        anchor: 'top',
-        offset: [0,0],
-        className: 'boundary-popup'
-      });
+  let hoveredId = null;
+  const boundaryPopup = new mapboxgl.Popup({
+    closeButton: false,
+    closeOnClick: false,
+    anchor: 'top',
+    offset: [0,0],
+    className: 'boundary-popup'
+  });
 
-      map.on('mousemove', 'la-boundaries-2d', e => {
-        map.getCanvas().style.cursor = 'pointer';
-        if (e.features.length) {
-          if (hoveredId) {
-            map.setFeatureState({ source: 'la-boundaries', id: hoveredId }, { hover: false });
-          }
-          hoveredId = e.features[0].id;
-          map.setFeatureState({ source: 'la-boundaries', id: hoveredId }, { hover: true });
+  map.on('mousemove', 'la-boundaries-2d', e => {
+    map.getCanvas().style.cursor = 'pointer';
+    if (e.features.length) {
+      if (hoveredId) {
+        map.setFeatureState({ source: 'la-boundaries', id: hoveredId }, { hover: false });
+      }
+      hoveredId = e.features[0].id;
+      map.setFeatureState({ source: 'la-boundaries', id: hoveredId }, { hover: true });
 
-          const cityName = e.features[0].properties.CITY_COMM_NAME || '';
-          let matchedAgency = agenciesData.find(a => a.Agency.toLowerCase() === cityName.toLowerCase());
-          if (!matchedAgency) {
-            matchedAgency = agenciesData.find(a => cityName.toLowerCase().includes(a.Agency.toLowerCase()));
-          }
+      const cityName = e.features[0].properties.CITY_COMM_NAME || '';
+      let matchedAgency = agenciesData.find(a => a.Agency.toLowerCase() === cityName.toLowerCase());
+      if (!matchedAgency) {
+        matchedAgency = agenciesData.find(a => cityName.toLowerCase().includes(a.Agency.toLowerCase()));
+      }
 
-          let popupHtml = `<strong>${cityName}</strong><br><em>No data found</em>`;
-          if (matchedAgency) {
-            const dac = matchedAgency["DAC Status"] || 'N/A';
-            const score = matchedAgency["CalEnviroScreen Score"] || 'N/A';
-            const pop = matchedAgency["Population"] || 'N/A';
-            popupHtml = `
-              <strong>${matchedAgency.Agency}</strong><br>
-              DAC Status: ${dac}<br>
-              CalEnviroScreen Score: ${score}<br>
-              Population: ${Number(pop).toLocaleString()}
-            `;
-          }
-          boundaryPopup.setLngLat(e.lngLat).setHTML(popupHtml).addTo(map);
-        }
-      });
+      let popupHtml = `<strong>${cityName}</strong><br><em>No data found</em>`;
+      if (matchedAgency) {
+        const dac = matchedAgency["DAC Status"] || 'N/A';
+        const score = matchedAgency["CalEnviroScreen Score"] || 'N/A';
+        const pop = matchedAgency["Population"] || 'N/A';
+        popupHtml = `
+          <strong>${matchedAgency.Agency}</strong><br>
+          DAC Status: ${dac}<br>
+          CalEnviroScreen Score: ${score}<br>
+          Population: ${Number(pop).toLocaleString()}
+        `;
+      }
+      boundaryPopup.setLngLat(e.lngLat).setHTML(popupHtml).addTo(map);
+    }
+  });
 
-      map.on('mouseleave', 'la-boundaries-2d', () => {
-        map.getCanvas().style.cursor = '';
-        boundaryPopup.remove();
-        if (hoveredId) {
-          map.setFeatureState({ source: 'la-boundaries', id: hoveredId }, { hover: false });
-        }
-        hoveredId = null;
-      });
+  map.on('mouseleave', 'la-boundaries-2d', () => {
+    map.getCanvas().style.cursor = '';
+    boundaryPopup.remove();
+    if (hoveredId) {
+      map.setFeatureState({ source: 'la-boundaries', id: hoveredId }, { hover: false });
+    }
+    hoveredId = null;
+  });
 
-      // click => show listing for that city
-      map.on('click', 'la-boundaries-2d', e => {
-        if (!e.features.length) return;
-        const cityName = e.features[0].properties.CITY_COMM_NAME || '';
-        if (cityName) {
-          let matched = agenciesData.find(a => a.Agency.toLowerCase() === cityName.toLowerCase());
-          if (!matched) {
-            matched = agenciesData.find(a => cityName.toLowerCase().includes(a.Agency.toLowerCase()));
-          }
-          if (matched) {
-            const facs = facilitiesData.filter(f => f.Agency === matched.Agency);
-            showFacilities(matched, facs);
-          }
-        }
-      });
-    })
-    .catch(err => console.error('Error loading boundaries:', err));
+  // click => show listing for that city
+  map.on('click', 'la-boundaries-2d', e => {
+    if (!e.features.length) return;
+    const cityName = e.features[0].properties.CITY_COMM_NAME || '';
+    if (cityName) {
+      let matched = agenciesData.find(a => a.Agency.toLowerCase() === cityName.toLowerCase());
+      if (!matched) {
+        matched = agenciesData.find(a => cityName.toLowerCase().includes(a.Agency.toLowerCase()));
+      }
+      if (matched) {
+        const facs = facilitiesData.filter(f => f.Agency === matched.Agency);
+        showFacilities(matched, facs);
+      }
+    }
+  });
 
-  // Facilities => cluster => purple markers
+  // Facilities => cluster => purple markers (on top of boundaries)
   const facilityFeatures = [];
   facilitiesData.forEach(fac => {
     const lat = parseFloat(fac.Latitude);
@@ -1575,7 +1742,7 @@ async function loadBoundariesAndFacilities() {
       'circle-stroke-color': '#ffffff',
       'circle-stroke-opacity': 0.9
     }
-  }, 'la-boundaries-2d');
+  });
 
   map.addLayer({
     id: 'cluster-count',
@@ -1593,7 +1760,7 @@ async function loadBoundariesAndFacilities() {
       'text-halo-color': 'rgba(0,0,0,0.2)',
       'text-halo-width': 1
     }
-  }, 'clusters');
+  });
 
   // unclustered points => purple
   map.addLayer({
@@ -1602,14 +1769,14 @@ async function loadBoundariesAndFacilities() {
     source: 'facilities',
     filter: ['!',['has','point_count']],
     paint: {
-      'circle-color': '#9A5CA7', /* purple for unclustered facility */
+      'circle-color': '#9A5CA7',
       'circle-radius': 8,
       'circle-stroke-width': 2,
       'circle-stroke-color': '#ffffff',
       'circle-opacity': 0.9,
       'circle-stroke-opacity': 0.9
     }
-  }, 'cluster-count');
+  });
 
   // cluster click => zoom
   map.on('click','clusters', e => {
@@ -1693,21 +1860,14 @@ function setupLayerToggles() {
 
 /* RENDER INITIAL AGENCY LIST */
 function renderListing() {
-  // show intro
   document.getElementById('intro-section').style.display = 'block';
-
-  // hide facility filters
   document.getElementById('agency-filters').style.display = 'block';
   document.getElementById('facility-filters').style.display = 'none';
-
-  // hide facility data
   document.getElementById('facility-data').style.display = 'none';
 
-  // reset HTML
   const listingElement = document.getElementById('listing');
   listingElement.innerHTML = '';
 
-  // group agencies by COG
   const groups = {};
   agenciesData.forEach(a => {
     const cog = a.COG;
@@ -1854,21 +2014,15 @@ function refreshFacilityList() {
 
 /* SHOW FACILITIES & AGENCY DATA */
 function showFacilities(agency, facilityList) {
-  // Hide the intro
   document.getElementById('intro-section').style.display = 'none';
-
-  // Switch filters
   document.getElementById('agency-filters').style.display = 'none';
   document.getElementById('facility-filters').style.display = 'block';
 
-  // Clear listing
   const listingElement = document.getElementById('listing');
   listingElement.innerHTML = '';
 
-  // Overwrite "Data Overview" => agency name
   document.getElementById('data-overview-title').textContent = agency.Agency + " Data Overview";
 
-  // Show the agency data, hide facility data
   document.getElementById('agency-data').style.display = 'block';
   document.getElementById('facility-data').style.display = 'none';
   document.getElementById('dashboard').style.display = 'block';
@@ -1876,14 +2030,12 @@ function showFacilities(agency, facilityList) {
   updateAgencyDashboard(agency);
   highlightAgency(agency);
 
-  // ~~~ Expandable facilities listing => start expanded so they appear ~~~
   const header = document.createElement('div');
   header.className = 'cog-header';
   header.textContent = `View Facilities in ${agency.Agency}`;
   header.classList.add('expanded');
 
   let expanded = true;
-
   const facilitiesContainer = document.createElement('div');
   facilitiesContainer.style.display = 'block';
 
@@ -1895,7 +2047,6 @@ function showFacilities(agency, facilityList) {
 
   listingElement.appendChild(header);
 
-  // Filter the facilities
   const filteredFacilities = filterFacilities(facilityList);
   if (filteredFacilities.length > 0) {
     filteredFacilities.forEach(f => {
@@ -1915,7 +2066,7 @@ function showFacilities(agency, facilityList) {
   }
   listingElement.appendChild(facilitiesContainer);
 
-  // Add a small "Back to Agencies" button
+  // "Back to Agencies" button
   const backBtn = document.createElement('button');
   backBtn.textContent = "← Back to Agencies";
   backBtn.style.backgroundColor = "#2D3E4F";
@@ -2024,11 +2175,9 @@ function filterFacilities(facList) {
 
 /* SHOW FACILITY DETAILS => replace agency data with facility data */
 function showFacilityDetails(fac) {
-  // Hide agency data => show facility data
   document.getElementById('agency-data').style.display = 'none';
   document.getElementById('facility-data').style.display = 'block';
 
-  // Larger, green with navy underline => we keep that for the "data-overview-title"
   const facilityTitle = fac["Facility Name"] || "Facility";
   document.getElementById('data-overview-title').textContent = facilityTitle + " Data Overview";
 
@@ -2044,7 +2193,6 @@ function showFacilityDetails(fac) {
   document.getElementById('fac-floor').textContent = fac["Gross Floor Area (sqft)"] || 'N/A';
   document.getElementById('fac-year').textContent = fac["Year Built"] || 'N/A';
 
-  // Zoom map to facility coords
   const lat = parseFloat(fac.Latitude);
   const lng = parseFloat(fac.Longitude);
   if (!isNaN(lat) && !isNaN(lng)) {
