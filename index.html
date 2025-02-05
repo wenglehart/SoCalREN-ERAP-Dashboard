@@ -62,6 +62,12 @@
       width: 400px;
       text-align: center;
     }
+    #password-modal-content h2 {
+      margin-bottom: 20px;
+      color: #2c3e50;
+      font-size: 16px;
+      line-height: 1.4;
+    }
     #password-input {
       width: 100%;
       padding: 10px;
@@ -291,7 +297,6 @@
     #agency-dashboard {
       padding: 15px 20px;
       border-bottom: 1px solid #e0e0e0;
-      /* We'll show the agency-level data here */
     }
     #dashboard {
       background-color: #ffffff;
@@ -526,10 +531,10 @@
 
 <!-- ============ MAIN CONTAINER ============ -->
 <div id="container">
-  <!-- ============ MAP ============ -->
+  <!-- ============ MAP (70%) ============ -->
   <div id="map"></div>
 
-  <!-- ============ PANEL ============ -->
+  <!-- ============ PANEL (30%) ============ -->
   <div class="map-overlay" id="dashboard-panel">
 
     <!-- ~~~ FILTERS SECTION ~~~ -->
@@ -684,13 +689,13 @@
 </div>
 
 <script>
-/* ============ PASSWORD PROMPT LOGIC ============ */
+/* ============ PASSWORD PROMPT ============ */
 const passwordModal = document.getElementById('password-modal');
 const passwordInput = document.getElementById('password-input');
 const passwordSubmit = document.getElementById('password-submit');
 
 document.addEventListener('DOMContentLoaded', () => {
-  passwordModal.style.display = 'flex'; // Show password modal on page load
+  passwordModal.style.display = 'flex'; // Show on load
 });
 
 passwordSubmit.addEventListener('click', () => {
@@ -698,7 +703,7 @@ passwordSubmit.addEventListener('click', () => {
     passwordModal.style.display = 'none';
     initMap();
   } else {
-    location.reload(); // If incorrect => reload
+    location.reload();
   }
 });
 
@@ -713,7 +718,7 @@ const COGMapping = {
   "SBCOG": "South Bay Cities Council of Governments"
 };
 
-/* ============ AGENCIES DATA (UPDATED) =========== */
+/* ============ AGENCIES DATA (FULL) =========== */
 const agenciesData = [
   {
     "Agency": "Bell",
@@ -933,7 +938,7 @@ const agenciesData = [
   }
 ];
 
-/* ============ FACILITIES DATA =========== */
+/* ============ FACILITIES DATA (FULL) =========== */
 const facilitiesData = [
   {
     "Agency": "Bell",
@@ -952,9 +957,312 @@ const facilitiesData = [
     "Sq Ft": 5622,
     "Yr Built (RHOA)": 1965
   },
-  /* ...TRUNCATION REMOVED. 
-     Keep all of your facility objects exactly as in prior code for completeness. 
-     Ensure each facility's data matches the original code. */
+  {
+    "Agency": "Bell",
+    "Facility Name": "Community Center",
+    "Address": "6250 Pine Ave, Bell, CA",
+    "Latitude": 33.979983,
+    "Longitude": -118.188726,
+    "Existing Use? (cooling center or emergency ops)": "Cooling Center",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 2,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "Solar went live in August 2020",
+    "Planned PV (hours of autonomy)": 1899,
+    "Planned Battery Storage (hours of autonomy)": 1748,
+    "Existing use": "Community center",
+    "Walk Score (RHOA)": "High",
+    "Sq Ft": 16011,
+    "Yr Built (RHOA)": 1980
+  },
+  {
+    "Agency": "Bell",
+    "Facility Name": "Camp Little Bear Park",
+    "Address": "6704 Orchard Ave, Bell, CA",
+    "Latitude": 33.976608,
+    "Longitude": -118.19976,
+    "Existing Use? (cooling center or emergency ops)": "N/A",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 0,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 664,
+    "Planned Battery Storage (hours of autonomy)": 81,
+    "Existing use": "Park",
+    "Walk Score (RHOA)": "Medium",
+    "Sq Ft": 5783,
+    "Yr Built (RHOA)": 1962
+  },
+  {
+    "Agency": "Bell",
+    "Facility Name": "Veterans Memorial Park",
+    "Address": "6500 Wilcox Ave, Bell, CA",
+    "Latitude": 33.975866,
+    "Longitude": -118.176767,
+    "Existing Use? (cooling center or emergency ops)": "Cooling Center",
+    "Existing EV Chargers (Yes/No)": "No Capacity",
+    "Number of Planned EV Chargers": 0,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 3397,
+    "Planned Battery Storage (hours of autonomy)": 381,
+    "Existing use": "Park",
+    "Walk Score (RHOA)": "Medium",
+    "Sq Ft": 7500,
+    "Yr Built (RHOA)": 1955
+  },
+  {
+    "Agency": "Maywood",
+    "Facility Name": "City Hall + Sheriff's Office",
+    "Address": "4319 Slauson Ave, Bell, CA",
+    "Latitude": 33.986554,
+    "Longitude": -118.170803,
+    "Existing Use? (cooling center or emergency ops)": "Cooling Center",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 4,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "No",
+    "Planned PV (hours of autonomy)": 2646,
+    "Planned Battery Storage (hours of autonomy)": 0,
+    "Existing use": "Office",
+    "Walk Score (RHOA)": "High",
+    "Sq Ft": 9534,
+    "Yr Built (RHOA)": 1938
+  },
+  {
+    "Agency": "Maywood",
+    "Facility Name": "Teen Center",
+    "Address": "4801 E. Slauson Ave, Bell, CA",
+    "Latitude": 33.986554,
+    "Longitude": -118.170803,
+    "Existing Use? (cooling center or emergency ops)": "N/A",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 0,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "No",
+    "Planned PV (hours of autonomy)": "Whole year",
+    "Planned Battery Storage (hours of autonomy)": "Whole year",
+    "Existing use": "Community center",
+    "Walk Score (RHOA)": "Medium",
+    "Sq Ft": "N/A",
+    "Yr Built (RHOA)": "N/A"
+  },
+  {
+    "Agency": "Maywood",
+    "Facility Name": "(YMCA) Maywood Park",
+    "Address": "4801 E. 58th St, Bell, CA",
+    "Latitude": 33.98746,
+    "Longitude": -118.178804,
+    "Existing Use? (cooling center or emergency ops)": "N/A",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 4,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "No",
+    "Planned PV (hours of autonomy)": 1140,
+    "Planned Battery Storage (hours of autonomy)": 5,
+    "Existing use": "Community center",
+    "Walk Score (RHOA)": "Medium",
+    "Sq Ft": 30819,
+    "Yr Built (RHOA)": 1999
+  },
+  {
+    "Agency": "Maywood",
+    "Facility Name": "Cesar Chavez Library",
+    "Address": "4323 Slauson Ave, Bell, CA",
+    "Latitude": 33.986554,
+    "Longitude": -118.170803,
+    "Existing Use? (cooling center or emergency ops)": "N/A",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 0,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "No",
+    "Planned PV (hours of autonomy)": 2311,
+    "Planned Battery Storage (hours of autonomy)": 5,
+    "Existing use": "Library",
+    "Walk Score (RHOA)": "High",
+    "Sq Ft": 3382,
+    "Yr Built (RHOA)": 1938
+  },
+  {
+    "Agency": "Bell Gardens",
+    "Facility Name": "Ford Park and Recreation Center",
+    "Address": "8000 Park Lane, Bell, CA",
+    "Latitude": 33.959218,
+    "Longitude": -118.154753,
+    "Existing Use? (cooling center or emergency ops)": "N/A",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 10,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 3563,
+    "Planned Battery Storage (hours of autonomy)": 13,
+    "Existing use": "Community center",
+    "Walk Score (RHOA)": "High",
+    "Sq Ft": 9083,
+    "Yr Built (RHOA)": 1976
+  },
+  {
+    "Agency": "Bell Gardens",
+    "Facility Name": "Community Family Services Center & Veterans Park",
+    "Address": "6662 Loveland St, Bell, CA",
+    "Latitude": 33.968177,
+    "Longitude": -118.143887,
+    "Existing Use? (cooling center or emergency ops)": "N/A",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 0,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 3330,
+    "Planned Battery Storage (hours of autonomy)": 71,
+    "Existing use": "Community center",
+    "Walk Score (RHOA)": "Low",
+    "Sq Ft": 20000,
+    "Yr Built (RHOA)": 1976
+  },
+  {
+    "Agency": "Bell Gardens",
+    "Facility Name": "Youth Center",
+    "Address": "5856 Ludell St, Bell, CA",
+    "Latitude": 33.968683,
+    "Longitude": -118.160906,
+    "Existing Use? (cooling center or emergency ops)": "N/A",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 0,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 3406,
+    "Planned Battery Storage (hours of autonomy)": 11,
+    "Existing use": "Community center",
+    "Walk Score (RHOA)": "Medium",
+    "Sq Ft": 11446,
+    "Yr Built (RHOA)": 1948
+  },
+  {
+    "Agency": "Bell Gardens",
+    "Facility Name": "Civic Center",
+    "Address": "7100 Garfield St, Bell, CA",
+    "Latitude": 33.967687,
+    "Longitude": -118.150114,
+    "Existing Use? (cooling center or emergency ops)": "N/A",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 0,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 5,
+    "Planned Battery Storage (hours of autonomy)": 0,
+    "Existing use": "City Hall",
+    "Walk Score (RHOA)": "Medium",
+    "Sq Ft": 18500,
+    "Yr Built (RHOA)": 1967
+  },
+  {
+    "Agency": "Pomona",
+    "Facility Name": "Library",
+    "Address": "625 S Garey Ave, Pomona, CA",
+    "Latitude": 34.053897,
+    "Longitude": -117.750631,
+    "Existing Use? (cooling center or emergency ops)": "Cooling Center",
+    "Existing EV Chargers (Yes/No)": "Yes",
+    "Number of Planned EV Chargers": 0,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 2057,
+    "Planned Battery Storage (hours of autonomy)": 0,
+    "Existing use": "Library",
+    "Walk Score (RHOA)": "High",
+    "Sq Ft": 25977,
+    "Yr Built (RHOA)": 1956
+  },
+  {
+    "Agency": "Pomona",
+    "Facility Name": "City Hall",
+    "Address": "505 S Garey Ave, Pomona, CA",
+    "Latitude": 34.054554,
+    "Longitude": -117.751251,
+    "Existing Use? (cooling center or emergency ops)": "N/A",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 0,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 2482,
+    "Planned Battery Storage (hours of autonomy)": 14,
+    "Existing use": "Office",
+    "Walk Score (RHOA)": "High",
+    "Sq Ft": 44996,
+    "Yr Built (RHOA)": 1969
+  },
+  {
+    "Agency": "Pomona",
+    "Facility Name": "Palomares Park",
+    "Address": "499 E Arrow Hwy, Pomona, CA",
+    "Latitude": 34.090168,
+    "Longitude": -117.742428,
+    "Existing Use? (cooling center or emergency ops)": "Cooling Center",
+    "Existing EV Chargers (Yes/No)": "Yes",
+    "Number of Planned EV Chargers": 19,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 6470,
+    "Planned Battery Storage (hours of autonomy)": 48,
+    "Existing use": "Community center",
+    "Walk Score (RHOA)": "Low",
+    "Sq Ft": 15704,
+    "Yr Built (RHOA)": 1983
+  },
+  {
+    "Agency": "Pomona",
+    "Facility Name": "Washington Senior Center",
+    "Address": "865 E Granf Ave, Pomona, CA",
+    "Latitude": 34.048184,
+    "Longitude": -117.739664,
+    "Existing Use? (cooling center or emergency ops)": "Cooling Center",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 6,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 4070,
+    "Planned Battery Storage (hours of autonomy)": 883,
+    "Existing use": "Senior Center",
+    "Walk Score (RHOA)": "Low",
+    "Sq Ft": 2539,
+    "Yr Built (RHOA)": 1935
+  },
+  {
+    "Agency": "Irwindale",
+    "Facility Name": "Dan Diaz Recreation Center and Library",
+    "Address": "16053 Calle De Paseo, Irwindale, CA",
+    "Latitude": 34.103841,
+    "Longitude": -117.932137,
+    "Existing Use? (cooling center or emergency ops)": "N/A",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 0,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 1068,
+    "Planned Battery Storage (hours of autonomy)": 1,
+    "Existing use": "Library and recreation center",
+    "Walk Score (RHOA)": "Low",
+    "Sq Ft": 22855,
+    "Yr Built (RHOA)": 1970
+  },
+  {
+    "Agency": "Irwindale",
+    "Facility Name": "City Hall and Police Department",
+    "Address": "5050 N Irwindale Ave, Irwindale, CA",
+    "Latitude": 34.127586,
+    "Longitude": -117.933637,
+    "Existing Use? (cooling center or emergency ops)": "Emergency Operations Center",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 4,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 4,
+    "Planned Battery Storage (hours of autonomy)": 0,
+    "Existing use": "Office",
+    "Walk Score (RHOA)": "Low",
+    "Sq Ft": 20600,
+    "Yr Built (RHOA)": 1957
+  },
+  {
+    "Agency": "Irwindale",
+    "Facility Name": "Senior Center and Annex",
+    "Address": "16116 Arrow Hwy, Irwindale, CA",
+    "Latitude": 34.106818,
+    "Longitude": -117.930958,
+    "Existing Use? (cooling center or emergency ops)": "Cooling Center",
+    "Existing EV Chargers (Yes/No)": "No",
+    "Number of Planned EV Chargers": 4,
+    "Exisiting PV or Battery Capabilities (Yes/No)": "N/A",
+    "Planned PV (hours of autonomy)": 24,
+    "Planned Battery Storage (hours of autonomy)": 0,
+    "Existing use": "Multi-purpose/ office",
+    "Walk Score (RHOA)": "Low",
+    "Sq Ft": 20678,
+    "Yr Built (RHOA)": 1985
+  },
   {
     "Agency": "Irwindale",
     "Facility Name": "New Library (Planned for 2026)",
@@ -1029,7 +1337,7 @@ async function loadBoundariesAndFacilities() {
         className: 'boundary-popup'
       });
 
-      // Hover => show city
+      // Hover => show Agency Name, DAC Status, Score, Population
       map.on('mousemove', 'la-boundaries-extrusion', e => {
         map.getCanvas().style.cursor = 'pointer';
         if (e.features.length > 0) {
@@ -1053,12 +1361,15 @@ async function loadBoundariesAndFacilities() {
 
           let popupHtml = `<strong>${cityName}</strong><br><em>No data found</em>`;
           if (matchedAgency) {
-            const pop = matchedAgency.Population || 'N/A';
-            const income = matchedAgency["Average Household Income"] || 'N/A';
+            const dac = matchedAgency["DAC Status"] || 'N/A';
+            const score = matchedAgency["CalEnviroScreen Score"] || 'N/A';
+            const pop = matchedAgency["Population"] || 'N/A';
+
             popupHtml = `
               <strong>${matchedAgency.Agency}</strong><br>
-              Population: ${Number(pop).toLocaleString()}<br>
-              Income: $${Number(income).toLocaleString()}
+              DAC Status: ${dac}<br>
+              CalEnviroScreen Score: ${score}<br>
+              Population: ${Number(pop).toLocaleString()}
             `;
           }
           boundaryPopup.setLngLat(e.lngLat).setHTML(popupHtml).addTo(map);
@@ -1077,7 +1388,7 @@ async function loadBoundariesAndFacilities() {
         hoveredId = null;
       });
 
-      // Click => show that agency's listing
+      // On click => show that agency’s listing/facilities
       map.on('click', 'la-boundaries-extrusion', e => {
         if (!e.features.length) return;
         const cityName = e.features[0].properties.CITY_COMM_NAME || '';
@@ -1095,7 +1406,7 @@ async function loadBoundariesAndFacilities() {
     })
     .catch(err => console.error('Error loading boundaries:', err));
 
-  // Build facility FeatureCollection for markers
+  // Build facility FeatureCollection
   const facilityFeatures = [];
   facilitiesData.forEach(fac => {
     const lat = parseFloat(fac.Latitude);
@@ -1103,10 +1414,7 @@ async function loadBoundariesAndFacilities() {
     if (!isNaN(lat) && !isNaN(lng)) {
       facilityFeatures.push({
         type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: [lng, lat]
-        },
+        geometry: { type: 'Point', coordinates: [lng, lat] },
         properties: { ...fac }
       });
     }
@@ -1192,12 +1500,12 @@ async function loadBoundariesAndFacilities() {
     }
   });
 
-  // reorder to appear above extrusions
+  // Reorder to ensure on top
   map.moveLayer('clusters');
   map.moveLayer('cluster-count');
   map.moveLayer('unclustered-point');
 
-  // facility hover popup
+  // Facility popup on hover => Name, Address, Existing use
   const facilityPopup = new mapboxgl.Popup({
     closeButton: false,
     closeOnClick: false,
@@ -1209,10 +1517,15 @@ async function loadBoundariesAndFacilities() {
   map.on('mouseenter', 'unclustered-point', e => {
     map.getCanvas().style.cursor = 'pointer';
     const props = e.features[0].properties;
+
+    const name = props["Facility Name"] || "Unknown Facility";
+    const address = props["Address"] || "N/A";
+    const usage = props["Existing use"] || "N/A";
+
     const content = `
-      <strong>${props["Facility Name"] || "Unknown Facility"}</strong><br>
-      Existing Use: ${props["Existing use"] || "N/A"}<br>
-      EV Chargers: ${props["Existing EV Chargers (Yes/No)"] || "N/A"}
+      <strong>${name}</strong><br>
+      Address: ${address}<br>
+      Existing use: ${usage}
     `;
     facilityPopup.setLngLat(e.lngLat).setHTML(content).addTo(map);
   });
@@ -1222,7 +1535,7 @@ async function loadBoundariesAndFacilities() {
     facilityPopup.remove();
   });
 
-  // cluster click => zoom
+  // cluster click => zoom in
   map.on('click','clusters', e => {
     const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
     if (!features.length) return;
@@ -1233,7 +1546,7 @@ async function loadBoundariesAndFacilities() {
     });
   });
 
-  // unclustered point click => show facility’s agency
+  // unclustered point click => show facilities for that agency
   map.on('click','unclustered-point', e => {
     const props = e.features[0].properties;
     const matchedAgency = agenciesData.find(a => a.Agency === props["Agency"]);
@@ -1305,7 +1618,7 @@ function renderListing() {
   }
 }
 
-/* ============ AGENCY FILTERS =========== */
+/* ============ FILTER AGENCIES =========== */
 function filterAgencies() {
   const minPop = parseInt(document.getElementById('population-min').value) || 0;
   const maxPop = parseInt(document.getElementById('population-max').value) || Infinity;
@@ -1428,8 +1741,6 @@ function showFacilities(agency, facilityList) {
       const div = document.createElement('div');
       div.className = 'agency-title';
       div.textContent = f["Facility Name"];
-      // No expanded facility info is shown here; 
-      // you may add a dropdown approach if you like
       listingElement.appendChild(div);
     });
   } else {
@@ -1494,7 +1805,7 @@ function updateAgencyDashboard(agency) {
   };
 
   // Fill the fields
-  document.getElementById('agency-underserved').textContent = agency["Underserved and/or  Hard to Reach"] || "No";
+  document.getElementById('agency-underserved').textContent = getSafe(agency, "DAC Status");
   document.getElementById('agency-calenviroscore').textContent = getSafe(agency, "CalEnviroScreen Score");
   document.getElementById('agency-pollutionburden').textContent = getSafe(agency, "Pollution Burden");
 
@@ -1538,7 +1849,7 @@ function closeWelcome() {
   }, 400);
 }
 
-/* INIT THE LISTING ON PAGE LOAD */
+/* Initialize the listing on page load */
 renderListing();
 </script>
 </body>
