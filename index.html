@@ -62,12 +62,6 @@
       width: 400px;
       text-align: center;
     }
-    #password-modal-content h2 {
-      margin-bottom: 20px;
-      color: #2c3e50;
-      font-size: 16px;
-      line-height: 1.4;
-    }
     #password-input {
       width: 100%;
       padding: 10px;
@@ -133,7 +127,7 @@
     #container {
       display: flex;
       width: 100%;
-      height: calc(100vh - 45px); 
+      height: calc(100vh - 45px);
       flex-direction: row;
     }
 
@@ -171,23 +165,18 @@
     }
 
     /*
-      MAPBOX GEOCODER 
-      We'll arrange the geocoder to the top-right with the 
-      nav and fullscreen controls side by side by forcing 
-      flex row in the .mapboxgl-ctrl-top-right container.
+      Mapbox Geocoder 
+      Now place geocoder top-left. 
+      We'll rely on default styling
+      (no forced flex row).
     */
-    .mapboxgl-ctrl-top-right {
-      display: flex !important;
-      flex-direction: row !important;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 8px; /* a little space between controls */
-    }
-    .mapboxgl-ctrl-top-right .mapboxgl-ctrl {
-      margin: 0 !important; /* reduce extraneous margin */
-    }
     .mapboxgl-ctrl-geocoder {
+      position: absolute;
+      top: 10px;
+      left: 10px;
       width: 300px;
+      z-index: 10;
+      font-family: 'Aptos', sans-serif !important;
       border-radius: 4px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
     }
@@ -197,41 +186,39 @@
     }
 
     /* ============ PANEL CONTENT SECTIONS ============ */
-    /* Slightly reduced padding from 15px 20px to 10px 15px. */
-
     #filters-section,
     #listing-section,
     #agency-dashboard,
     #intro-section {
-      padding: 10px 15px;
+      padding: 10px 15px; /* slightly reduced spacing */
     }
     fieldset {
       background: #f9f9f9;
       border: 1px solid #e0e0e0;
-      padding: 10px 12px; /* was 12px 15px, slightly reduced */
+      padding: 10px 12px; 
       border-radius: 6px;
-      margin-bottom: 8px; /* was 12px, now 8px */
+      margin-bottom: 8px; 
     }
     fieldset legend {
       font-size: 14px;
-      margin-bottom: 6px; /* was 8px */
+      margin-bottom: 6px; 
       color: #2D3E4F;
       font-weight: 600;
     }
     input[type="text"], input[type="number"] {
       border: 1px solid #ccc;
       border-radius: 5px;
-      padding: 6px; /* was 8px */
+      padding: 6px;
       box-sizing: border-box;
       font-size: 14px;
       width: 100%;
       font-family: 'Aptos', sans-serif;
-      margin-bottom: 6px; /* was 8px */
+      margin-bottom: 6px;
     }
     .filters label {
       display: flex;
       align-items: center;
-      margin-bottom: 4px; /* was 5px */
+      margin-bottom: 4px;
       font-size: 14px;
       color: #2D3E4F;
       cursor: pointer;
@@ -246,11 +233,11 @@
       background: #ffffff;
       border: 1px solid #ddd;
       border-radius: 6px;
-      padding: 8px; /* was 10px */
+      padding: 8px; 
     }
     #listing h4 {
       margin-top: 0;
-      margin-bottom: 8px; /* was 10px */
+      margin-bottom: 8px; 
       font-size: 14px;
       font-weight: 600;
       color: #2D3E4F;
@@ -258,12 +245,12 @@
       padding-bottom: 4px;
     }
     .cog-section {
-      margin-bottom: 8px; /* was 10px */
+      margin-bottom: 8px; 
     }
     .cog-header {
       background: #2D3E4F;
       color: #ffffff;
-      padding: 6px 10px; /* was 8px 12px */
+      padding: 6px 10px; 
       border-radius: 5px;
       font-weight: bold;
       font-size: 14px;
@@ -293,7 +280,7 @@
     .agency-title {
       background: #f9f9f9;
       margin-bottom: 5px;
-      padding: 5px 10px; /* was 6px 10px */
+      padding: 5px 10px; 
       border-radius: 4px;
       border: 1px solid #e0e0e0;
       color: #2D3E4F;
@@ -306,12 +293,12 @@
       border-color: #34A794; 
     }
     #no-facilities-msg {
-      padding: 8px; /* was 10px */
+      padding: 8px; 
       color: #666;
       font-style: italic;
       background: #f9f9f9;
       border-radius: 4px;
-      margin: 8px 0; /* was 10px 0 */
+      margin: 8px 0; 
       border: 1px solid #e0e0e0;
     }
 
@@ -319,18 +306,18 @@
       background-color: #ffffff;
       border-radius: 6px;
       border: 1px solid #ddd;
-      padding: 10px; /* was 15px */
+      padding: 10px; 
       box-shadow: 0 1px 5px rgba(0,0,0,0.05);
     }
     #dashboard h3 {
       font-size: 16px;
-      margin-bottom: 8px; /* was 10px */
+      margin-bottom: 8px; 
       border-bottom: 1px solid #e0e0e0;
       padding-bottom: 4px;
       color: #2D3E4F;
     }
     #agency-data {
-      margin-top: 8px; /* was 10px */
+      margin-top: 8px; 
     }
     #agency-data h4 {
       font-size: 14px;
@@ -338,9 +325,9 @@
       color: #2D3E4F;
     }
     .metric {
-      margin-bottom: 6px; /* was 8px */
+      margin-bottom: 6px; 
       background-color: #f9f9f9;
-      padding: 6px; /* was 8px */
+      padding: 6px; 
       border-radius: 4px;
       border: 1px solid #e0e0e0;
       display: flex;
@@ -350,7 +337,7 @@
     .metric .metric-label {
       color: #2D3E4F;
       font-weight: 500;
-      margin-right: 6px; /* was 10px */
+      margin-right: 6px; 
       flex: 0 0 auto;
       font-size: 13px;
     }
@@ -365,12 +352,12 @@
       background-color: #2D3E4F;
       color: white;
       border: none;
-      padding: 5px 10px; /* was 6px 12px */
+      padding: 5px 10px; 
       border-radius: 4px;
       cursor: pointer;
       font-family: 'Aptos', sans-serif;
       font-size: 13px;
-      margin-bottom: 8px; /* was 10px */
+      margin-bottom: 8px; 
       transition: background-color 0.2s ease;
       display: inline-flex;
       align-items: center;
@@ -381,7 +368,7 @@
     #back-button::before {
       content: "←";
       font-size: 14px;
-      margin-right: 5px; /* was 6px */
+      margin-right: 5px; 
     }
 
     #intro-section {
@@ -391,14 +378,14 @@
       margin-top: 0;
       font-size: 14px;
       color: #2D3E4F;
-      margin-bottom: 6px; /* was 8px */
+      margin-bottom: 6px; 
     }
     #intro-section p,
     #intro-section li {
       font-size: 13px;
       color: #34495e;
       line-height: 1.5;
-      margin-bottom: 6px; /* was 8px */
+      margin-bottom: 6px; 
     }
 
     /* WELCOME POPUP */
@@ -517,9 +504,9 @@
         flex: 1;
         max-height: 50vh;
       }
-      #filters-section, 
-      #listing-section, 
-      #agency-dashboard, 
+      #filters-section,
+      #listing-section,
+      #agency-dashboard,
       #intro-section {
         padding: 8px 12px;
       }
@@ -552,10 +539,10 @@
 
 <!-- ============ MAIN CONTAINER ============ -->
 <div id="container">
-  <!-- ============ MAP (70%) ============ -->
+  <!-- ============ MAP ============ -->
   <div id="map"></div>
 
-  <!-- ============ PANEL (30%) ============ -->
+  <!-- ============ PANEL ============ -->
   <div class="map-overlay" id="dashboard-panel">
     <!-- ~~~ FILTERS SECTION ~~~ -->
     <section id="filters-section">
@@ -669,7 +656,7 @@
       </div>
     </section>
 
-    <!-- ~~~ INTRO / WELCOME AT BOTTOM ~~~ -->
+    <!-- ~~~ INTRO / WELCOME ~~~ -->
     <section id="intro-section">
       <h4>Welcome to SoCalREN's ERAP Dashboard</h4>
       <p>
@@ -1312,19 +1299,17 @@ function initMap() {
     pitch: 45
   });
 
-  // Add controls to top-right in order:
-  const nav = new mapboxgl.NavigationControl();
-  const fs = new mapboxgl.FullscreenControl();
+  // Return controls to original positions:
+  // Fullscreen & Zoom top-right, geocoder top-left
+  map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
+  map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
   const geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
     mapboxgl: mapboxgl,
     placeholder: 'Search for a location'
   });
-
-  // Add them in top-right => side by side
-  map.addControl(fs, 'top-right');
-  map.addControl(nav, 'top-right');
-  map.addControl(geocoder, 'top-right');
+  map.addControl(geocoder, 'top-left');
 
   map.on('load', () => {
     document.getElementById('loading-spinner').style.display = 'block';
@@ -1334,11 +1319,11 @@ function initMap() {
 
 /* ============ LOAD BOUNDARIES AND FACILITIES =========== */
 async function loadBoundariesAndFacilities() {
+  // 1) Load LA boundaries w/ 3D extrusions
   fetch('data/la_boundaries.geojson')
     .then(resp => resp.json())
     .then(geojson => {
       map.addSource('la-boundaries', { type: 'geojson', data: geojson });
-
       map.addLayer({
         id: 'la-boundaries-extrusion',
         type: 'fill-extrusion',
@@ -1409,7 +1394,7 @@ async function loadBoundariesAndFacilities() {
         hoveredId = null;
       });
 
-      // On click => show that agency’s listing/facilities
+      // click => show that agency's listing
       map.on('click', 'la-boundaries-extrusion', e => {
         if (!e.features.length) return;
         const cityName = e.features[0].properties.CITY_COMM_NAME || '';
@@ -1427,7 +1412,28 @@ async function loadBoundariesAndFacilities() {
     })
     .catch(err => console.error('Error loading boundaries:', err));
 
-  // Build facility FeatureCollection
+  // 2) Load SoCalREN territory (outline only)
+  fetch('data/scr_territory.geojson')
+    .then(resp => resp.json())
+    .then(scrData => {
+      map.addSource('scr-territory', {
+        type: 'geojson',
+        data: scrData
+      });
+      // Outline only, no fill
+      map.addLayer({
+        id: 'scr-territory-outline',
+        type: 'line',
+        source: 'scr-territory',
+        paint: {
+          'line-color': '#F05A28',
+          'line-width': 2
+        }
+      });
+    })
+    .catch(err => console.error('Error loading scr_territory:', err));
+
+  // 3) Build facility FeatureCollection => clustering
   const facilityFeatures = [];
   facilitiesData.forEach(fac => {
     const lat = parseFloat(fac.Latitude);
@@ -1503,7 +1509,7 @@ async function loadBoundariesAndFacilities() {
     }
   });
 
-  // unclustered
+  // unclustered points
   map.addLayer({
     id: 'unclustered-point',
     type: 'circle',
@@ -1521,11 +1527,11 @@ async function loadBoundariesAndFacilities() {
     }
   });
 
+  // reorder so circles appear above extrusions
   map.moveLayer('clusters');
   map.moveLayer('cluster-count');
   map.moveLayer('unclustered-point');
 
-  // facility popup => name, address, existing use
   const facilityPopup = new mapboxgl.Popup({
     closeButton: false,
     closeOnClick: false,
@@ -1565,7 +1571,7 @@ async function loadBoundariesAndFacilities() {
     });
   });
 
-  // unclustered point => show agency data
+  // unclustered => show that agency
   map.on('click','unclustered-point', e => {
     const props = e.features[0].properties;
     const matchedAgency = agenciesData.find(a => a.Agency === props["Agency"]);
