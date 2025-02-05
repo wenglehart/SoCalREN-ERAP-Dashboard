@@ -264,8 +264,8 @@
     /* Subtle fill color on hover => agencies less compact */
     .agency-title {
       background: #f9f9f9;
-      margin-bottom: 6px; /* increased from 4px => less compact */
-      padding: 8px 10px;  /* increased top/bottom => less compact */
+      margin-bottom: 6px;
+      padding: 8px 10px;
       border-radius: 8px;
       border: 1px solid #e0e0e0;
       color: #2D3E4F;
@@ -337,7 +337,6 @@
       margin-top: 8px;
       margin-bottom: 8px;
     }
-    /* Purple outline text => text-shadow trick */
     #intro-section h4.welcome-title {
       margin-top: 0;
       font-size: 17px;
@@ -1450,6 +1449,8 @@ async function loadBoundariesAndFacilities() {
     .then(resp => resp.json())
     .then(geojson => {
       map.addSource('la-boundaries', { type: 'geojson', data: geojson });
+
+      // <<< Adjusted here to place the boundary layer just above 'scr-territory-fill' >>>
       map.addLayer({
         id: 'la-boundaries-2d',
         type: 'fill',
@@ -1458,7 +1459,8 @@ async function loadBoundariesAndFacilities() {
           'fill-color': '#FFA500',   /* orange */
           'fill-opacity': 0.4
         }
-      });
+      }, 'scr-territory-fill'); 
+      // ^ This ensures 'la-boundaries-2d' is below your clusters & unclustered points.
 
       let hoveredId = null;
       const boundaryPopup = new mapboxgl.Popup({
@@ -1553,7 +1555,7 @@ async function loadBoundariesAndFacilities() {
     clusterRadius: 50
   });
 
-  // Note: Second argument removed so these layers draw on top by default
+  // No second argument => these get placed on top by default
   map.addLayer({
     id: 'clusters',
     type: 'circle',
