@@ -36,8 +36,8 @@
       overflow: hidden; /* Hide scrollbars */
     }
     body {
-      color: #2D3E4F;  /* Navy-ish text */
-      font-size: 16px; /* overall base */
+      color: #2D3E4F;  
+      font-size: 16px; 
     }
 
     /* ============ PASSWORD MODAL ============ */
@@ -90,7 +90,7 @@
       width: 100%;
       background: linear-gradient(to right, #2D3E4F, #202f3e);
       color: #ffffff;
-      height: 45px; /* reduced from 60px */
+      height: 45px; 
       padding: 5px 20px;
       display: flex;
       align-items: center;
@@ -104,7 +104,7 @@
       gap: 20px;
     }
     .header-left img {
-      height: 35px; /* scaled down from 50px */
+      height: 35px; 
     }
     .header-right {
       display: flex;
@@ -146,9 +146,9 @@
       background-color: #ffffff;
       border-left: 1px solid rgba(0,0,0,0.1);
       box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-      overflow-x: hidden; /* remove side scroll */
-      overflow-y: auto;   /* vertical scrolling if needed */
-      font-size: 14px;    
+      overflow-x: hidden; 
+      overflow-y: auto;  
+      font-size: 14px;
       box-sizing: border-box;
     }
 
@@ -164,7 +164,7 @@
       display: none;
     }
 
-    /* Mapbox Geocoder at top-left */
+    /* MAPBOX GEOCODER */
     .mapboxgl-ctrl-geocoder {
       position: absolute;
       top: 10px;
@@ -510,15 +510,6 @@
 </head>
 <body>
 
-<!-- ============ PASSWORD MODAL ============ -->
-<div id="password-modal">
-  <div id="password-modal-content">
-    <h2>To access SoCalREN’s ERAP Dashboard <br> please enter your provided access code</h2>
-    <input type="password" id="password-input" placeholder="Access Code">
-    <button id="password-submit">Submit</button>
-  </div>
-</div>
-
 <!-- ============ HEADER ============ -->
 <header>
   <div class="header-left">
@@ -534,12 +525,20 @@
 
 <!-- ============ MAIN CONTAINER ============ -->
 <div id="container">
-  <!-- ============ MAP ============ -->
+  <!-- PASSWORD MODAL AT TOP OF BODY -->
+  <div id="password-modal">
+    <div id="password-modal-content">
+      <h2>To access SoCalREN’s ERAP Dashboard <br> please enter your provided access code</h2>
+      <input type="password" id="password-input" placeholder="Access Code">
+      <button id="password-submit">Submit</button>
+    </div>
+  </div>
+
+  <!-- MAP + PANEL -->
   <div id="map"></div>
 
-  <!-- ============ PANEL ============ -->
   <div class="map-overlay" id="dashboard-panel">
-    <!-- ~~~ FILTERS SECTION ~~~ -->
+    <!-- FILTERS -->
     <section id="filters-section">
       <fieldset>
         <input id="agency-filter" type="text" placeholder="Search for an agency">
@@ -582,19 +581,18 @@
       </fieldset>
     </section>
 
-    <!-- ~~~ LISTING SECTION ~~~ -->
+    <!-- LISTING -->
     <section id="listing-section">
       <div id="listing"></div>
     </section>
 
-    <!-- ~~~ AGENCY DASHBOARD SECTION ~~~ -->
+    <!-- AGENCY DASHBOARD -->
     <section id="agency-dashboard">
       <div class="dashboard" id="dashboard" style="display: none;">
         <h3 id="data-overview-title">Data Overview</h3>
 
         <div id="agency-data" style="display:none;">
           <h4>Agency-Level Data</h4>
-
           <div class="metric">
             <span class="metric-label">Underserved/Hard to Reach:</span>
             <span class="metric-value" id="agency-underserved">Not yet available</span>
@@ -651,7 +649,7 @@
       </div>
     </section>
 
-    <!-- ~~~ INTRO / WELCOME ~~~ -->
+    <!-- INTRO / WELCOME -->
     <section id="intro-section">
       <h4>Welcome to SoCalREN's ERAP Dashboard</h4>
       <p>
@@ -690,37 +688,48 @@
   <i class="fas fa-spinner fa-spin"></i> Loading...
 </div>
 
+<!-- Main script now at bottom, ensuring DOM elements exist -->
 <script>
-/* ============ PASSWORD PROMPT ============ */
+/* ============ MAPBOX TOKEN ============ */
+mapboxgl.accessToken = 'pk.eyJ1Ijoid2VuZ2xlMSIsImEiOiJjbHBtaWx0N2IwMGljMmxwNjBsMnU4a2E4In0.Dzf3G-WBKzDfgnXsGHiMXw';
+
+/* ============ PASSWORD ELEMENTS ============ */
 const passwordModal = document.getElementById('password-modal');
 const passwordInput = document.getElementById('password-input');
 const passwordSubmit = document.getElementById('password-submit');
 
+/* ============ PASSWORD PROMPT LOGIC ============ */
 document.addEventListener('DOMContentLoaded', () => {
-  passwordModal.style.display = 'flex'; // Show on load
+  // Show modal on page load
+  passwordModal.style.display = 'flex';
 });
 
 passwordSubmit.addEventListener('click', () => {
+  console.log("Password attempt:", passwordInput.value); // For debugging
   if (passwordInput.value === 'test') {
     passwordModal.style.display = 'none';
     initMap();
   } else {
-    location.reload();
+    location.reload(); // Wrong => reload
   }
 });
 
-/* ============ MAPBOX SETUP ============ */
-mapboxgl.accessToken = 'pk.eyJ1Ijoid2VuZ2xlMSIsImEiOiJjbHBtaWx0N2IwMGljMmxwNjBsMnU4a2E4In0.Dzf3G-WBKzDfgnXsGHiMXw';
+/* ============ MAP, DATA, AND FUNCTIONS ============ */
+/* (All the same code you had before for initMap, loadBoundariesAndFacilities, 
+   showFacilities, filterFacilities, updateAgencyDashboard, etc.) */
+
+/* We'll paste that code verbatim: ------------------------------------------------ */
+
 let map;
 
-/* ============ CUSTOM COG LOOKUP ============ */
+/* CUSTOM COG LOOKUP */
 const COGMapping = {
   "GCCOG": "Gateway Cities Council of Governments",
   "SGVCOG": "San Gabriel Valley Council of Governments",
   "SBCOG": "South Bay Cities Council of Governments"
 };
 
-/* ============ AGENCIES DATA =========== */
+/* AGENCIES DATA (FULL) */
 const agenciesData = [
   {
     "Agency": "Bell",
@@ -1284,9 +1293,7 @@ const facilitiesData = [
   }
 ];
 
-/* ============ INITIALIZE MAP ETC ============ */
-let map;
-
+/* INIT MAP */
 function initMap() {
   map = new mapboxgl.Map({
     container: 'map',
@@ -1296,7 +1303,6 @@ function initMap() {
     pitch: 45
   });
 
-  // Fullscreen & zoom in top-right, geocoder top-left
   map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
   map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
@@ -1313,9 +1319,9 @@ function initMap() {
   });
 }
 
-/* ============ LOAD BOUNDARIES AND FACILITIES =========== */
+/* LOAD BOUNDARIES + FACILITIES */
 async function loadBoundariesAndFacilities() {
-  // 1) LA boundaries with 3D extrusions
+  // 1) LA boundaries
   fetch('data/la_boundaries.geojson')
     .then(resp => resp.json())
     .then(geojson => {
@@ -1340,21 +1346,14 @@ async function loadBoundariesAndFacilities() {
         className: 'boundary-popup'
       });
 
-      // Mousemove => boundary hover info
       map.on('mousemove', 'la-boundaries-extrusion', e => {
         map.getCanvas().style.cursor = 'pointer';
         if (e.features.length > 0) {
           if (hoveredId) {
-            map.setFeatureState(
-              { source: 'la-boundaries', id: hoveredId },
-              { hover: false }
-            );
+            map.setFeatureState({ source: 'la-boundaries', id: hoveredId },{ hover: false });
           }
           hoveredId = e.features[0].id;
-          map.setFeatureState(
-            { source: 'la-boundaries', id: hoveredId },
-            { hover: true }
-          );
+          map.setFeatureState({ source: 'la-boundaries', id: hoveredId },{ hover: true });
 
           const cityName = e.features[0].properties.CITY_COMM_NAME || '';
           let matchedAgency = agenciesData.find(a => a.Agency.toLowerCase() === cityName.toLowerCase());
@@ -1367,7 +1366,6 @@ async function loadBoundariesAndFacilities() {
             const dac = matchedAgency["DAC Status"] || 'N/A';
             const score = matchedAgency["CalEnviroScreen Score"] || 'N/A';
             const pop = matchedAgency["Population"] || 'N/A';
-
             popupHtml = `
               <strong>${matchedAgency.Agency}</strong><br>
               DAC Status: ${dac}<br>
@@ -1383,15 +1381,11 @@ async function loadBoundariesAndFacilities() {
         map.getCanvas().style.cursor = '';
         boundaryPopup.remove();
         if (hoveredId) {
-          map.setFeatureState(
-            { source: 'la-boundaries', id: hoveredId },
-            { hover: false }
-          );
+          map.setFeatureState({ source: 'la-boundaries', id: hoveredId },{ hover: false });
         }
         hoveredId = null;
       });
 
-      // On click => show that agency's listing
       map.on('click', 'la-boundaries-extrusion', e => {
         if (!e.features.length) return;
         const cityName = e.features[0].properties.CITY_COMM_NAME || '';
@@ -1413,18 +1407,14 @@ async function loadBoundariesAndFacilities() {
   fetch('data/scr_territory.geojson')
     .then(resp => resp.json())
     .then(scrData => {
-      map.addSource('scr-territory', {
-        type: 'geojson',
-        data: scrData
-      });
-      // A fill layer with no outline, transparent blue
+      map.addSource('scr-territory', { type: 'geojson', data: scrData });
       map.addLayer({
         id: 'scr-territory-fill',
         type: 'fill',
         source: 'scr-territory',
         paint: {
           'fill-color': 'rgba(0, 128, 255, 0.25)',
-          'fill-outline-color': 'rgba(0,0,0,0)' /* effectively no outline */
+          'fill-outline-color': 'rgba(0,0,0,0)' 
         }
       });
     })
@@ -1432,14 +1422,14 @@ async function loadBoundariesAndFacilities() {
 
   // 3) Facilities => cluster
   const facilityFeatures = [];
-  facilitiesData.forEach(fac => {
-    const lat = parseFloat(fac.Latitude);
-    const lng = parseFloat(fac.Longitude);
+  facilitiesData.forEach(f => {
+    const lat = parseFloat(f.Latitude);
+    const lng = parseFloat(f.Longitude);
     if (!isNaN(lat) && !isNaN(lng)) {
       facilityFeatures.push({
         type: 'Feature',
         geometry: { type: 'Point', coordinates: [lng, lat] },
-        properties: { ...fac }
+        properties: { ...f }
       });
     }
   });
@@ -1502,7 +1492,7 @@ async function loadBoundariesAndFacilities() {
     }
   });
 
-  // unclustered points
+  // unclustered
   map.addLayer({
     id: 'unclustered-point',
     type: 'circle',
@@ -1518,12 +1508,11 @@ async function loadBoundariesAndFacilities() {
     }
   });
 
-  // reorder so circles appear above extrusions
+  // reorder
   map.moveLayer('clusters');
   map.moveLayer('cluster-count');
   map.moveLayer('unclustered-point');
 
-  // facility popup
   const facilityPopup = new mapboxgl.Popup({
     closeButton: false,
     closeOnClick: false,
@@ -1576,7 +1565,7 @@ async function loadBoundariesAndFacilities() {
   document.getElementById('loading-spinner').style.display = 'none';
 }
 
-/* ============ RENDER AGENCY LISTING ON PAGE LOAD =========== */
+/* RENDER AGENCY LISTING */
 function renderListing() {
   const listingElement = document.getElementById('listing');
   const agencyFilters = document.getElementById('agency-filters');
@@ -1586,7 +1575,6 @@ function renderListing() {
   agencyFilters.style.display = 'block';
   facilityFilters.style.display = 'none';
 
-  // group by COG
   const groups = {};
   agenciesData.forEach(a => {
     const cog = a.COG;
@@ -1609,7 +1597,6 @@ function renderListing() {
       agencyList.style.display = 'block';
       cogHeader.classList.add('expanded');
 
-      // expand/collapse
       cogHeader.addEventListener('click', () => {
         const isHidden = (agencyList.style.display === 'none');
         cogHeader.classList.toggle('expanded', isHidden);
@@ -1635,7 +1622,7 @@ function renderListing() {
   }
 }
 
-/* ============ FILTER AGENCIES =========== */
+/* FILTER AGENCIES */
 function filterAgencies() {
   const minPop = parseInt(document.getElementById('population-min').value) || 0;
   const maxPop = parseInt(document.getElementById('population-max').value) || Infinity;
@@ -1708,13 +1695,14 @@ function filterAgencies() {
     }
   }
 }
+
 document.getElementById('population-min').addEventListener('input', filterAgencies);
 document.getElementById('population-max').addEventListener('input', filterAgencies);
 document.getElementById('agency-filter').addEventListener('input', filterAgencies);
 document.getElementById('dac-filter').addEventListener('change', filterAgencies);
 document.getElementById('ces90-filter').addEventListener('change', filterAgencies);
 
-/* ============ FACILITY FILTERS =========== */
+/* FACILITY FILTERS */
 document.getElementById('pv-filter').addEventListener('change', refreshFacilityList);
 document.getElementById('ev-filter').addEventListener('change', refreshFacilityList);
 document.getElementById('cooling-filter').addEventListener('change', refreshFacilityList);
@@ -1728,9 +1716,8 @@ function refreshFacilityList() {
   }
 }
 
-/* ============ SHOW FACILITIES & AGENCY DATA =========== */
+/* SHOW FACILITIES & AGENCY DATA */
 function showFacilities(agency, facilityList) {
-  // 1) Re-render the listing with that agency's facilities
   const listingElement = document.getElementById('listing');
   listingElement.innerHTML = '';
 
@@ -1765,7 +1752,6 @@ function showFacilities(agency, facilityList) {
     listingElement.appendChild(msg);
   }
 
-  // 2) Show the Agency-Level Data
   const dashboard = document.getElementById('dashboard');
   const agencyDataElement = document.getElementById('agency-data');
 
@@ -1775,7 +1761,7 @@ function showFacilities(agency, facilityList) {
   updateAgencyDashboard(agency);
 }
 
-/* ============ FILTER FACILITIES =========== */
+/* FILTER FACILITIES */
 function filterFacilities(facList) {
   const pvChecked = document.getElementById('pv-filter').checked;
   const evChecked = document.getElementById('ev-filter').checked;
@@ -1800,21 +1786,18 @@ function filterFacilities(facList) {
   });
 }
 
-/* ============ UPDATE AGENCY DASHBOARD =========== */
+/* UPDATE AGENCY DASHBOARD */
 function updateAgencyDashboard(agency) {
+  document.getElementById('data-overview-title').textContent = agency.Agency + " Data Overview";
+  document.getElementById('agency-data').style.display = 'block';
   const dash = document.getElementById('dashboard');
   dash.style.display = 'block';
 
-  document.getElementById('data-overview-title').textContent = agency.Agency + " Data Overview";
-
-  const agencyDataElement = document.getElementById('agency-data');
-  agencyDataElement.style.display = 'block';
-
-  const getSafe = (obj, key) => {
+  function getSafe(obj, key) {
     if (obj[key] === null || obj[key] === undefined) return "N/A";
     if (String(obj[key]).toUpperCase() === 'N/A') return "N/A";
     return obj[key];
-  };
+  }
 
   document.getElementById('agency-underserved').textContent = getSafe(agency, "DAC Status");
   document.getElementById('agency-calenviroscore').textContent = getSafe(agency, "CalEnviroScreen Score");
@@ -1851,7 +1834,7 @@ function updateAgencyDashboard(agency) {
   document.getElementById('agency-therms').textContent = thermVal;
 }
 
-/* ============ WELCOME POPUP =========== */
+/* WELCOME POPUP */
 function closeWelcome() {
   const popup = document.getElementById('welcome-popup');
   popup.classList.add('fade-out');
@@ -1860,7 +1843,7 @@ function closeWelcome() {
   }, 400);
 }
 
-/* Initialize the listing on page load */
+/* RENDER THE LISTING IMMEDIATELY */
 renderListing();
 </script>
 </body>
