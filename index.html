@@ -44,10 +44,8 @@
     #password-modal {
       position: fixed;
       z-index: 99999;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -133,47 +131,6 @@
       border-radius: 4px;
     }
 
-    /* Submenu container */
-    .submenu {
-      display: none;
-      position: absolute;
-      top: 36px;
-      left: 0;
-      background: #374852;
-      padding: 8px;
-      border-radius: 4px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    }
-    .submenu-item {
-      padding: 6px 8px;
-      font-size: 13px;
-      color: #ffffff;
-      cursor: pointer;
-    }
-    .submenu-item:hover {
-      background-color: rgba(255,255,255,0.1);
-      border-radius: 3px;
-    }
-    /* Submenu for the Council of Governments */
-    .sub-submenu {
-      display: none;
-      position: absolute;
-      top: 0; 
-      left: 100%;
-      background: #4a5c6b;
-      padding: 8px;
-      margin-left: 4px;
-      border-radius: 4px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    }
-    .submenu-item:hover .sub-submenu {
-      display: block;
-    }
-
-    .header-right > .menu-link:hover .submenu {
-      display: block;
-    }
-
     /* ============ MAIN WRAPPER ============ */
     #container {
       display: flex;
@@ -199,8 +156,7 @@
       overflow-y: auto;
       font-size: 14px;
       box-sizing: border-box;
-      /* add consistent side padding */
-      padding: 15px;
+      padding: 15px; /* consistent side padding */
     }
 
     /* LOADING SPINNER */
@@ -238,7 +194,7 @@
       margin-top: 10px;
     }
 
-    /* search bar margin at top for better spacing */
+    /* search bar margin etc. */
     #agency-filter {
       width: 100%;
       border-radius: 8px;
@@ -260,7 +216,7 @@
     }
     .filters label {
       display: block;
-      margin-bottom: 6px; /* More space between lines */
+      margin-bottom: 8px; /* more space => less compact */
       font-size: 12px;
       color: #2D3E4F;
       cursor: pointer;
@@ -305,11 +261,11 @@
       padding-left: 0;
     }
 
-    /* Subtle fill color on hover instead of outline */
+    /* Subtle fill color on hover => agencies less compact */
     .agency-title {
       background: #f9f9f9;
-      margin-bottom: 4px;
-      padding: 5px 10px;
+      margin-bottom: 6px; /* increased from 4px => less compact */
+      padding: 8px 10px;  /* increased top/bottom => less compact */
       border-radius: 8px;
       border: 1px solid #e0e0e0;
       color: #2D3E4F;
@@ -321,6 +277,7 @@
       background-color: #e6f4fa; /* subtle highlight color */
       border-color: #cbe8f3;
     }
+
     #no-facilities-msg {
       padding: 8px;
       color: #666;
@@ -337,14 +294,17 @@
       padding: 10px;
       box-shadow: 0 1px 5px rgba(0,0,0,0.05);
     }
+
+    /* Larger, green with navy underline => agency data overview */
     #dashboard h3 {
       margin: 0 0 8px 0;
-      font-size: 16px;
+      font-size: 20px;
       font-weight: 700;
-      color: #9A5CA7; /* Purple highlight color */
-      border-bottom: 1px solid #e0e0e0;
+      color: #2ecc71; /* green */
+      border-bottom: 2px solid #001f3f; /* navy underline */
       padding-bottom: 4px;
     }
+
     .metric {
       margin-bottom: 6px;
       background-color: #f9f9f9;
@@ -377,15 +337,21 @@
       margin-top: 8px;
       margin-bottom: 8px;
     }
-    #intro-section h4 {
+    /* Purple outline text => text-shadow trick */
+    #intro-section h4.welcome-title {
       margin-top: 0;
       font-size: 17px;
       margin-bottom: 8px;
       color: #F05A28;
       font-weight: 700;
+      text-shadow:
+        -1px -1px 0 #9A5CA7,
+         1px -1px 0 #9A5CA7,
+        -1px  1px 0 #9A5CA7,
+         1px  1px 0 #9A5CA7;
     }
     #intro-section .intro-text-container {
-      margin: 0 8px; /* narrower side margins for a consistent column width */
+      margin: 0 8px;
     }
     #intro-section p,
     #intro-section li {
@@ -557,34 +523,13 @@
     </a>
   </div>
   <div class="header-right">
-    <!-- About SoCalREN -->
+    <!-- "About SoCalREN" link -->
     <a href="https://socalren.org/about" target="_blank" class="menu-link">
       About SoCalREN
     </a>
-
-    <!-- Contact Us -->
+    <!-- "Contact Us" link -->
     <a href="https://socalren.org/about/contact" target="_blank" class="menu-link">
       Contact Us
-    </a>
-
-    <!-- Helpful Resources (dropdown) -->
-    <div class="menu-link">
-      Helpful Resources
-      <div class="submenu">
-        <div class="submenu-item">
-          Council of Governments
-          <div class="sub-submenu">
-            <div class="submenu-item">Gateway Cities</div>
-            <div class="submenu-item">San Gabriel Valley</div>
-            <div class="submenu-item">South Bay Cities</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- CalEnviroScreen 4.0 -->
-    <a href="https://oehha.ca.gov/calenviroscreen/report/calenviroscreen-40" target="_blank" class="menu-link">
-      CalEnviroScreen 4.0
     </a>
   </div>
 </header>
@@ -625,10 +570,10 @@
   <!-- ============ PANEL (30%) ============ -->
   <div class="map-overlay" id="dashboard-panel">
 
-    <!-- Agency / Facility Search Bar -->
+    <!-- Panel search bar -->
     <input id="agency-filter" type="text" placeholder="Search dashboard">
 
-    <!-- Agency Filters + Facility Filters -->
+    <!-- Filters Section -->
     <section id="filters-section">
       <!-- Agency Filters -->
       <fieldset class="filters legend-block" id="agency-filters">
@@ -676,14 +621,13 @@
       </fieldset>
     </section>
 
-    <!-- AGENCY / FACILITY LISTING -->
+    <!-- Listing Section -->
     <section id="listing-section">
       <div id="listing"></div>
     </section>
 
     <!-- AGENCY DASHBOARD SECTION -->
     <section id="agency-dashboard">
-      <!-- "Data Overview" block -->
       <div class="dashboard" id="dashboard" style="display: none;">
         <h3 id="data-overview-title">Data Overview</h3>
 
@@ -794,9 +738,10 @@
       </div>
     </section>
 
-    <!-- ~~~ INTRO / WELCOME ~~~ -->
+    <!-- INTRO / WELCOME -->
     <section id="intro-section">
-      <h4>Welcome to SoCalREN's ERAP Dashboard</h4>
+      <!-- Title with purple outline text-shadow -->
+      <h4 class="welcome-title">Welcome to SoCalREN's ERAP Dashboard</h4>
       <div class="intro-text-container">
         <p>
           This dashboard provides insights into public agencies' energy resilience planning efforts across Southern California that have received support from the SoCalREN Public Agency Programs. Use the filters above to find agencies by name, select a council of governments, or set population thresholds. Click on an agency name to view detailed metrics and access facility information.
@@ -873,7 +818,6 @@ const COGMapping = {
 
 /* ============ AGENCIES DATA (FULL) ============ */
 const agenciesData = [
-  /* (complete data, no placeholders) */
   {
     "Agency": "Bell",
     "COG": "GCCOG",
@@ -1094,7 +1038,6 @@ const agenciesData = [
 
 /* ============ FACILITIES DATA (FULL) ============ */
 const facilitiesData = [
-  /* (complete data, no placeholders) */
   {
     "Agency": "Bell",
     "Facility Name": "Bell Library",
@@ -1443,7 +1386,7 @@ function initMap() {
     container: 'map',
     style: 'mapbox://styles/mapbox/streets-v12',
     center: [-118.2437, 34.0522],
-    zoom: 8, /* one level further out than 9 */
+    zoom: 8, /* one level further out than original */
     pitch: 45
   });
 
@@ -1460,7 +1403,7 @@ function initMap() {
   map.on('load', () => {
     document.getElementById('loading-spinner').style.display = 'block';
 
-    // Add a highlight source/layer for selected agency
+    // highlight source for selected agency
     map.addSource('selected-agency', {
       type: 'geojson',
       data: {
@@ -1468,6 +1411,7 @@ function initMap() {
         features: []
       }
     });
+    // highlight line
     map.addLayer({
       id: 'selected-agency-highlight',
       type: 'line',
@@ -1482,7 +1426,7 @@ function initMap() {
   });
 }
 
-/* LOAD BOUNDARIES, TERRITORY, FACILITIES */
+/* LOAD BOUNDARIES, FACILITIES, ETC. */
 async function loadBoundariesAndFacilities() {
   // SoCalREN territory
   fetch('data/scr_territory.geojson')
@@ -1504,19 +1448,18 @@ async function loadBoundariesAndFacilities() {
     })
     .catch(err => console.error('Error loading scr_territory:', err));
 
-  // Agency boundaries => "Agencies"
+  // AGENCY boundaries => 2D orange fill
   fetch('data/la_boundaries.geojson')
     .then(resp => resp.json())
     .then(geojson => {
       map.addSource('la-boundaries', { type: 'geojson', data: geojson });
       map.addLayer({
-        id: 'la-boundaries-extrusion',
-        type: 'fill-extrusion',
+        id: 'la-boundaries-2d',
+        type: 'fill',
         source: 'la-boundaries',
         paint: {
-          'fill-extrusion-color': '#9A5CA7',
-          'fill-extrusion-height': 50,
-          'fill-extrusion-opacity': 0.4
+          'fill-color': '#FFA500',   /* orange */
+          'fill-opacity': 0.4
         }
       });
 
@@ -1529,7 +1472,7 @@ async function loadBoundariesAndFacilities() {
         className: 'boundary-popup'
       });
 
-      map.on('mousemove', 'la-boundaries-extrusion', e => {
+      map.on('mousemove', 'la-boundaries-2d', e => {
         map.getCanvas().style.cursor = 'pointer';
         if (e.features.length) {
           if (hoveredId) {
@@ -1560,7 +1503,7 @@ async function loadBoundariesAndFacilities() {
         }
       });
 
-      map.on('mouseleave', 'la-boundaries-extrusion', () => {
+      map.on('mouseleave', 'la-boundaries-2d', () => {
         map.getCanvas().style.cursor = '';
         boundaryPopup.remove();
         if (hoveredId) {
@@ -1570,7 +1513,7 @@ async function loadBoundariesAndFacilities() {
       });
 
       // click => show listing for that city
-      map.on('click', 'la-boundaries-extrusion', e => {
+      map.on('click', 'la-boundaries-2d', e => {
         if (!e.features.length) return;
         const cityName = e.features[0].properties.CITY_COMM_NAME || '';
         if (cityName) {
@@ -1587,7 +1530,7 @@ async function loadBoundariesAndFacilities() {
     })
     .catch(err => console.error('Error loading boundaries:', err));
 
-  // Facilities => clusters
+  // Facilities => cluster => purple markers
   const facilityFeatures = [];
   facilitiesData.forEach(fac => {
     const lat = parseFloat(fac.Latitude);
@@ -1613,6 +1556,7 @@ async function loadBoundariesAndFacilities() {
     clusterRadius: 50
   });
 
+  // clusters
   map.addLayer({
     id: 'clusters',
     type: 'circle',
@@ -1636,7 +1580,7 @@ async function loadBoundariesAndFacilities() {
       'circle-stroke-color': '#ffffff',
       'circle-stroke-opacity': 0.9
     }
-  });
+  }, 'la-boundaries-2d');
 
   map.addLayer({
     id: 'cluster-count',
@@ -1654,22 +1598,23 @@ async function loadBoundariesAndFacilities() {
       'text-halo-color': 'rgba(0,0,0,0.2)',
       'text-halo-width': 1
     }
-  });
+  }, 'clusters');
 
+  // unclustered points => purple
   map.addLayer({
     id: 'unclustered-point',
     type: 'circle',
     source: 'facilities',
     filter: ['!',['has','point_count']],
     paint: {
-      'circle-color': '#F37B43',
+      'circle-color': '#9A5CA7', /* purple for unclustered facility */
       'circle-radius': 8,
       'circle-stroke-width': 2,
       'circle-stroke-color': '#ffffff',
       'circle-opacity': 0.9,
       'circle-stroke-opacity': 0.9
     }
-  });
+  }, 'cluster-count');
 
   // cluster click => zoom
   map.on('click','clusters', e => {
@@ -1682,7 +1627,7 @@ async function loadBoundariesAndFacilities() {
     });
   });
 
-  // unclustered facility => popup
+  // facility popup
   const facilityPopup = new mapboxgl.Popup({
     closeButton: true,
     closeOnClick: false,
@@ -1740,7 +1685,7 @@ function setupLayerToggles() {
 
   toggleBoundaries.addEventListener('change', e => {
     const visible = e.target.checked ? 'visible' : 'none';
-    map.setLayoutProperty('la-boundaries-extrusion', 'visibility', visible);
+    map.setLayoutProperty('la-boundaries-2d', 'visibility', visible);
   });
 
   toggleFacilities.addEventListener('change', e => {
@@ -1849,7 +1794,6 @@ function filterAgencies() {
     return;
   }
 
-  // group by COG
   const groupByCOG = {};
   filtered.forEach(a => {
     const c = a.COG;
@@ -1906,7 +1850,6 @@ document.getElementById('batteryHoursMin').addEventListener('input', refreshFaci
 
 function refreshFacilityList() {
   const title = document.getElementById('data-overview-title').textContent;
-  // e.g. "Bell Data Overview"
   const foundAgency = agenciesData.find(a => title.includes(a.Agency));
   if (foundAgency) {
     const facs = facilitiesData.filter(f => f.Agency === foundAgency.Agency);
@@ -1914,11 +1857,9 @@ function refreshFacilityList() {
   }
 }
 
-let facilityView = false;  // track if user is looking at a facility or agency
-
 /* SHOW FACILITIES & AGENCY DATA */
 function showFacilities(agency, facilityList) {
-  // Hide intro
+  // Hide the intro
   document.getElementById('intro-section').style.display = 'none';
 
   // Switch filters
@@ -1929,49 +1870,27 @@ function showFacilities(agency, facilityList) {
   const listingElement = document.getElementById('listing');
   listingElement.innerHTML = '';
 
-  // "Back to Agencies" => show + place near listing
-  const backBtn = document.createElement('button');
-  backBtn.textContent = "← Back to Agencies";
-  backBtn.style.backgroundColor = "#2D3E4F";
-  backBtn.style.color = "#ffffff";
-  backBtn.style.border = "none";
-  backBtn.style.padding = "6px 12px";
-  backBtn.style.borderRadius = "4px";
-  backBtn.style.cursor = "pointer";
-  backBtn.style.marginBottom = "8px";
-  backBtn.style.fontSize = "12px";
-  backBtn.onclick = () => {
-    // revert
-    document.getElementById('facility-data').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'none';
-    renderListing();
-  };
-  listingElement.appendChild(backBtn);
-
-  // Data overview => set agency
-  updateAgencyDashboard(agency);
-
-  const dash = document.getElementById('dashboard');
-  dash.style.display = 'block';
-  document.getElementById('agency-data').style.display = 'block';
-  document.getElementById('facility-data').style.display = 'none';
-
-  // Overwrite the "Data Overview" title with the agency name
+  // Overwrite "Data Overview" => agency name
   document.getElementById('data-overview-title').textContent = agency.Agency + " Data Overview";
 
-  // highlight boundary
+  // Show the agency data, hide facility data
+  document.getElementById('agency-data').style.display = 'block';
+  document.getElementById('facility-data').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+
+  updateAgencyDashboard(agency);
   highlightAgency(agency);
 
-  // container for facility listing
-  // start automatically expanded for now
+  // ~~~ Expandable facilities listing => start expanded so they appear ~~~
   const header = document.createElement('div');
   header.className = 'cog-header';
-  header.style.marginTop = '8px';
   header.textContent = `View Facilities in ${agency.Agency}`;
-  let expanded = false; // start closed
+  header.classList.add('expanded');
+
+  let expanded = true;
 
   const facilitiesContainer = document.createElement('div');
-  facilitiesContainer.style.display = 'none';
+  facilitiesContainer.style.display = 'block';
 
   header.addEventListener('click', () => {
     expanded = !expanded;
@@ -1981,7 +1900,7 @@ function showFacilities(agency, facilityList) {
 
   listingElement.appendChild(header);
 
-  // filter the facilities
+  // Filter the facilities
   const filteredFacilities = filterFacilities(facilityList);
   if (filteredFacilities.length > 0) {
     filteredFacilities.forEach(f => {
@@ -2000,13 +1919,28 @@ function showFacilities(agency, facilityList) {
     facilitiesContainer.appendChild(msg);
   }
   listingElement.appendChild(facilitiesContainer);
+
+  // Add a small "Back to Agencies" button
+  const backBtn = document.createElement('button');
+  backBtn.textContent = "← Back to Agencies";
+  backBtn.style.backgroundColor = "#2D3E4F";
+  backBtn.style.color = "#ffffff";
+  backBtn.style.border = "none";
+  backBtn.style.padding = "6px 12px";
+  backBtn.style.borderRadius = "4px";
+  backBtn.style.cursor = "pointer";
+  backBtn.style.marginTop = "10px";
+  backBtn.style.fontSize = "12px";
+  backBtn.onclick = () => {
+    document.getElementById('facility-data').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'none';
+    renderListing();
+  };
+  listingElement.appendChild(backBtn);
 }
 
 /* UPDATE AGENCY DASHBOARD => show agency metrics */
 function updateAgencyDashboard(agency) {
-  document.getElementById('agency-data').style.display = 'block';
-  document.getElementById('facility-data').style.display = 'none';
-
   function getSafe(obj, key) {
     if (obj[key] === null || obj[key] === undefined) return "N/A";
     if (String(obj[key]).toUpperCase() === 'N/A') return "N/A";
@@ -2046,13 +1980,60 @@ function updateAgencyDashboard(agency) {
   document.getElementById('agency-therms').textContent = thermVal;
 }
 
+/* FILTER FACILITIES */
+function parseAutonomyValue(value) {
+  if (!value) return 0;
+  const str = String(value).toLowerCase().trim();
+  if (str === 'whole year') return 8760;
+  if (str === 'n/a') return 0;
+  const parsed = parseInt(value, 10);
+  return isNaN(parsed) ? 0 : parsed;
+}
+
+function filterFacilities(facList) {
+  const pvChecked = document.getElementById('pv-filter').checked;
+  const evChecked = document.getElementById('ev-filter').checked;
+  const coolChecked = document.getElementById('cooling-filter').checked;
+
+  const evMin = parseInt(document.getElementById('evChargersMin').value) || 0;
+  const pvMin = parseInt(document.getElementById('pvHoursMin').value) || 0;
+  const batteryMin = parseInt(document.getElementById('batteryHoursMin').value) || 0;
+
+  return facList.filter(f => {
+    const pvCap = (f["Exisiting PV or Battery Capabilities"] || '').toLowerCase();
+
+    if (pvChecked && (pvCap === 'no' || pvCap === 'n/a')) {
+      return false;
+    }
+    if (evChecked) {
+      const evVal = (f["Existing EV Chargers (Yes/No)"] || '').toLowerCase();
+      if (!evVal.includes('yes')) return false;
+    }
+    if (coolChecked) {
+      const ed = (f["Existing Resilience Designation"] || '').toLowerCase();
+      if (!ed.includes('cooling') && !ed.includes('emergency')) return false;
+    }
+
+    const plannedEV = parseInt(f["Number of Planned EV Chargers"]) || 0;
+    if (plannedEV < evMin) return false;
+
+    const pvVal = parseAutonomyValue(f["Planned PV (hours of autonomy)"]);
+    if (pvVal < pvMin) return false;
+
+    const battVal = parseAutonomyValue(f["Planned Battery Storage (hours of autonomy)"]);
+    if (battVal < batteryMin) return false;
+
+    return true;
+  });
+}
+
 /* SHOW FACILITY DETAILS => replace agency data with facility data */
 function showFacilityDetails(fac) {
-  // Hide agency data; show facility data
+  // Hide agency data => show facility data
   document.getElementById('agency-data').style.display = 'none';
   document.getElementById('facility-data').style.display = 'block';
 
-  // Change overview title => "(Facility Name) Data Overview"
+  // Larger, green with navy underline => we keep that for the "data-overview-title"
   const facilityTitle = fac["Facility Name"] || "Facility";
   document.getElementById('data-overview-title').textContent = facilityTitle + " Data Overview";
 
@@ -2083,12 +2064,11 @@ function highlightAgency(agency) {
   });
 
   if (boundaryFeatures.length > 0) {
-    const geometry = boundaryFeatures[0].geometry;
     map.getSource('selected-agency').setData({
       type: 'Feature',
-      geometry: geometry
+      geometry: boundaryFeatures[0].geometry
     });
-    const bounds = getBoundingBox(geometry);
+    const bounds = getBoundingBox(boundaryFeatures[0].geometry);
     map.fitBounds(bounds, { padding: 50 });
   } else {
     map.getSource('selected-agency').setData({
@@ -2098,7 +2078,7 @@ function highlightAgency(agency) {
   }
 }
 
-/* GET BOUNDING BOX FOR A POLYGON GEOMETRY */
+/* GET BOUNDING BOX */
 function getBoundingBox(geometry) {
   let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
   if (geometry.type === 'Polygon') {
@@ -2132,7 +2112,7 @@ function closeWelcome() {
   }, 400);
 }
 
-/* INIT LISTING ON PAGE LOAD */
+/* INIT on page load => listing */
 renderListing();
 </script>
 </body>
