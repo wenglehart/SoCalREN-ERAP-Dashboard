@@ -36,8 +36,8 @@
       overflow: hidden; /* Hide scrollbars */
     }
     body {
-      color: #2D3E4F;  
-      font-size: 16px; 
+      color: #2D3E4F;
+      font-size: 16px;
     }
 
     /* ============ PASSWORD MODAL ============ */
@@ -56,16 +56,23 @@
     }
     #password-modal-content {
       background: #ffffff;
-      padding: 30px;
+      padding: 25px;
       border-radius: 10px;
       box-shadow: 0 2px 20px rgba(0,0,0,0.2);
-      width: 400px;
+      width: 380px;
       text-align: center;
+    }
+    #password-modal-content h2 {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.4;
+      margin-bottom: 20px;
+      color: #2c3e50;
     }
     #password-input {
       width: 100%;
       padding: 10px;
-      font-size: 15px;
+      font-size: 14px;
       border-radius: 6px;
       border: 1px solid #ccc;
       margin-bottom: 15px;
@@ -75,8 +82,8 @@
       background: linear-gradient(to right, #374852, #2D3E4F);
       color: #ffffff;
       border: none;
-      padding: 10px 20px;
-      font-size: 16px;
+      padding: 8px 20px;
+      font-size: 14px;
       border-radius: 6px;
       cursor: pointer;
       font-family: 'Aptos', sans-serif;
@@ -104,7 +111,7 @@
       gap: 20px;
     }
     .header-left img {
-      height: 35px; 
+      height: 35px;
     }
     .header-right {
       display: flex;
@@ -130,10 +137,8 @@
       height: calc(100vh - 45px);
       flex-direction: row;
     }
-
-    /* ============ MAP (70%) ============ */
     #map {
-      flex: 0 0 70%; 
+      flex: 0 0 70%;
       position: relative;
       min-height: 400px;
     }
@@ -146,13 +151,13 @@
       background-color: #ffffff;
       border-left: 1px solid rgba(0,0,0,0.1);
       box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-      overflow-x: hidden; 
-      overflow-y: auto;  
+      overflow-x: hidden;
+      overflow-y: auto;
       font-size: 14px;
       box-sizing: border-box;
     }
 
-    /* ============ LOADING SPINNER ============ */
+    /* LOADING SPINNER */
     #loading-spinner {
       position: fixed;
       top: 50%;
@@ -185,18 +190,18 @@
     #listing-section,
     #agency-dashboard,
     #intro-section {
-      padding: 10px 15px; 
+      padding: 10px 15px;
     }
     fieldset {
       background: #f9f9f9;
       border: 1px solid #e0e0e0;
-      padding: 10px 12px; 
+      padding: 10px 12px;
       border-radius: 6px;
-      margin-bottom: 8px; 
+      margin-bottom: 8px;
     }
     fieldset legend {
       font-size: 14px;
-      margin-bottom: 6px; 
+      margin-bottom: 6px;
       color: #2D3E4F;
       font-weight: 600;
     }
@@ -232,7 +237,7 @@
     }
     #listing h4 {
       margin-top: 0;
-      margin-bottom: 8px; 
+      margin-bottom: 8px;
       font-size: 14px;
       font-weight: 600;
       color: #2D3E4F;
@@ -240,12 +245,12 @@
       padding-bottom: 4px;
     }
     .cog-section {
-      margin-bottom: 8px; 
+      margin-bottom: 8px;
     }
     .cog-header {
       background: #2D3E4F;
       color: #ffffff;
-      padding: 6px 10px; 
+      padding: 6px 10px;
       border-radius: 5px;
       font-weight: bold;
       font-size: 14px;
@@ -275,7 +280,7 @@
     .agency-title {
       background: #f9f9f9;
       margin-bottom: 5px;
-      padding: 5px 10px; 
+      padding: 5px 10px;
       border-radius: 4px;
       border: 1px solid #e0e0e0;
       color: #2D3E4F;
@@ -285,15 +290,15 @@
     }
     .agency-title:hover {
       background: #f0f7fa;
-      border-color: #34A794; 
+      border-color: #34A794;
     }
     #no-facilities-msg {
-      padding: 8px; 
+      padding: 8px;
       color: #666;
       font-style: italic;
       background: #f9f9f9;
       border-radius: 4px;
-      margin: 8px 0; 
+      margin: 8px 0;
       border: 1px solid #e0e0e0;
     }
 
@@ -301,12 +306,12 @@
       background-color: #ffffff;
       border-radius: 6px;
       border: 1px solid #ddd;
-      padding: 10px; 
+      padding: 10px;
       box-shadow: 0 1px 5px rgba(0,0,0,0.05);
     }
     #dashboard h3 {
       font-size: 16px;
-      margin-bottom: 8px; 
+      margin-bottom: 8px;
       border-bottom: 1px solid #e0e0e0;
       padding-bottom: 4px;
       color: #2D3E4F;
@@ -320,9 +325,9 @@
       color: #2D3E4F;
     }
     .metric {
-      margin-bottom: 6px; 
+      margin-bottom: 6px;
       background-color: #f9f9f9;
-      padding: 6px; 
+      padding: 6px;
       border-radius: 4px;
       border: 1px solid #e0e0e0;
       display: flex;
@@ -332,7 +337,7 @@
     .metric .metric-label {
       color: #2D3E4F;
       font-weight: 500;
-      margin-right: 6px; 
+      margin-right: 6px;
       flex: 0 0 auto;
       font-size: 13px;
     }
@@ -347,12 +352,12 @@
       background-color: #2D3E4F;
       color: white;
       border: none;
-      padding: 5px 10px; 
+      padding: 5px 10px;
       border-radius: 4px;
       cursor: pointer;
       font-family: 'Aptos', sans-serif;
       font-size: 13px;
-      margin-bottom: 8px; 
+      margin-bottom: 8px;
       transition: background-color 0.2s ease;
       display: inline-flex;
       align-items: center;
@@ -363,24 +368,30 @@
     #back-button::before {
       content: "←";
       font-size: 14px;
-      margin-right: 5px; 
+      margin-right: 5px;
     }
 
+    /* INTRO SECTION => PURPLE BACKGROUND, WHITE TEXT */
     #intro-section {
-      background-color: #ffffff;
+      background-color: #9A5CA7; /* Purple */
+      color: #ffffff;
     }
     #intro-section h4 {
       margin-top: 0;
       font-size: 14px;
-      color: #2D3E4F;
-      margin-bottom: 6px; 
+      margin-bottom: 6px;
+      color: #ffffff;
     }
     #intro-section p,
     #intro-section li {
       font-size: 13px;
-      color: #34495e;
+      color: #ffffff;
       line-height: 1.5;
-      margin-bottom: 6px; 
+      margin-bottom: 6px;
+    }
+    #intro-section ul {
+      list-style: disc;
+      margin-left: 20px;
     }
 
     /* WELCOME POPUP */
@@ -486,6 +497,30 @@
       to { opacity: 1; }
     }
 
+    /* LAYER TOGGLE LEGEND */
+    #layer-toggle-legend {
+      position: absolute;
+      top: 60px; /* below the geocoder */
+      left: 10px;
+      z-index: 12; 
+      background-color: #ffffff;
+      border: 1px solid #ccc;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-family: 'Aptos', sans-serif;
+      font-size: 13px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    #layer-toggle-legend label {
+      display: flex;
+      align-items: center;
+      margin-bottom: 4px;
+      cursor: pointer;
+    }
+    #layer-toggle-legend input[type="checkbox"] {
+      margin-right: 6px;
+    }
+
     /* RESPONSIVE */
     @media (max-width: 768px) {
       #container {
@@ -504,6 +539,10 @@
       #agency-dashboard,
       #intro-section {
         padding: 8px 12px;
+      }
+      #layer-toggle-legend {
+        top: 110px;
+        left: 8px;
       }
     }
   </style>
@@ -525,20 +564,40 @@
 
 <!-- ============ MAIN CONTAINER ============ -->
 <div id="container">
-  <!-- PASSWORD MODAL AT TOP OF BODY -->
+  <!-- ============ PASSWORD MODAL ============ -->
   <div id="password-modal">
     <div id="password-modal-content">
-      <h2>To access SoCalREN’s ERAP Dashboard <br> please enter your provided access code</h2>
+      <h2>
+        To access SoCalREN’s ERAP Dashboard<br>
+        please enter your provided access code
+      </h2>
       <input type="password" id="password-input" placeholder="Access Code">
       <button id="password-submit">Submit</button>
     </div>
   </div>
 
-  <!-- MAP + PANEL -->
+  <!-- ============ MAP (70%) ============ -->
   <div id="map"></div>
 
+  <!-- LAYER TOGGLE LEGEND -->
+  <div id="layer-toggle-legend">
+    <label>
+      <input type="checkbox" id="toggle-scr" checked>
+      SoCalREN Territory
+    </label>
+    <label>
+      <input type="checkbox" id="toggle-boundaries" checked>
+      Agency Boundaries
+    </label>
+    <label>
+      <input type="checkbox" id="toggle-facilities" checked>
+      Facilities
+    </label>
+  </div>
+
+  <!-- ============ PANEL (30%) ============ -->
   <div class="map-overlay" id="dashboard-panel">
-    <!-- FILTERS -->
+    <!-- ~~~ FILTERS SECTION ~~~ -->
     <section id="filters-section">
       <fieldset>
         <input id="agency-filter" type="text" placeholder="Search for an agency">
@@ -581,12 +640,12 @@
       </fieldset>
     </section>
 
-    <!-- LISTING -->
+    <!-- ~~~ LISTING SECTION ~~~ -->
     <section id="listing-section">
       <div id="listing"></div>
     </section>
 
-    <!-- AGENCY DASHBOARD -->
+    <!-- ~~~ AGENCY DASHBOARD SECTION ~~~ -->
     <section id="agency-dashboard">
       <div class="dashboard" id="dashboard" style="display: none;">
         <h3 id="data-overview-title">Data Overview</h3>
@@ -649,7 +708,7 @@
       </div>
     </section>
 
-    <!-- INTRO / WELCOME -->
+    <!-- ~~~ INTRO / WELCOME ~~~ -->
     <section id="intro-section">
       <h4>Welcome to SoCalREN's ERAP Dashboard</h4>
       <p>
@@ -688,48 +747,43 @@
   <i class="fas fa-spinner fa-spin"></i> Loading...
 </div>
 
-<!-- Main script now at bottom, ensuring DOM elements exist -->
 <script>
 /* ============ MAPBOX TOKEN ============ */
 mapboxgl.accessToken = 'pk.eyJ1Ijoid2VuZ2xlMSIsImEiOiJjbHBtaWx0N2IwMGljMmxwNjBsMnU4a2E4In0.Dzf3G-WBKzDfgnXsGHiMXw';
 
-/* ============ PASSWORD ELEMENTS ============ */
+/* ============ PASSWORD PROMPT ============ */
 const passwordModal = document.getElementById('password-modal');
 const passwordInput = document.getElementById('password-input');
 const passwordSubmit = document.getElementById('password-submit');
 
-/* ============ PASSWORD PROMPT LOGIC ============ */
 document.addEventListener('DOMContentLoaded', () => {
-  // Show modal on page load
   passwordModal.style.display = 'flex';
 });
 
 passwordSubmit.addEventListener('click', () => {
-  console.log("Password attempt:", passwordInput.value); // For debugging
   if (passwordInput.value === 'test') {
     passwordModal.style.display = 'none';
     initMap();
   } else {
-    location.reload(); // Wrong => reload
+    location.reload();
   }
 });
 
-/* ============ MAP, DATA, AND FUNCTIONS ============ */
-/* (All the same code you had before for initMap, loadBoundariesAndFacilities, 
-   showFacilities, filterFacilities, updateAgencyDashboard, etc.) */
+/* ============ LAYER TOGGLES DOM ============ */
+const toggleSCR = document.getElementById('toggle-scr');
+const toggleBoundaries = document.getElementById('toggle-boundaries');
+const toggleFacilities = document.getElementById('toggle-facilities');
 
-/* We'll paste that code verbatim: ------------------------------------------------ */
-
+/* ============ MAP VARIABLES + DATA ============ */
 let map;
 
-/* CUSTOM COG LOOKUP */
 const COGMapping = {
   "GCCOG": "Gateway Cities Council of Governments",
   "SGVCOG": "San Gabriel Valley Council of Governments",
   "SBCOG": "South Bay Cities Council of Governments"
 };
 
-/* AGENCIES DATA (FULL) */
+/* ~~~ AGENCIES DATA (FULL) ~~~ */
 const agenciesData = [
   {
     "Agency": "Bell",
@@ -949,7 +1003,7 @@ const agenciesData = [
   }
 ];
 
-/* ============ FACILITIES DATA =========== */
+/* ~~~ FACILITIES DATA (FULL) ~~~ */
 const facilitiesData = [
   {
     "Agency": "Bell",
@@ -1293,7 +1347,7 @@ const facilitiesData = [
   }
 ];
 
-/* INIT MAP */
+/* ============ INIT MAP ============ */
 function initMap() {
   map = new mapboxgl.Map({
     container: 'map',
@@ -1319,9 +1373,30 @@ function initMap() {
   });
 }
 
-/* LOAD BOUNDARIES + FACILITIES */
+/* ============ LOAD BOUNDARIES, TERRITORY, FACILITIES ============ */
 async function loadBoundariesAndFacilities() {
-  // 1) LA boundaries
+  // 1) SoCalREN territory => Transparent Blue Fill (behind everything)
+  fetch('data/scr_territory.geojson')
+    .then(resp => resp.json())
+    .then(scrData => {
+      map.addSource('scr-territory', {
+        type: 'geojson',
+        data: scrData
+      });
+      // place behind other layers by inserting before "water" in the style
+      map.addLayer({
+        id: 'scr-territory-fill',
+        type: 'fill',
+        source: 'scr-territory',
+        paint: {
+          'fill-color': 'rgba(0, 128, 255, 0.25)',
+          'fill-outline-color': 'rgba(0,0,0,0)'
+        }
+      }, 'water');
+    })
+    .catch(err => console.error('Error loading scr_territory:', err));
+
+  // 2) Agency boundaries => fill-extrusion
   fetch('data/la_boundaries.geojson')
     .then(resp => resp.json())
     .then(geojson => {
@@ -1346,14 +1421,15 @@ async function loadBoundariesAndFacilities() {
         className: 'boundary-popup'
       });
 
+      // Hover
       map.on('mousemove', 'la-boundaries-extrusion', e => {
         map.getCanvas().style.cursor = 'pointer';
-        if (e.features.length > 0) {
+        if (e.features.length) {
           if (hoveredId) {
-            map.setFeatureState({ source: 'la-boundaries', id: hoveredId },{ hover: false });
+            map.setFeatureState({ source: 'la-boundaries', id: hoveredId }, { hover: false });
           }
           hoveredId = e.features[0].id;
-          map.setFeatureState({ source: 'la-boundaries', id: hoveredId },{ hover: true });
+          map.setFeatureState({ source: 'la-boundaries', id: hoveredId }, { hover: true });
 
           const cityName = e.features[0].properties.CITY_COMM_NAME || '';
           let matchedAgency = agenciesData.find(a => a.Agency.toLowerCase() === cityName.toLowerCase());
@@ -1381,11 +1457,12 @@ async function loadBoundariesAndFacilities() {
         map.getCanvas().style.cursor = '';
         boundaryPopup.remove();
         if (hoveredId) {
-          map.setFeatureState({ source: 'la-boundaries', id: hoveredId },{ hover: false });
+          map.setFeatureState({ source: 'la-boundaries', id: hoveredId }, { hover: false });
         }
         hoveredId = null;
       });
 
+      // Click => show listing
       map.on('click', 'la-boundaries-extrusion', e => {
         if (!e.features.length) return;
         const cityName = e.features[0].properties.CITY_COMM_NAME || '';
@@ -1403,37 +1480,19 @@ async function loadBoundariesAndFacilities() {
     })
     .catch(err => console.error('Error loading boundaries:', err));
 
-  // 2) SoCalREN territory => Transparent Blue Fill
-  fetch('data/scr_territory.geojson')
-    .then(resp => resp.json())
-    .then(scrData => {
-      map.addSource('scr-territory', { type: 'geojson', data: scrData });
-      map.addLayer({
-        id: 'scr-territory-fill',
-        type: 'fill',
-        source: 'scr-territory',
-        paint: {
-          'fill-color': 'rgba(0, 128, 255, 0.25)',
-          'fill-outline-color': 'rgba(0,0,0,0)' 
-        }
-      });
-    })
-    .catch(err => console.error('Error loading scr_territory:', err));
-
   // 3) Facilities => cluster
   const facilityFeatures = [];
-  facilitiesData.forEach(f => {
-    const lat = parseFloat(f.Latitude);
-    const lng = parseFloat(f.Longitude);
+  facilitiesData.forEach(fac => {
+    const lat = parseFloat(fac.Latitude);
+    const lng = parseFloat(fac.Longitude);
     if (!isNaN(lat) && !isNaN(lng)) {
       facilityFeatures.push({
         type: 'Feature',
         geometry: { type: 'Point', coordinates: [lng, lat] },
-        properties: { ...f }
+        properties: { ...fac }
       });
     }
   });
-
   const facilityGeoJSON = {
     type: 'FeatureCollection',
     features: facilityFeatures
@@ -1447,7 +1506,6 @@ async function loadBoundariesAndFacilities() {
     clusterRadius: 50
   });
 
-  // cluster circles
   map.addLayer({
     id: 'clusters',
     type: 'circle',
@@ -1473,7 +1531,6 @@ async function loadBoundariesAndFacilities() {
     }
   });
 
-  // cluster counts
   map.addLayer({
     id: 'cluster-count',
     type: 'symbol',
@@ -1492,7 +1549,6 @@ async function loadBoundariesAndFacilities() {
     }
   });
 
-  // unclustered
   map.addLayer({
     id: 'unclustered-point',
     type: 'circle',
@@ -1508,10 +1564,10 @@ async function loadBoundariesAndFacilities() {
     }
   });
 
-  // reorder
-  map.moveLayer('clusters');
-  map.moveLayer('cluster-count');
-  map.moveLayer('unclustered-point');
+  // reorder so extrusions are above territory, but facilities are above extrusions
+  map.moveLayer('clusters', 'la-boundaries-extrusion');
+  map.moveLayer('cluster-count', 'clusters');
+  map.moveLayer('unclustered-point', 'cluster-count');
 
   const facilityPopup = new mapboxgl.Popup({
     closeButton: false,
@@ -1563,9 +1619,36 @@ async function loadBoundariesAndFacilities() {
   });
 
   document.getElementById('loading-spinner').style.display = 'none';
+
+  // Now wire up toggles
+  setupLayerToggles();
 }
 
-/* RENDER AGENCY LISTING */
+/* ============ LAYER TOGGLE SETUP ============ */
+function setupLayerToggles() {
+  // SoCalREN territory => 'scr-territory-fill'
+  // Agency boundaries => 'la-boundaries-extrusion'
+  // Facilities => 'clusters', 'cluster-count', 'unclustered-point'
+
+  toggleSCR.addEventListener('change', e => {
+    const visible = e.target.checked ? 'visible' : 'none';
+    map.setLayoutProperty('scr-territory-fill', 'visibility', visible);
+  });
+
+  toggleBoundaries.addEventListener('change', e => {
+    const visible = e.target.checked ? 'visible' : 'none';
+    map.setLayoutProperty('la-boundaries-extrusion', 'visibility', visible);
+  });
+
+  toggleFacilities.addEventListener('change', e => {
+    const visible = e.target.checked ? 'visible' : 'none';
+    map.setLayoutProperty('clusters', 'visibility', visible);
+    map.setLayoutProperty('cluster-count', 'visibility', visible);
+    map.setLayoutProperty('unclustered-point', 'visibility', visible);
+  });
+}
+
+/* ============ RENDER AGENCY LISTING ============ */
 function renderListing() {
   const listingElement = document.getElementById('listing');
   const agencyFilters = document.getElementById('agency-filters');
@@ -1575,6 +1658,7 @@ function renderListing() {
   agencyFilters.style.display = 'block';
   facilityFilters.style.display = 'none';
 
+  // group by COG
   const groups = {};
   agenciesData.forEach(a => {
     const cog = a.COG;
@@ -1622,7 +1706,7 @@ function renderListing() {
   }
 }
 
-/* FILTER AGENCIES */
+/* ============ FILTER AGENCIES ============ */
 function filterAgencies() {
   const minPop = parseInt(document.getElementById('population-min').value) || 0;
   const maxPop = parseInt(document.getElementById('population-max').value) || Infinity;
@@ -1702,7 +1786,7 @@ document.getElementById('agency-filter').addEventListener('input', filterAgencie
 document.getElementById('dac-filter').addEventListener('change', filterAgencies);
 document.getElementById('ces90-filter').addEventListener('change', filterAgencies);
 
-/* FACILITY FILTERS */
+/* ============ FACILITY FILTERS ============ */
 document.getElementById('pv-filter').addEventListener('change', refreshFacilityList);
 document.getElementById('ev-filter').addEventListener('change', refreshFacilityList);
 document.getElementById('cooling-filter').addEventListener('change', refreshFacilityList);
@@ -1716,7 +1800,7 @@ function refreshFacilityList() {
   }
 }
 
-/* SHOW FACILITIES & AGENCY DATA */
+/* ============ SHOW FACILITIES & AGENCY DATA ============ */
 function showFacilities(agency, facilityList) {
   const listingElement = document.getElementById('listing');
   listingElement.innerHTML = '';
@@ -1761,7 +1845,7 @@ function showFacilities(agency, facilityList) {
   updateAgencyDashboard(agency);
 }
 
-/* FILTER FACILITIES */
+/* ============ FILTER FACILITIES ============ */
 function filterFacilities(facList) {
   const pvChecked = document.getElementById('pv-filter').checked;
   const evChecked = document.getElementById('ev-filter').checked;
@@ -1786,7 +1870,7 @@ function filterFacilities(facList) {
   });
 }
 
-/* UPDATE AGENCY DASHBOARD */
+/* ============ UPDATE AGENCY DASHBOARD ============ */
 function updateAgencyDashboard(agency) {
   document.getElementById('data-overview-title').textContent = agency.Agency + " Data Overview";
   document.getElementById('agency-data').style.display = 'block';
@@ -1834,7 +1918,7 @@ function updateAgencyDashboard(agency) {
   document.getElementById('agency-therms').textContent = thermVal;
 }
 
-/* WELCOME POPUP */
+/* ============ WELCOME POPUP ============ */
 function closeWelcome() {
   const popup = document.getElementById('welcome-popup');
   popup.classList.add('fade-out');
@@ -1843,7 +1927,7 @@ function closeWelcome() {
   }, 400);
 }
 
-/* RENDER THE LISTING IMMEDIATELY */
+/* INIT LISTING ON PAGE LOAD */
 renderListing();
 </script>
 </body>
