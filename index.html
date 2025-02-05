@@ -1489,9 +1489,11 @@ async function loadBoundariesAndFacilities() {
             const dac = matchedAgency["DAC Status"] || 'N/A';
             const score = matchedAgency["CalEnviroScreen Score"] || 'N/A';
             const pop = matchedAgency["Population"] || 'N/A';
+
+            // CHANGED HERE: "DAC Status" => "Underserved/Hard to Reach:"
             popupHtml = `
               <strong>${matchedAgency.Agency}</strong><br>
-              DAC Status: ${dac}<br>
+              Underserved/Hard to Reach: ${dac}<br>
               CalEnviroScreen Score: ${score}<br>
               Population: ${Number(pop).toLocaleString()}
             `;
@@ -1553,7 +1555,6 @@ async function loadBoundariesAndFacilities() {
     clusterRadius: 50
   });
 
-  // Note: Second argument removed so these layers draw on top by default
   map.addLayer({
     id: 'clusters',
     type: 'circle',
@@ -1639,12 +1640,15 @@ async function loadBoundariesAndFacilities() {
     const designation = props["Existing Resilience Designation"] || "N/A";
     const agencyName = props["Agency"] || "";
 
+    // CHANGED HERE:
+    //  - "Resilience: ${designation}" => "Existing Resilience Designation: ${designation}"
+    //  - Button text: "View in Panel" => "View Data"
     const content = `
       <strong>${name}</strong><br>
       Address: ${address}<br>
-      Resilience: ${designation}<br><br>
+      Existing Resilience Designation: ${designation}<br><br>
       <button id="popup-facility-button" style="padding:6px 12px;background:#2D3E4F;color:#fff;border:none;border-radius:4px;cursor:pointer;">
-        View in Panel
+        View Data
       </button>
     `;
 
