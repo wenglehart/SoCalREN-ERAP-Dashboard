@@ -192,42 +192,50 @@
     #intro-section {
       padding: 10px 15px;
     }
-
-    /* Remove border from search fieldsets; reduce font size further */
     fieldset {
-      background: none;
-      border: none;
-      padding: 0; 
-      margin-bottom: 6px;
+      background: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin-bottom: 8px;
     }
     fieldset legend {
-      font-size: 13px; 
-      margin-bottom: 4px;
+      font-size: 14px;
+      margin-bottom: 6px;
       color: #2D3E4F;
       font-weight: 600;
     }
+    input[type="text"], input[type="number"] {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 6px;
+      box-sizing: border-box;
+      font-size: 14px;
+      width: 100%;
+      font-family: 'Aptos', sans-serif;
+      margin-bottom: 6px;
+    }
 
-    /* Put each filter on its own line + smaller text */
+    /* Rounded edges for the search bar */
+    #agency-filter {
+      border-radius: 10px; /* more pronounced rounding */
+    }
+
+    /* Scale down text inside .filters */
     .filters {
-      font-size: 12px;
-    }
-    .filters label {
-      display: block; 
-      margin-bottom: 4px;
-      font-size: 12px;
-      color: #2D3E4F;
-      cursor: pointer;
-    }
-    .filters input[type=checkbox] {
-      margin-right: 6px;
-      cursor: pointer;
+      font-size: 13px;
     }
 
-    /* Agency listing container => reduce top margin so it sits close */
+    /* Reduce space between filters and listing */
+    #agency-filters {
+      margin-bottom: 5px; /* slightly reduced from default */
+    }
+
+    /* LISTING */
     #listing {
-      margin-top: 5px; 
+      /* Removed border & radius here */
       border: none;
-      padding: 0 0 8px 0;
+      padding: 8px;
     }
     #listing h4 {
       margin-top: 0;
@@ -273,14 +281,14 @@
     }
     .agency-title {
       background: #f9f9f9;
-      margin-bottom: 4px;
+      margin-bottom: 5px;
       padding: 5px 10px;
-      border-radius: 8px;
+      border-radius: 8px; /* More rounding for agencies/facilities */
       border: 1px solid #e0e0e0;
       color: #2D3E4F;
       cursor: pointer;
       transition: background-color 0.2s ease;
-      font-size: 13px;
+      font-size: 14px;
     }
     .agency-title:hover {
       background: #f0f7fa;
@@ -297,31 +305,36 @@
     }
 
     .dashboard {
+      /* removed the border here as requested */
       background-color: #ffffff;
       border-radius: 6px;
       padding: 10px;
       box-shadow: 0 1px 5px rgba(0,0,0,0.05);
     }
     #dashboard h3 {
-      margin: 0 0 8px 0;
       font-size: 16px;
-      font-weight: 700;
-      color: #2D3E4F;
+      margin-bottom: 8px;
       border-bottom: 1px solid #e0e0e0;
       padding-bottom: 4px;
+      color: #2D3E4F;
     }
-
-    /* Removed "Agency-Level Data" text => no separate heading for that */
     #agency-data,
     #facility-data {
-      margin-top: 5px; 
+      margin-top: 8px; 
+    }
+    #agency-data h4,
+    #facility-data h4 {
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: #2D3E4F;
     }
 
+    /* Round outlines of data metrics more */
     .metric {
       margin-bottom: 6px;
       background-color: #f9f9f9;
       padding: 6px;
-      border-radius: 8px;
+      border-radius: 8px; /* updated rounding */
       border: 1px solid #e0e0e0;
       display: flex;
       justify-content: space-between;
@@ -332,27 +345,25 @@
       font-weight: 500;
       margin-right: 6px;
       flex: 0 0 auto;
-      font-size: 12px;
+      font-size: 13px;
     }
     .metric .metric-value {
       flex: 1;
       text-align: right;
-      font-size: 12px;
+      font-size: 13px;
       color: #34495e;
     }
 
-    /* Smaller, right-aligned back button */
     #back-button {
-      float: right;
       background-color: #2D3E4F;
       color: white;
       border: none;
-      padding: 3px 8px;
+      padding: 5px 10px;
       border-radius: 4px;
       cursor: pointer;
       font-family: 'Aptos', sans-serif;
-      font-size: 12px;
-      margin-bottom: 6px;
+      font-size: 13px;
+      margin-bottom: 8px;
       transition: background-color 0.2s ease;
       display: inline-flex;
       align-items: center;
@@ -362,17 +373,16 @@
     }
     #back-button::before {
       content: "←";
-      font-size: 12px;
+      font-size: 14px;
       margin-right: 5px;
     }
 
-    /* INTRO SECTION => only shown initially. Hidden once agency is selected */
+    /* INTRO SECTION => remove border + keep white background */
     #intro-section {
       background-color: #ffffff;
       color: #2D3E4F;
-      border: none;
+      border: none; /* removed the outline */
       padding: 10px 15px;
-      margin-top: 10px; 
     }
     #intro-section h4 {
       margin-top: 0;
@@ -499,7 +509,7 @@
     /* LAYER TOGGLE LEGEND */
     #layer-toggle-legend {
       position: absolute;
-      top: 130px;
+      top: 130px; /* below the search bar */
       left: 10px;
       z-index: 12; 
       background-color: #ffffff;
@@ -599,8 +609,8 @@
     <!-- ~~~ FILTERS SECTION ~~~ -->
     <section id="filters-section">
       <fieldset>
-        <!-- No border, smaller text -->
-        <input id="agency-filter" type="text" placeholder="Search dashboard" style="border-radius:8px; font-size:12px;">
+        <!-- Rounded search bar from CSS above -->
+        <input id="agency-filter" type="text" placeholder="Search dashboard">
       </fieldset>
 
       <fieldset class="filters" id="agency-filters">
@@ -613,17 +623,20 @@
           <input type="checkbox" id="ces90-filter">
           Show only agencies with CalEnviroScreen Score > 90
         </label>
-        <label style="margin-top:6px;">Population Range:</label>
-        <div style="display: flex; gap: 6px; align-items: center; margin-bottom:8px;">
-          <input type="number" id="population-min" placeholder="Min" min="0" style="width:70px; font-size:12px;">
-          <span>to</span>
-          <input type="number" id="population-max" placeholder="Max" min="0" style="width:70px; font-size:12px;">
+        <div style="margin-top:6px;">
+          <label for="population-min" style="margin-bottom:4px;">Population Range:</label>
+          <div style="display: flex; gap: 6px; align-items: center;">
+            <input type="number" id="population-min" placeholder="Min" min="0" style="flex:1;">
+            <span>to</span>
+            <input type="number" id="population-max" placeholder="Max" min="0" style="flex:1;">
+          </div>
         </div>
       </fieldset>
 
       <fieldset class="filters" id="facility-filters" style="display:none;">
         <legend>Facility Search Filters</legend>
-
+        
+        <!-- Boolean filters -->
         <label>
           <input type="checkbox" id="pv-filter">
           Show only facilities with PV/Battery
@@ -634,17 +647,24 @@
         </label>
         <label>
           <input type="checkbox" id="cooling-filter">
-          Show only Cooling/Emergency
+          Show only Cooling Center/Emergency Ops
         </label>
 
-        <label style="margin-top:6px;">Min # of Planned EV Chargers:</label>
-        <input type="number" id="evChargersMin" min="0" style="width:70px; font-size:12px; margin-bottom:6px;">
-
-        <label>Min PV Hours of Autonomy:</label>
-        <input type="number" id="pvHoursMin" min="0" style="width:70px; font-size:12px; margin-bottom:6px;">
-
-        <label>Min Battery Hours of Autonomy:</label>
-        <input type="number" id="batteryHoursMin" min="0" style="width:70px; font-size:12px;">
+        <!-- Numeric filters -->
+        <div style="margin-top:10px;">
+          <label style="display:block; margin-bottom:6px;">
+            Min # of Planned EV Chargers:
+            <input type="number" id="evChargersMin" min="0" style="width:100px; margin-left:6px;">
+          </label>
+          <label style="display:block; margin-bottom:6px;">
+            Min PV Hours of Autonomy:
+            <input type="number" id="pvHoursMin" min="0" style="width:100px; margin-left:6px;">
+          </label>
+          <label style="display:block;">
+            Min Battery Hours of Autonomy:
+            <input type="number" id="batteryHoursMin" min="0" style="width:100px; margin-left:6px;">
+          </label>
+        </div>
       </fieldset>
     </section>
 
@@ -656,64 +676,66 @@
     <!-- ~~~ AGENCY DASHBOARD SECTION ~~~ -->
     <section id="agency-dashboard">
       <div class="dashboard" id="dashboard" style="display: none;">
-        <!-- More prominent data overview title -->
         <h3 id="data-overview-title">Data Overview</h3>
 
+        <!-- AGENCY INFO -->
         <div id="agency-data" style="display:none;">
+          <h4>Agency-Level Data</h4>
           <div class="metric">
             <span class="metric-label">Underserved/Hard to Reach:</span>
-            <span class="metric-value" id="agency-underserved">N/A</span>
+            <span class="metric-value" id="agency-underserved">Not yet available</span>
           </div>
           <div class="metric">
             <span class="metric-label">CalEnviroScreen Score:</span>
-            <span class="metric-value" id="agency-calenviroscore">N/A</span>
+            <span class="metric-value" id="agency-calenviroscore">Not yet available</span>
           </div>
           <div class="metric">
             <span class="metric-label">Pollution Burden Percentile:</span>
-            <span class="metric-value" id="agency-pollutionburden">N/A</span>
+            <span class="metric-value" id="agency-pollutionburden">Not yet available</span>
           </div>
           <div class="metric">
             <span class="metric-label">Population:</span>
-            <span class="metric-value" id="agency-population">N/A</span>
+            <span class="metric-value" id="agency-population">Not yet available</span>
           </div>
           <div class="metric">
             <span class="metric-label">% Children and Seniors:</span>
-            <span class="metric-value" id="agency-children-seniors">N/A</span>
+            <span class="metric-value" id="agency-children-seniors">Not yet available</span>
           </div>
           <div class="metric">
             <span class="metric-label">Agency Area (sq miles):</span>
-            <span class="metric-value" id="agency-area">N/A</span>
+            <span class="metric-value" id="agency-area">Not yet available</span>
           </div>
           <div class="metric">
-            <span class="metric-label">Population Density:</span>
-            <span class="metric-value" id="agency-density">N/A</span>
+            <span class="metric-label">Population Density (per sq. mi):</span>
+            <span class="metric-value" id="agency-density">Not yet available</span>
           </div>
           <div class="metric">
-            <span class="metric-label">Extreme Heat Days:</span>
-            <span class="metric-value" id="agency-heat-days">N/A</span>
+            <span class="metric-label">Extreme Heat Days (days/yr):</span>
+            <span class="metric-value" id="agency-heat-days">Not yet available</span>
           </div>
           <div class="metric">
-            <span class="metric-label">Avg Household Income ($):</span>
-            <span class="metric-value" id="agency-income">N/A</span>
+            <span class="metric-label">Average Household Income ($):</span>
+            <span class="metric-value" id="agency-income">Not yet available</span>
           </div>
           <div class="metric">
             <span class="metric-label">% Low-Income Census Tracts:</span>
-            <span class="metric-value" id="agency-low-income">N/A</span>
+            <span class="metric-value" id="agency-low-income">Not yet available</span>
           </div>
           <div class="metric">
             <span class="metric-label"># of Electric Circuits:</span>
-            <span class="metric-value" id="agency-circuits">N/A</span>
+            <span class="metric-value" id="agency-circuits">Not yet available</span>
           </div>
           <div class="metric">
-            <span class="metric-label">Annual kWh Consumption:</span>
-            <span class="metric-value" id="agency-kwh">N/A</span>
+            <span class="metric-label">Annual Consumption (kWh):</span>
+            <span class="metric-value" id="agency-kwh">Not yet available</span>
           </div>
           <div class="metric">
-            <span class="metric-label">Annual Therms Consumption:</span>
-            <span class="metric-value" id="agency-therms">N/A</span>
+            <span class="metric-label">Annual Consumption (Therms):</span>
+            <span class="metric-value" id="agency-therms">Not yet available</span>
           </div>
         </div>
 
+        <!-- FACILITY INFO -->
         <div id="facility-data" style="display:none;">
           <h4>Facility-Level Data</h4>
           <div class="metric">
@@ -725,11 +747,11 @@
             <span class="metric-value" id="fac-address">N/A</span>
           </div>
           <div class="metric">
-            <span class="metric-label">Existing Resilience Designation:</span>
-            <span class="metric-value" id="fac-res-designation">N/A</span>
+            <span class="metric-label">Existing Use:</span>
+            <span class="metric-value" id="fac-use">N/A</span>
           </div>
           <div class="metric">
-            <span class="metric-label">Existing EV Chargers:</span>
+            <span class="metric-label">EV Chargers (Existing):</span>
             <span class="metric-value" id="fac-ev-existing">N/A</span>
           </div>
           <div class="metric">
@@ -737,7 +759,7 @@
             <span class="metric-value" id="fac-ev-planned">N/A</span>
           </div>
           <div class="metric">
-            <span class="metric-label">Exisiting PV or Battery:</span>
+            <span class="metric-label">Existing PV/Battery?</span>
             <span class="metric-value" id="fac-pv-existing">N/A</span>
           </div>
           <div class="metric">
@@ -747,22 +769,6 @@
           <div class="metric">
             <span class="metric-label">Planned Battery (hrs):</span>
             <span class="metric-value" id="fac-batt-planned">N/A</span>
-          </div>
-          <div class="metric">
-            <span class="metric-label">Existing use:</span>
-            <span class="metric-value" id="fac-use">N/A</span>
-          </div>
-          <div class="metric">
-            <span class="metric-label">Walkability:</span>
-            <span class="metric-value" id="fac-walk">N/A</span>
-          </div>
-          <div class="metric">
-            <span class="metric-label">Gross Floor Area (sqft):</span>
-            <span class="metric-value" id="fac-floor">N/A</span>
-          </div>
-          <div class="metric">
-            <span class="metric-label">Year Built:</span>
-            <span class="metric-value" id="fac-year">N/A</span>
           </div>
         </div>
       </div>
@@ -844,7 +850,7 @@ const COGMapping = {
   "SBCOG": "South Bay Cities Council of Governments"
 };
 
-/* ~~~ AGENCIES DATA ~~~ (unchanged from snippet above) */
+/* ~~~ AGENCIES DATA (FULL) ~~~ */
 const agenciesData = [
   {
     "Agency": "Bell",
@@ -1064,347 +1070,267 @@ const agenciesData = [
   }
 ];
 
-/* ~~~ FACILITIES DATA (UPDATED) ~~~ */
+/* ~~~ FACILITIES DATA (FULL) ~~~ */
 const facilitiesData = [
   {
     "Agency": "Bell",
     "Facility Name": "Bell Library",
     "Address": "4411 Gage Ave, Bell, CA",
-    "Existing Resilience Designation": "N/A",
+    "Latitude": 33.97842,
+    "Longitude": -118.188728,
+    "Existing Use": "N/A",
     "Existing EV Chargers (Yes/No)": "No",
     "Number of Planned EV Chargers": 2,
-    "Exisiting PV or Battery Capabilities": "N/A",
+    "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 3912,
-    "Planned Battery Storage (hours of autonomy)": 25,
-    "Existing use": "Library",
-    "Walkability": "High",
-    "Gross Floor Area (sqft)": 5622,
-    "Year Built": 1965,
-    "Latitude": 33.97842,
-    "Longitude": -118.188728
+    "Planned Battery Storage (hours of autonomy)": 25
   },
   {
     "Agency": "Bell",
     "Facility Name": "Community Center",
     "Address": "6250 Pine Ave, Bell, CA",
-    "Existing Resilience Designation": "Cooling Center",
+    "Latitude": 33.979983,
+    "Longitude": -118.188726,
+    "Existing Use": "Cooling Center",
     "Existing EV Chargers (Yes/No)": "No",
     "Number of Planned EV Chargers": 2,
-    "Exisiting PV or Battery Capabilities": "Solar went live in August 2020",
+    "Existing PV or Battery Capabilities (Yes/No)": "Solar went live in August 2020",
     "Planned PV (hours of autonomy)": 1899,
-    "Planned Battery Storage (hours of autonomy)": 1748,
-    "Existing use": "Community center",
-    "Walkability": "High",
-    "Gross Floor Area (sqft)": 16011,
-    "Year Built": 1980,
-    "Latitude": 33.979983,
-    "Longitude": -118.188726
+    "Planned Battery Storage (hours of autonomy)": 1748
   },
   {
     "Agency": "Bell",
     "Facility Name": "Camp Little Bear Park",
     "Address": "6704 Orchard Ave, Bell, CA",
-    "Existing Resilience Designation": "N/A",
+    "Latitude": 33.976608,
+    "Longitude": -118.19976,
+    "Existing Use": "N/A",
     "Existing EV Chargers (Yes/No)": "No",
     "Number of Planned EV Chargers": 0,
-    "Exisiting PV or Battery Capabilities": "N/A",
+    "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 664,
-    "Planned Battery Storage (hours of autonomy)": 81,
-    "Existing use": "Park",
-    "Walkability": "Medium",
-    "Gross Floor Area (sqft)": 5783,
-    "Year Built": 1962,
-    "Latitude": 33.976608,
-    "Longitude": -118.19976
+    "Planned Battery Storage (hours of autonomy)": 81
   },
   {
     "Agency": "Bell",
     "Facility Name": "Veterans Memorial Park",
     "Address": "6500 Wilcox Ave, Bell, CA",
-    "Existing Resilience Designation": "Cooling Center",
+    "Latitude": 33.975866,
+    "Longitude": -118.176767,
+    "Existing Use": "Cooling Center",
     "Existing EV Chargers (Yes/No)": "No Capacity",
     "Number of Planned EV Chargers": 0,
-    "Exisiting PV or Battery Capabilities": "N/A",
+    "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 3397,
-    "Planned Battery Storage (hours of autonomy)": 381,
-    "Existing use": "Park",
-    "Walkability": "Medium",
-    "Gross Floor Area (sqft)": 7500,
-    "Year Built": 1955,
-    "Latitude": 33.975866,
-    "Longitude": -118.176767
+    "Planned Battery Storage (hours of autonomy)": 381
   },
   {
     "Agency": "Maywood",
     "Facility Name": "City Hall + Sheriff's Office",
     "Address": "4319 Slauson Ave, Bell, CA",
-    "Existing Resilience Designation": "Cooling Center",
+    "Latitude": 33.986554,
+    "Longitude": -118.170803,
+    "Existing Use": "Cooling Center",
     "Existing EV Chargers (Yes/No)": "No",
     "Number of Planned EV Chargers": 4,
-    "Exisiting PV or Battery Capabilities": "No",
+    "Existing PV or Battery Capabilities (Yes/No)": "No",
     "Planned PV (hours of autonomy)": 2646,
-    "Planned Battery Storage (hours of autonomy)": 0,
-    "Existing use": "Office",
-    "Walkability": "High",
-    "Gross Floor Area (sqft)": 9534,
-    "Year Built": 1938,
-    "Latitude": 33.986554,
-    "Longitude": -118.170803
+    "Planned Battery Storage (hours of autonomy)": 0
   },
   {
     "Agency": "Maywood",
     "Facility Name": "Teen Center",
     "Address": "4801 E. Slauson Ave, Bell, CA",
-    "Existing Resilience Designation": "N/A",
+    "Latitude": 33.986554,
+    "Longitude": -118.170803,
+    "Existing Use": "N/A",
     "Existing EV Chargers (Yes/No)": "No",
     "Number of Planned EV Chargers": 0,
-    "Exisiting PV or Battery Capabilities": "No",
+    "Existing PV or Battery Capabilities (Yes/No)": "No",
     "Planned PV (hours of autonomy)": "Whole year",
-    "Planned Battery Storage (hours of autonomy)": "Whole year",
-    "Existing use": "Community center",
-    "Walkability": "Medium",
-    "Gross Floor Area (sqft)": "N/A",
-    "Year Built": "N/A",
-    "Latitude": 33.986554,
-    "Longitude": -118.170803
+    "Planned Battery Storage (hours of autonomy)": "Whole year"
   },
   {
     "Agency": "Maywood",
     "Facility Name": "(YMCA) Maywood Park",
     "Address": "4801 E. 58th St, Bell, CA",
-    "Existing Resilience Designation": "N/A",
+    "Latitude": 33.98746,
+    "Longitude": -118.178804,
+    "Existing Use": "N/A",
     "Existing EV Chargers (Yes/No)": "No",
     "Number of Planned EV Chargers": 4,
-    "Exisiting PV or Battery Capabilities": "No",
+    "Existing PV or Battery Capabilities (Yes/No)": "No",
     "Planned PV (hours of autonomy)": 1140,
-    "Planned Battery Storage (hours of autonomy)": 5,
-    "Existing use": "Community center",
-    "Walkability": "Medium",
-    "Gross Floor Area (sqft)": 30819,
-    "Year Built": 1999,
-    "Latitude": 33.98746,
-    "Longitude": -118.178804
+    "Planned Battery Storage (hours of autonomy)": 5
   },
   {
     "Agency": "Maywood",
     "Facility Name": "Cesar Chavez Library",
     "Address": "4323 Slauson Ave, Bell, CA",
-    "Existing Resilience Designation": "N/A",
+    "Latitude": 33.986554,
+    "Longitude": -118.170803,
+    "Existing Use": "N/A",
     "Existing EV Chargers (Yes/No)": "No",
     "Number of Planned EV Chargers": 0,
-    "Exisiting PV or Battery Capabilities": "No",
+    "Existing PV or Battery Capabilities (Yes/No)": "No",
     "Planned PV (hours of autonomy)": 2311,
-    "Planned Battery Storage (hours of autonomy)": 5,
-    "Existing use": "Library",
-    "Walkability": "High",
-    "Gross Floor Area (sqft)": 3382,
-    "Year Built": 1938,
-    "Latitude": 33.986554,
-    "Longitude": -118.170803
+    "Planned Battery Storage (hours of autonomy)": 5
   },
   {
     "Agency": "Bell Gardens",
     "Facility Name": "Ford Park and Recreation Center",
     "Address": "8000 Park Lane, Bell, CA",
-    "Existing Resilience Designation": "N/A",
+    "Latitude": 33.959218,
+    "Longitude": -118.154753,
+    "Existing Use": "N/A",
     "Existing EV Chargers (Yes/No)": "No",
     "Number of Planned EV Chargers": 10,
-    "Exisiting PV or Battery Capabilities": "N/A",
+    "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 3563,
-    "Planned Battery Storage (hours of autonomy)": 13,
-    "Existing use": "Community center",
-    "Walkability": "High",
-    "Gross Floor Area (sqft)": 9083,
-    "Year Built": 1976,
-    "Latitude": 33.959218,
-    "Longitude": -118.154753
+    "Planned Battery Storage (hours of autonomy)": 13
   },
   {
     "Agency": "Bell Gardens",
     "Facility Name": "Community Family Services Center & Veterans Park",
     "Address": "6662 Loveland St, Bell, CA",
-    "Existing Resilience Designation": "N/A",
+    "Latitude": 33.968177,
+    "Longitude": -118.143887,
+    "Existing Use": "N/A",
     "Existing EV Chargers (Yes/No)": "No",
     "Number of Planned EV Chargers": 0,
-    "Exisiting PV or Battery Capabilities": "N/A",
+    "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 3330,
-    "Planned Battery Storage (hours of autonomy)": 71,
-    "Existing use": "Community center",
-    "Walkability": "Low",
-    "Gross Floor Area (sqft)": 20000,
-    "Year Built": 1976,
-    "Latitude": 33.968177,
-    "Longitude": -118.143887
+    "Planned Battery Storage (hours of autonomy)": 71
   },
   {
     "Agency": "Bell Gardens",
     "Facility Name": "Youth Center",
     "Address": "5856 Ludell St, Bell, CA",
-    "Existing Resilience Designation": "N/A",
+    "Latitude": 33.968683,
+    "Longitude": -118.160906,
+    "Existing Use": "N/A",
     "Existing EV Chargers (Yes/No)": "No",
     "Number of Planned EV Chargers": 0,
-    "Exisiting PV or Battery Capabilities": "N/A",
+    "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 3406,
-    "Planned Battery Storage (hours of autonomy)": 11,
-    "Existing use": "Community center",
-    "Walkability": "Medium",
-    "Gross Floor Area (sqft)": 11446,
-    "Year Built": 1948,
-    "Latitude": 33.968683,
-    "Longitude": -118.160906
+    "Planned Battery Storage (hours of autonomy)": 11
   },
   {
     "Agency": "Bell Gardens",
     "Facility Name": "Civic Center",
     "Address": "7100 Garfield St, Bell, CA",
-    "Existing Resilience Designation": "N/A",
+    "Latitude": 33.967687,
+    "Longitude": -118.150114,
+    "Existing Use": "City Hall",
     "Existing EV Chargers (Yes/No)": "No",
     "Number of Planned EV Chargers": 0,
-    "Exisiting PV or Battery Capabilities": "N/A",
+    "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 5,
-    "Planned Battery Storage (hours of autonomy)": 0,
-    "Existing use": "City Hall",
-    "Walkability": "Medium",
-    "Gross Floor Area (sqft)": 18500,
-    "Year Built": 1967,
-    "Latitude": 33.967687,
-    "Longitude": -118.150114
+    "Planned Battery Storage (hours of autonomy)": 0
   },
   {
     "Agency": "Pomona",
     "Facility Name": "Library",
     "Address": "625 S Garey Ave, Pomona, CA",
-    "Existing Resilience Designation": "Cooling Center",
+    "Latitude": 34.053897,
+    "Longitude": -117.750631,
+    "Existing Use": "Cooling Center",
     "Existing EV Chargers (Yes/No)": "Yes",
     "Number of Planned EV Chargers": 0,
-    "Exisiting PV or Battery Capabilities": "N/A",
+    "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 2057,
-    "Planned Battery Storage (hours of autonomy)": 0,
-    "Existing use": "Library",
-    "Walkability": "High",
-    "Gross Floor Area (sqft)": 25977,
-    "Year Built": 1956,
-    "Latitude": 34.053897,
-    "Longitude": -117.750631
+    "Planned Battery Storage (hours of autonomy)": 0
   },
   {
     "Agency": "Pomona",
     "Facility Name": "City Hall",
     "Address": "505 S Garey Ave, Pomona, CA",
-    "Existing Resilience Designation": "N/A",
+    "Latitude": 34.054554,
+    "Longitude": -117.751251,
+    "Existing Use": "N/A",
     "Existing EV Chargers (Yes/No)": "No",
     "Number of Planned EV Chargers": 0,
-    "Exisiting PV or Battery Capabilities": "N/A",
+    "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 2482,
-    "Planned Battery Storage (hours of autonomy)": 14,
-    "Existing use": "Office",
-    "Walkability": "High",
-    "Gross Floor Area (sqft)": 44996,
-    "Year Built": 1969,
-    "Latitude": 34.054554,
-    "Longitude": -117.751251
+    "Planned Battery Storage (hours of autonomy)": 14
   },
   {
     "Agency": "Pomona",
     "Facility Name": "Palomares Park",
     "Address": "499 E Arrow Hwy, Pomona, CA",
-    "Existing Resilience Designation": "Cooling Center",
+    "Latitude": 34.090168,
+    "Longitude": -117.742428,
+    "Existing Use": "Cooling Center",
     "Existing EV Chargers (Yes/No)": "Yes",
     "Number of Planned EV Chargers": 19,
-    "Exisiting PV or Battery Capabilities": "N/A",
+    "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 6470,
-    "Planned Battery Storage (hours of autonomy)": 48,
-    "Existing use": "Community center",
-    "Walkability": "Low",
-    "Gross Floor Area (sqft)": 15704,
-    "Year Built": 1983,
-    "Latitude": 34.090168,
-    "Longitude": -117.742428
+    "Planned Battery Storage (hours of autonomy)": 48
   },
   {
     "Agency": "Pomona",
     "Facility Name": "Washington Senior Center",
     "Address": "865 E Granf Ave, Pomona, CA",
-    "Existing Resilience Designation": "Cooling Center",
+    "Latitude": 34.048184,
+    "Longitude": -117.739664,
+    "Existing Use": "Cooling Center",
     "Existing EV Chargers (Yes/No)": "No",
     "Number of Planned EV Chargers": 6,
-    "Exisiting PV or Battery Capabilities": "N/A",
+    "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 4070,
-    "Planned Battery Storage (hours of autonomy)": 883,
-    "Existing use": "Senior Center",
-    "Walkability": "Low",
-    "Gross Floor Area (sqft)": 2539,
-    "Year Built": 1935,
-    "Latitude": 34.048184,
-    "Longitude": -117.739664
+    "Planned Battery Storage (hours of autonomy)": 883
   },
   {
     "Agency": "Irwindale",
     "Facility Name": "Dan Diaz Recreation Center and Library",
     "Address": "16053 Calle De Paseo, Irwindale, CA",
-    "Existing Resilience Designation": "N/A",
+    "Latitude": 34.103841,
+    "Longitude": -117.932137,
+    "Existing Use": "N/A",
     "Existing EV Chargers (Yes/No)": "No",
     "Number of Planned EV Chargers": 0,
-    "Exisiting PV or Battery Capabilities": "N/A",
+    "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 1068,
-    "Planned Battery Storage (hours of autonomy)": 1,
-    "Existing use": "Library and recreation center",
-    "Walkability": "Low",
-    "Gross Floor Area (sqft)": 22855,
-    "Year Built": 1970,
-    "Latitude": 34.103841,
-    "Longitude": -117.932137
+    "Planned Battery Storage (hours of autonomy)": 1
   },
   {
     "Agency": "Irwindale",
     "Facility Name": "City Hall and Police Department",
     "Address": "5050 N Irwindale Ave, Irwindale, CA",
-    "Existing Resilience Designation": "Emergency Operations Center",
+    "Latitude": 34.127586,
+    "Longitude": -117.933637,
+    "Existing Use": "Emergency Operations Center",
     "Existing EV Chargers (Yes/No)": "No",
     "Number of Planned EV Chargers": 4,
-    "Exisiting PV or Battery Capabilities": "N/A",
+    "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 4,
-    "Planned Battery Storage (hours of autonomy)": 0,
-    "Existing use": "Office",
-    "Walkability": "Low",
-    "Gross Floor Area (sqft)": 20600,
-    "Year Built": 1957,
-    "Latitude": 34.127586,
-    "Longitude": -117.933637
+    "Planned Battery Storage (hours of autonomy)": 0
   },
   {
     "Agency": "Irwindale",
     "Facility Name": "Senior Center and Annex",
     "Address": "16116 Arrow Hwy, Irwindale, CA",
-    "Existing Resilience Designation": "Cooling Center",
+    "Latitude": 34.106818,
+    "Longitude": -117.930958,
+    "Existing Use": "Cooling Center",
     "Existing EV Chargers (Yes/No)": "No",
     "Number of Planned EV Chargers": 4,
-    "Exisiting PV or Battery Capabilities": "N/A",
+    "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": 24,
-    "Planned Battery Storage (hours of autonomy)": 0,
-    "Existing use": "Multi-purpose/ office",
-    "Walkability": "Low",
-    "Gross Floor Area (sqft)": 20678,
-    "Year Built": 1985,
-    "Latitude": 34.106818,
-    "Longitude": -117.930958
+    "Planned Battery Storage (hours of autonomy)": 0
   },
   {
     "Agency": "Irwindale",
     "Facility Name": "New Library (Planned for 2026)",
     "Address": "TBD - south of City Hall/west of existing library",
-    "Existing Resilience Designation": "N/A",
+    "Latitude": null,
+    "Longitude": null,
+    "Existing Use": "N/A",
     "Existing EV Chargers (Yes/No)": "N/A",
     "Number of Planned EV Chargers": "N/A",
-    "Exisiting PV or Battery Capabilities": "N/A",
+    "Existing PV or Battery Capabilities (Yes/No)": "N/A",
     "Planned PV (hours of autonomy)": "N/A",
-    "Planned Battery Storage (hours of autonomy)": "N/A",
-    "Existing use": "Library",
-    "Walkability": "N/A",
-    "Gross Floor Area (sqft)": "N/A",
-    "Year Built": "N/A",
-    "Latitude": null,
-    "Longitude": null
+    "Planned Battery Storage (hours of autonomy)": "N/A"
   }
 ];
 
@@ -1455,10 +1381,260 @@ function initMap() {
 
 /* LOAD BOUNDARIES, TERRITORY, FACILITIES */
 async function loadBoundariesAndFacilities() {
-  // ... (same code as the final snippet for loading territory, boundaries, and facility clusters) ...
-  // includes facilityPopup logic, cluster logic, etc.
-  // Then at the end:
+  // 1) SoCalREN territory => behind everything
+  fetch('data/scr_territory.geojson')
+    .then(resp => resp.json())
+    .then(scrData => {
+      map.addSource('scr-territory', {
+        type: 'geojson',
+        data: scrData
+      });
+      // place behind 'water'
+      map.addLayer({
+        id: 'scr-territory-fill',
+        type: 'fill',
+        source: 'scr-territory',
+        paint: {
+          'fill-color': 'rgba(0, 128, 255, 0.25)',
+          'fill-outline-color': 'rgba(0,0,0,0)'
+        }
+      }, 'water');
+    })
+    .catch(err => console.error('Error loading scr_territory:', err));
+
+  // 2) Agency boundaries => fill-extrusion
+  fetch('data/la_boundaries.geojson')
+    .then(resp => resp.json())
+    .then(geojson => {
+      map.addSource('la-boundaries', { type: 'geojson', data: geojson });
+      map.addLayer({
+        id: 'la-boundaries-extrusion',
+        type: 'fill-extrusion',
+        source: 'la-boundaries',
+        paint: {
+          'fill-extrusion-color': '#9A5CA7',
+          'fill-extrusion-height': 50,
+          'fill-extrusion-opacity': 0.4
+        }
+      });
+
+      let hoveredId = null;
+      const boundaryPopup = new mapboxgl.Popup({
+        closeButton: false,
+        closeOnClick: false,
+        anchor: 'top',
+        offset: [0,0],
+        className: 'boundary-popup'
+      });
+
+      // Hover => boundary popup
+      map.on('mousemove', 'la-boundaries-extrusion', e => {
+        map.getCanvas().style.cursor = 'pointer';
+        if (e.features.length) {
+          if (hoveredId) {
+            map.setFeatureState({ source: 'la-boundaries', id: hoveredId }, { hover: false });
+          }
+          hoveredId = e.features[0].id;
+          map.setFeatureState({ source: 'la-boundaries', id: hoveredId }, { hover: true });
+
+          const cityName = e.features[0].properties.CITY_COMM_NAME || '';
+          let matchedAgency = agenciesData.find(a => a.Agency.toLowerCase() === cityName.toLowerCase());
+          if (!matchedAgency) {
+            matchedAgency = agenciesData.find(a => cityName.toLowerCase().includes(a.Agency.toLowerCase()));
+          }
+
+          let popupHtml = `<strong>${cityName}</strong><br><em>No data found</em>`;
+          if (matchedAgency) {
+            const dac = matchedAgency["DAC Status"] || 'N/A';
+            const score = matchedAgency["CalEnviroScreen Score"] || 'N/A';
+            const pop = matchedAgency["Population"] || 'N/A';
+            popupHtml = `
+              <strong>${matchedAgency.Agency}</strong><br>
+              DAC Status: ${dac}<br>
+              CalEnviroScreen Score: ${score}<br>
+              Population: ${Number(pop).toLocaleString()}
+            `;
+          }
+          boundaryPopup.setLngLat(e.lngLat).setHTML(popupHtml).addTo(map);
+        }
+      });
+
+      map.on('mouseleave', 'la-boundaries-extrusion', () => {
+        map.getCanvas().style.cursor = '';
+        boundaryPopup.remove();
+        if (hoveredId) {
+          map.setFeatureState({ source: 'la-boundaries', id: hoveredId }, { hover: false });
+        }
+        hoveredId = null;
+      });
+
+      // Click => show listing (directly)
+      map.on('click', 'la-boundaries-extrusion', e => {
+        if (!e.features.length) return;
+        const cityName = e.features[0].properties.CITY_COMM_NAME || '';
+        if (cityName) {
+          let matched = agenciesData.find(a => a.Agency.toLowerCase() === cityName.toLowerCase());
+          if (!matched) {
+            matched = agenciesData.find(a => cityName.toLowerCase().includes(a.Agency.toLowerCase()));
+          }
+          if (matched) {
+            const facs = facilitiesData.filter(f => f.Agency === matched.Agency);
+            showFacilities(matched, facs);
+          }
+        }
+      });
+    })
+    .catch(err => console.error('Error loading boundaries:', err));
+
+  // 3) Add facility cluster layers
+  const facilityFeatures = [];
+  facilitiesData.forEach(fac => {
+    const lat = parseFloat(fac.Latitude);
+    const lng = parseFloat(fac.Longitude);
+    if (!isNaN(lat) && !isNaN(lng)) {
+      facilityFeatures.push({
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: [lng, lat] },
+        properties: { ...fac }
+      });
+    }
+  });
+  const facilityGeoJSON = {
+    type: 'FeatureCollection',
+    features: facilityFeatures
+  };
+
+  map.addSource('facilities', {
+    type: 'geojson',
+    data: facilityGeoJSON,
+    cluster: true,
+    clusterMaxZoom: 14,
+    clusterRadius: 50
+  });
+
+  // cluster circles
+  map.addLayer({
+    id: 'clusters',
+    type: 'circle',
+    source: 'facilities',
+    filter: ['has','point_count'],
+    paint: {
+      'circle-radius': [
+        'step', ['get','point_count'],
+        25, 10,
+        30, 25,
+        35
+      ],
+      'circle-color': [
+        'step', ['get','point_count'],
+        '#F37B43', 10,
+        '#F05A28', 25,
+        '#9A5CA7'
+      ],
+      'circle-opacity': 0.9,
+      'circle-stroke-width': 2,
+      'circle-stroke-color': '#ffffff',
+      'circle-stroke-opacity': 0.9
+    }
+  });
+
+  // cluster counts
+  map.addLayer({
+    id: 'cluster-count',
+    type: 'symbol',
+    source: 'facilities',
+    filter: ['has','point_count'],
+    layout: {
+      'text-field': '{point_count_abbreviated}',
+      'text-font': ['DIN Offc Pro Bold','Arial Unicode MS Bold'],
+      'text-size': 16,
+      'text-allow-overlap': true
+    },
+    paint: {
+      'text-color': '#ffffff',
+      'text-halo-color': 'rgba(0,0,0,0.2)',
+      'text-halo-width': 1
+    }
+  });
+
+  // unclustered facility points
+  map.addLayer({
+    id: 'unclustered-point',
+    type: 'circle',
+    source: 'facilities',
+    filter: ['!',['has','point_count']],
+    paint: {
+      'circle-color': '#F37B43',
+      'circle-radius': 8,
+      'circle-stroke-width': 2,
+      'circle-stroke-color': '#ffffff',
+      'circle-opacity': 0.9,
+      'circle-stroke-opacity': 0.9
+    }
+  });
+
+  // On cluster click => zoom
+  map.on('click','clusters', e => {
+    const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+    if (!features.length) return;
+    const clusterId = features[0].properties.cluster_id;
+    map.getSource('facilities').getClusterExpansionZoom(clusterId, (err, zoom) => {
+      if (err) return;
+      map.easeTo({ center: features[0].geometry.coordinates, zoom });
+    });
+  });
+
+  // On facility click => persistent popup with CTA
+  const facilityPopup = new mapboxgl.Popup({
+    closeButton: true,
+    closeOnClick: false,
+    anchor: 'bottom',
+    offset: [0, -10],
+    className: 'facility-popup'
+  });
+
+  map.on('click','unclustered-point', e => {
+    const props = e.features[0].properties;
+    const name = props["Facility Name"] || "Unknown Facility";
+    const address = props["Address"] || "N/A";
+    const usage = props["Existing Use"] || "N/A";
+    const agencyName = props["Agency"];
+
+    // Build CTA content
+    const content = `
+      <strong>${name}</strong><br>
+      Address: ${address}<br>
+      Existing Use: ${usage}<br><br>
+      <button id="popup-facility-button" style="padding:6px 12px;background:#2D3E4F;color:#fff;border:none;border-radius:4px;cursor:pointer;">
+        View in Panel
+      </button>
+    `;
+
+    facilityPopup
+      .setLngLat(e.lngLat)
+      .setHTML(content)
+      .addTo(map);
+
+    // Wait for popup to be in the DOM, then attach the CTA logic
+    facilityPopup.on('open', () => {
+      const btn = document.getElementById('popup-facility-button');
+      if (btn) {
+        btn.addEventListener('click', () => {
+          facilityPopup.remove();
+          // same logic that was in "showFacilities" call
+          const matchedAgency = agenciesData.find(a => a.Agency === agencyName);
+          if (matchedAgency) {
+            const facs = facilitiesData.filter(f => f.Agency === matchedAgency.Agency);
+            showFacilities(matchedAgency, facs);
+          }
+        });
+      }
+    });
+  });
+
   document.getElementById('loading-spinner').style.display = 'none';
+
+  // set up layer toggles
   setupLayerToggles();
 }
 
@@ -1482,7 +1658,7 @@ function setupLayerToggles() {
   });
 }
 
-/* RENDER AGENCY LISTING (INITIAL VIEW) */
+/* RENDER AGENCY LISTING */
 function renderListing() {
   const listingElement = document.getElementById('listing');
   const agencyFilters = document.getElementById('agency-filters');
@@ -1491,9 +1667,6 @@ function renderListing() {
   listingElement.innerHTML = '';
   agencyFilters.style.display = 'block';
   facilityFilters.style.display = 'none';
-
-  // Show the welcome section again
-  document.getElementById('intro-section').style.display = 'block';
 
   // Clear out facility-data
   document.getElementById('facility-data').style.display = 'none';
@@ -1645,16 +1818,10 @@ function refreshFacilityList() {
 }
 
 /* SHOW FACILITIES & AGENCY DATA */
-let facilitiesExpanded = true; // track if facility list is visible
-
 function showFacilities(agency, facilityList) {
-  // Hide the welcome section
-  document.getElementById('intro-section').style.display = 'none';
-
   const listingElement = document.getElementById('listing');
   listingElement.innerHTML = '';
 
-  // "Back to Agencies" => right-aligned, smaller
   const backButton = document.createElement('button');
   backButton.id = 'back-button';
   backButton.textContent = 'Back to Agencies';
@@ -1664,64 +1831,51 @@ function showFacilities(agency, facilityList) {
   };
   listingElement.appendChild(backButton);
 
-  // Collapsible header for facilities
-  const header = document.createElement('div');
-  header.className = 'cog-header';
-  header.textContent = `View Facilities in ${agency.Agency}`;
-  header.style.marginTop = '40px'; // some spacing
-
-  const facilitiesContainer = document.createElement('div');
-  facilitiesContainer.style.display = 'block';
-  header.classList.add('expanded');
-
-  header.addEventListener('click', () => {
-    facilitiesExpanded = !facilitiesExpanded;
-    header.classList.toggle('expanded', facilitiesExpanded);
-    facilitiesContainer.style.display = facilitiesExpanded ? 'block' : 'none';
-  });
-
+  const header = document.createElement('h4');
+  header.textContent = `Facilities in ${agency.Agency}`;
   listingElement.appendChild(header);
 
-  // Switch to facility filters
   document.getElementById('agency-filters').style.display = 'none';
   document.getElementById('facility-filters').style.display = 'block';
 
-  // Filter facilities
+  // filter the facilities with the current checkboxes + numeric inputs
   const filteredFacilities = filterFacilities(facilityList);
 
   if (filteredFacilities.length > 0) {
     filteredFacilities.forEach(f => {
-      const facDiv = document.createElement('div');
-      facDiv.className = 'agency-title';
-      facDiv.style.fontSize = '13px';
-      facDiv.textContent = f["Facility Name"];
-      facDiv.onclick = () => showFacilityDetails(f);
-      facilitiesContainer.appendChild(facDiv);
+      const div = document.createElement('div');
+      div.className = 'agency-title';
+      div.textContent = f["Facility Name"];
+
+      // On facility click => show facility details
+      div.onclick = () => {
+        showFacilityDetails(f);
+      };
+
+      listingElement.appendChild(div);
     });
   } else {
     const msg = document.createElement('div');
     msg.id = 'no-facilities-msg';
-    msg.textContent = 'No facilities matched your filters.';
-    facilitiesContainer.appendChild(msg);
+    msg.textContent = 'Facilities data coming soon or none matched filters';
+    listingElement.appendChild(msg);
   }
 
-  listingElement.appendChild(facilitiesContainer);
-
-  // Show the dashboard, agency data
   const dashboard = document.getElementById('dashboard');
   const agencyDataElement = document.getElementById('agency-data');
+
   dashboard.style.display = 'block';
   agencyDataElement.style.display = 'block';
 
   updateAgencyDashboard(agency);
 
-  // highlight the agency boundary
+  // Highlight and zoom to the agency boundary
   highlightAgency(agency);
 }
 
 /* FILTER FACILITIES */
 function parseAutonomyValue(value) {
-  // handle 'Whole year' => 8760, 'N/A' => 0, else parse
+  // Helper to parse "Whole year" => 8760 or "N/A" => 0, else parse int
   if (!value) return 0;
   const str = String(value).toLowerCase().trim();
   if (str === 'whole year') return 8760;
@@ -1740,11 +1894,12 @@ function filterFacilities(facList) {
   const batteryMin = parseInt(document.getElementById('batteryHoursMin').value) || 0;
 
   return facList.filter(f => {
-    // check existing PV filter
-    const pvCap = (f["Exisiting PV or Battery Capabilities"] || '').toLowerCase();
-
-    if (pvChecked && (pvCap === 'no' || pvCap === 'n/a')) {
-      return false;
+    // Check existing PV filter
+    if (pvChecked) {
+      const hasPV = f["Existing PV or Battery Capabilities (Yes/No)"] &&
+        f["Existing PV or Battery Capabilities (Yes/No)"].toLowerCase() !== 'no' &&
+        f["Existing PV or Battery Capabilities (Yes/No)"].toLowerCase() !== 'n/a';
+      if (!hasPV) return false;
     }
     // EV check
     if (evChecked) {
@@ -1753,11 +1908,11 @@ function filterFacilities(facList) {
     }
     // Cooling/Emergency check
     if (coolChecked) {
-      const ed = (f["Existing Resilience Designation"] || '').toLowerCase();
-      if (!ed.includes('cooling') && !ed.includes('emergency')) return false;
+      const usage = (f["Existing Use"] || '').toLowerCase();
+      if (!usage.includes('cooling') && !usage.includes('emergency')) return false;
     }
 
-    // numeric filters
+    // Numeric filters
     const plannedEV = parseInt(f["Number of Planned EV Chargers"]) || 0;
     if (plannedEV < evMin) return false;
 
@@ -1775,7 +1930,10 @@ function filterFacilities(facList) {
 function updateAgencyDashboard(agency) {
   document.getElementById('data-overview-title').textContent = agency.Agency + " Data Overview";
   document.getElementById('agency-data').style.display = 'block';
-  document.getElementById('facility-data').style.display = 'none';
+  document.getElementById('facility-data').style.display = 'none'; // hide facility data initially
+
+  const dash = document.getElementById('dashboard');
+  dash.style.display = 'block';
 
   function getSafe(obj, key) {
     if (obj[key] === null || obj[key] === undefined) return "N/A";
@@ -1820,21 +1978,17 @@ function updateAgencyDashboard(agency) {
 
 /* SHOW FACILITY DETAILS */
 function showFacilityDetails(fac) {
+  // Show the facility-data block, fill it in
   document.getElementById('facility-data').style.display = 'block';
 
-  // map new field names
   document.getElementById('fac-name').textContent = fac["Facility Name"] || 'N/A';
   document.getElementById('fac-address').textContent = fac["Address"] || 'N/A';
-  document.getElementById('fac-res-designation').textContent = fac["Existing Resilience Designation"] || 'N/A';
+  document.getElementById('fac-use').textContent = fac["Existing Use"] || 'N/A';
   document.getElementById('fac-ev-existing').textContent = fac["Existing EV Chargers (Yes/No)"] || 'N/A';
   document.getElementById('fac-ev-planned').textContent = fac["Number of Planned EV Chargers"] || 'N/A';
-  document.getElementById('fac-pv-existing').textContent = fac["Exisiting PV or Battery Capabilities"] || 'N/A';
+  document.getElementById('fac-pv-existing').textContent = fac["Existing PV or Battery Capabilities (Yes/No)"] || 'N/A';
   document.getElementById('fac-pv-planned').textContent = fac["Planned PV (hours of autonomy)"] || 'N/A';
   document.getElementById('fac-batt-planned').textContent = fac["Planned Battery Storage (hours of autonomy)"] || 'N/A';
-  document.getElementById('fac-use').textContent = fac["Existing use"] || 'N/A';
-  document.getElementById('fac-walk').textContent = fac["Walkability"] || 'N/A';
-  document.getElementById('fac-floor').textContent = fac["Gross Floor Area (sqft)"] || 'N/A';
-  document.getElementById('fac-year').textContent = fac["Year Built"] || 'N/A';
 
   // Zoom map to facility lat/lon if available
   const lat = parseFloat(fac.Latitude);
@@ -1846,6 +2000,7 @@ function showFacilityDetails(fac) {
 
 /* HIGHLIGHT AGENCY & ZOOM */
 function highlightAgency(agency) {
+  // Attempt to find the boundary feature that matches
   const boundaryFeatures = map.querySourceFeatures('la-boundaries', {
     filter: ['==', ['downcase', ['get', 'CITY_COMM_NAME']], agency.Agency.toLowerCase()]
   });
@@ -1856,6 +2011,7 @@ function highlightAgency(agency) {
       type: 'Feature',
       geometry: geometry
     });
+    // Fit bounds to geometry
     const bounds = getBoundingBox(geometry);
     map.fitBounds(bounds, { padding: 50 });
   } else {
