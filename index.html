@@ -1551,7 +1551,7 @@ async function loadBoundariesAndFacilities() {
     clusterRadius: 50
   });
 
-  // clusters
+  // Note: Second argument removed so these layers draw on top by default
   map.addLayer({
     id: 'clusters',
     type: 'circle',
@@ -1575,7 +1575,7 @@ async function loadBoundariesAndFacilities() {
       'circle-stroke-color': '#ffffff',
       'circle-stroke-opacity': 0.9
     }
-  }, 'la-boundaries-2d');
+  });
 
   map.addLayer({
     id: 'cluster-count',
@@ -1593,23 +1593,22 @@ async function loadBoundariesAndFacilities() {
       'text-halo-color': 'rgba(0,0,0,0.2)',
       'text-halo-width': 1
     }
-  }, 'clusters');
+  });
 
-  // unclustered points => purple
   map.addLayer({
     id: 'unclustered-point',
     type: 'circle',
     source: 'facilities',
     filter: ['!',['has','point_count']],
     paint: {
-      'circle-color': '#9A5CA7', /* purple for unclustered facility */
+      'circle-color': '#9A5CA7', /* purple facility marker */
       'circle-radius': 8,
       'circle-stroke-width': 2,
       'circle-stroke-color': '#ffffff',
       'circle-opacity': 0.9,
       'circle-stroke-opacity': 0.9
     }
-  }, 'cluster-count');
+  });
 
   // cluster click => zoom
   map.on('click','clusters', e => {
