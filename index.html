@@ -1433,7 +1433,6 @@ async function loadBoundariesAndFacilities() {
         type: 'geojson',
         data: scrData
       });
-      // CHANGED HERE: removed , 'water'
       map.addLayer({
         id: 'scr-territory-fill',
         type: 'fill',
@@ -1442,7 +1441,7 @@ async function loadBoundariesAndFacilities() {
           'fill-color': 'rgba(0, 128, 255, 0.25)',
           'fill-outline-color': 'rgba(0,0,0,0)'
         }
-      });
+      }, 'water');
     })
     .catch(err => console.error('Error loading scr_territory:', err));
 
@@ -1491,6 +1490,7 @@ async function loadBoundariesAndFacilities() {
             const score = matchedAgency["CalEnviroScreen Score"] || 'N/A';
             const pop = matchedAgency["Population"] || 'N/A';
 
+            // CHANGED HERE: "DAC Status" => "Underserved/Hard to Reach:"
             popupHtml = `
               <strong>${matchedAgency.Agency}</strong><br>
               Underserved/Hard to Reach: ${dac}<br>
@@ -1640,6 +1640,9 @@ async function loadBoundariesAndFacilities() {
     const designation = props["Existing Resilience Designation"] || "N/A";
     const agencyName = props["Agency"] || "";
 
+    // CHANGED HERE:
+    //  - "Resilience: ${designation}" => "Existing Resilience Designation: ${designation}"
+    //  - Button text: "View in Panel" => "View Data"
     const content = `
       <strong>${name}</strong><br>
       Address: ${address}<br>
